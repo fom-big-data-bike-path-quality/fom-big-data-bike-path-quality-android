@@ -10,8 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality">
         <activity
+            android:name=".PermissionRationalActivity"
+            android:label="@string/title_activity_permission_rational"
+            android:theme="@style/Theme.BikePathQuality.NoActionBar" />
+
+        <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.BikePathQuality.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
