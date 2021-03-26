@@ -59,7 +59,6 @@ public class PermissionRationalActivity extends AppCompatActivity implements
     public void onClickApprovePermissionRequest(View view) {
         Log.d(TAG, "onClickApprovePermissionRequest()");
 
-        // TODO: Review permission request for activity recognition.
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACTIVITY_RECOGNITION},

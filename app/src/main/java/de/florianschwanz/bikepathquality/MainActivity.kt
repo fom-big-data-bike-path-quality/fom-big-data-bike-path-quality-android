@@ -90,7 +90,18 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickEnableOrDisableActivityRecognition(view: View?) {
 
-        // TODO: Enable/Disable activity tracking and ask for permissions if needed.
+        if (activityRecognitionPermissionApproved()) {
+            if (activityTrackingEnabled) {
+                disableActivityTransitions()
+            } else {
+                enableActivityTransitions()
+            }
+        } else {
+            // Request permission and start activity for result. If the permission is approved, we
+            // want to make sure we start activity recognition tracking.
+            val startIntent = Intent(this, PermissionRationalActivity::class.java)
+            startActivityForResult(startIntent, 0)
+        }
     }
 
     //
@@ -125,7 +136,6 @@ class MainActivity : AppCompatActivity() {
      */
     private fun activityRecognitionPermissionApproved(): Boolean {
 
-        // TODO: Review permission check for 29+.
         return if (runningQOrLater) {
             PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
                 this,
