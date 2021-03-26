@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.logger.LogFragment
 import java.util.*
 
+
 class MainActivity : AppCompatActivity() {
 
     private val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val TRANSITIONS_RECEIVER_ACTION: String =
         BuildConfig.APPLICATION_ID.toString() + "TRANSITIONS_RECEIVER_ACTION"
     private val mActivityTransitionsPendingIntent: PendingIntent? = null
-    private val mTransitionsReceiver: de.florianschwanz.bikepathquality.MainActivity.TransitionsReceiver? =
+    private var mTransitionsReceiver: de.florianschwanz.bikepathquality.MainActivity.TransitionsReceiver? =
         null
     private var mLogFragment: LogFragment? = null
 
@@ -54,25 +56,27 @@ class MainActivity : AppCompatActivity() {
         // TODO: Initialize PendingIntent that will be triggered when a activity transition occurs.
 
 
-        // TODO: Create a BroadcastReceiver to listen for activity transitions.
+        // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs.
+        mTransitionsReceiver = TransitionsReceiver()
+
         printToScreen("App initialized.")
     }
 
     override fun onStart() {
         super.onStart()
-
-        // TODO: Register the BroadcastReceiver to listen for activity transitions.
+        registerReceiver(mTransitionsReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION));
     }
 
     override fun onPause() {
 
         // TODO: Disable activity transitions when user leaves the app.
+
+
         super.onPause()
     }
 
     override fun onStop() {
-
-        // TODO: Unregister activity transition receiver when user leaves the app.
+        unregisterReceiver(mTransitionsReceiver);
         super.onStop()
     }
 
