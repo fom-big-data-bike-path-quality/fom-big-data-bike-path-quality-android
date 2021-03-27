@@ -15,7 +15,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityTransition
+import com.google.android.gms.location.ActivityTransitionRequest
 import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.logger.LogFragment
 import java.util.*
@@ -25,12 +27,12 @@ class MainActivity : AppCompatActivity() {
 
     private val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     private var activityTrackingEnabled = false
-    private var activityTransitionList: List<ActivityTransition>? = null
+    private var activityTransitionList = mutableListOf<ActivityTransition>()
 
     // Action fired when transitions are triggered.
     private val TRANSITIONS_RECEIVER_ACTION: String =
         BuildConfig.APPLICATION_ID.toString() + "TRANSITIONS_RECEIVER_ACTION"
-    private val mActivityTransitionsPendingIntent: PendingIntent? = null
+    private var mActivityTransitionsPendingIntent: PendingIntent? = null
     private var mTransitionsReceiver: de.florianschwanz.bikepathquality.MainActivity.TransitionsReceiver? =
         null
     private var mLogFragment: LogFragment? = null
@@ -48,13 +50,34 @@ class MainActivity : AppCompatActivity() {
         activityTrackingEnabled = false
 
         // List of activity transitions to track.
-        activityTransitionList = ArrayList()
+        activityTransitionList.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build()
+        )
+        activityTransitionList.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()
+        )
+        activityTransitionList.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.STILL)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build()
+        )
+        activityTransitionList.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.STILL)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()
+        )
 
-        // TODO: Add activity transitions to track.
-
-
-        // TODO: Initialize PendingIntent that will be triggered when a activity transition occurs.
-
+        val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+        mActivityTransitionsPendingIntent =
+            PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
 
         // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs.
         mTransitionsReceiver = TransitionsReceiver()
@@ -68,10 +91,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-
-        // TODO: Disable activity transitions when user leaves the app.
-
-
+        if (activityTrackingEnabled) {
+            disableActivityTransitions();
+        }
         super.onPause()
     }
 
@@ -119,8 +141,20 @@ class MainActivity : AppCompatActivity() {
     private fun enableActivityTransitions() {
         Log.d(TAG, "enableActivityTransitions()")
 
+        val request = ActivityTransitionRequest(activityTransitionList)
 
-        // TODO: Create request and listen for activity changes.
+        // Register for Transitions Updates.
+        val task = ActivityRecognition.getClient(this)
+            .requestActivityTransitionUpdates(request, mActivityTransitionsPendingIntent)
+
+        task.addOnSuccessListener {
+            activityTrackingEnabled = true
+            printToScreen("Transitions Api was successfully registered.")
+        }
+        task.addOnFailureListener { e ->
+            printToScreen("Transitions Api could NOT be registered: $e")
+            Log.e(TAG, "Transitions Api could NOT be registered: $e")
+        }
     }
 
     /**
@@ -130,8 +164,16 @@ class MainActivity : AppCompatActivity() {
     private fun disableActivityTransitions() {
         Log.d(TAG, "disableActivityTransitions()")
 
-
-        // TODO: Stop listening for activity changes.
+        ActivityRecognition.getClient(this)
+            .removeActivityTransitionUpdates(mActivityTransitionsPendingIntent)
+            .addOnSuccessListener {
+                activityTrackingEnabled = false
+                printToScreen("Transitions successfully unregistered.")
+            }
+            .addOnFailureListener { e ->
+                printToScreen("Transitions could not be unregistered: $e")
+                Log.e(TAG, "Transitions could not be unregistered: $e")
+            }
     }
 
     /**
