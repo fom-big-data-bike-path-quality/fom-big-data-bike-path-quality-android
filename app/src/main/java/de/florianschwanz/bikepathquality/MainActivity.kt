@@ -15,11 +15,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.ActivityTransition
-import com.google.android.gms.location.ActivityTransitionRequest
-import com.google.android.gms.location.DetectedActivity
+import com.google.android.gms.location.*
 import de.florianschwanz.bikepathquality.logger.LogFragment
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -218,7 +216,15 @@ class MainActivity : AppCompatActivity() {
                 return
             }
 
-            // TODO: Extract activity transition information from listener.
+            if (ActivityTransitionResult.hasResult(intent)) {
+                val result = ActivityTransitionResult.extractResult(intent)
+                for (event in result!!.transitionEvents) {
+                    val info = "Transition: " + toActivityString(event.activityType) +
+                            " (" + toTransitionType(event.transitionType) + ")" + "   " +
+                            SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
+                    printToScreen(info)
+                }
+            }
         }
     }
 
