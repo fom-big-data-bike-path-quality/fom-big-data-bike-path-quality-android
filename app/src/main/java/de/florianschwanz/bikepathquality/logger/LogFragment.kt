@@ -1,95 +1,83 @@
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package de.florianschwanz.bikepathquality.logger;
+package de.florianschwanz.bikepathquality.logger
 
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ScrollView;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import android.R
+import android.graphics.Typeface
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ScrollView
+import androidx.fragment.app.Fragment
 
 /**
  * LogView outputs log data to the screen.
  */
-public class LogFragment extends Fragment {
+class LogFragment : Fragment() {
 
-    private LogView mLogView;
-    private ScrollView mScrollView;
+    var logView: LogView? = null
+        private set
 
-    public LogFragment() {}
+    private var scrollView: ScrollView? = null
 
-    public View inflateViews() {
-        mScrollView = new ScrollView(getActivity());
-        ViewGroup.LayoutParams scrollParams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mScrollView.setLayoutParams(scrollParams);
+    //
+    // Lifecycle phases
+    //
 
-        mLogView = new LogView(getActivity());
-        ViewGroup.LayoutParams logParams = new ViewGroup.LayoutParams(scrollParams);
-        logParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        mLogView.setLayoutParams(logParams);
-        mLogView.setClickable(true);
-        mLogView.setFocusable(true);
-        mLogView.setTypeface(Typeface.MONOSPACE);
+    /**
+     * Handles on-create lifecycle phase
+     */
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val result = inflateViews()
+        logView!!.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                scrollView!!.fullScroll(ScrollView.FOCUS_DOWN)
+            }
+        })
+        return result
+    }
+
+    //
+    // Helpers
+    //
+
+    /**
+     * Inflates views
+     */
+    fun inflateViews(): View {
+        scrollView = ScrollView(activity)
+
+        val scrollParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        scrollView!!.layoutParams = scrollParams
+        logView = LogView(activity)
+
+        val logParams = ViewGroup.LayoutParams(scrollParams)
+        logParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        logView!!.layoutParams = logParams
+        logView!!.isClickable = true
+        logView!!.isFocusable = true
+        logView!!.setTypeface(Typeface.MONOSPACE)
 
         // Want to set padding as 16 dips, setPadding takes pixels.  Hooray math!
-        int paddingDips = 16;
-        double scale = getResources().getDisplayMetrics().density;
-        int paddingPixels = (int) ((paddingDips * (scale)) + .5);
-        mLogView.setPadding(paddingPixels, paddingPixels, paddingPixels, paddingPixels);
-        mLogView.setCompoundDrawablePadding(paddingPixels);
-
-        mLogView.setGravity(Gravity.BOTTOM);
-
-        mLogView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-
-        mScrollView.addView(mLogView);
-        return mScrollView;
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View result = inflateViews();
-
-        mLogView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-        return result;
-    }
-
-    public LogView getLogView() {
-        return mLogView;
+        val paddingDips = 16
+        val scale = resources.displayMetrics.density.toDouble()
+        val paddingPixels = (paddingDips * scale + .5).toInt()
+        logView!!.setPadding(paddingPixels, paddingPixels, paddingPixels, paddingPixels)
+        logView!!.compoundDrawablePadding = paddingPixels
+        logView!!.gravity = Gravity.BOTTOM
+        logView!!.setTextAppearance(R.style.TextAppearance_DeviceDefault_Medium)
+        scrollView!!.addView(logView)
+        return scrollView as ScrollView
     }
 }

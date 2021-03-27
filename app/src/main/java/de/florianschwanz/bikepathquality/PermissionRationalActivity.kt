@@ -1,91 +1,87 @@
-/*
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package de.florianschwanz.bikepathquality;
+package de.florianschwanz.bikepathquality
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import java.util.Arrays;
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
+import java.util.*
 
 /**
  * Displays rationale for allowing the activity recognition permission and allows user to accept
  * the permission. After permission is accepted, finishes the activity so main activity can
  * show transitions.
  */
-public class PermissionRationalActivity extends AppCompatActivity implements
-        ActivityCompat.OnRequestPermissionsResultCallback {
+class PermissionRationalActivity : AppCompatActivity(), OnRequestPermissionsResultCallback {
 
-    private static final String TAG = "PermissionRationalActivity";
+    //
+    // Lifecycle phases
+    //
 
-    /* Id to identify Activity Recognition permission request. */
-    private static final int PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // If permissions granted, we start the main activity (shut this activity down).
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
-                == PackageManager.PERMISSION_GRANTED) {
-            finish();
-        }
-
-        setContentView(R.layout.activity_permission_rational);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void onClickApprovePermissionRequest(View view) {
-        Log.d(TAG, "onClickApprovePermissionRequest()");
-
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
-                PERMISSION_REQUEST_ACTIVITY_RECOGNITION);
-    }
-
-    public void onClickDenyPermissionRequest(View view) {
-        Log.d(TAG, "onClickDenyPermissionRequest()");
-        finish();
-    }
-
-    /*
-     * Callback received when a permissions request has been completed.
+    /**
+     * Handles on-create lifecycle phase
      */
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        String permissionResult = "Request code: " + requestCode + ", Permissions: " +
-                Arrays.toString(permissions) + ", Results: " + Arrays.toString(grantResults);
+        // If permissions granted, we start the main activity (shut this activity down)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            finish()
+        }
+        setContentView(R.layout.activity_permission_rational)
+    }
 
-        Log.d(TAG, "onRequestPermissionsResult(): " + permissionResult);
-
+    /**
+     * Callback received when a permissions request has been completed
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val permissionResult = "Request code: " + requestCode + ", Permissions: " +
+                Arrays.toString(permissions) + ", Results: " + Arrays.toString(grantResults)
+        Log.d(TAG, "onRequestPermissionsResult(): $permissionResult")
         if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
             // Close activity regardless of user's decision (decision picked up in main activity).
-            finish();
+            finish()
         }
+    }
+
+    //
+    // Actions
+    //
+
+    /**
+     * Handles click on approval button
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    fun onClickApprovePermissionRequest(view: View?) {
+        Log.d(TAG, "onClickApprovePermissionRequest()")
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+            PERMISSION_REQUEST_ACTIVITY_RECOGNITION
+        )
+    }
+
+    /**
+     * Handles click on denial button
+     */
+    fun onClickDenyPermissionRequest(view: View?) {
+        Log.d(TAG, "onClickDenyPermissionRequest()")
+        finish()
+    }
+
+    companion object {
+        private const val TAG = "PermissionRationalActivity"
+
+        /* Id to identify Activity Recognition permission request */
+        private const val PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45
     }
 }

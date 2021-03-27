@@ -20,25 +20,28 @@ import de.florianschwanz.bikepathquality.logger.LogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * Main activity
+ */
 class MainActivity : AppCompatActivity() {
 
-    private val runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     private var activityTrackingEnabled = false
     private var activityTransitionList = mutableListOf<ActivityTransition>()
 
-    // Action fired when transitions are triggered.
-    private val TRANSITIONS_RECEIVER_ACTION: String =
-        BuildConfig.APPLICATION_ID.toString() + "TRANSITIONS_RECEIVER_ACTION"
-    private var mActivityTransitionsPendingIntent: PendingIntent? = null
-    private var mTransitionsReceiver: de.florianschwanz.bikepathquality.MainActivity.TransitionsReceiver? =
-        null
+    // Action fired when transitions are triggered
+    private val TRANSITIONS_RECEIVER_ACTION =
+        BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION"
+    private var activityTransitionsPendingIntent: PendingIntent? = null
+    private var transitionsReceiver: MainActivity.TransitionsReceiver? = null
     private var mLogFragment: LogFragment? = null
 
     //
     // Lifecycle phases
     //
 
+    /**
+     * Handles on-create lifecycle phase
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         mLogFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
         activityTrackingEnabled = false
 
-        // List of activity transitions to track.
+        // Add activity transitions to track
         activityTransitionList.add(
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
@@ -73,38 +76,60 @@ class MainActivity : AppCompatActivity() {
                 .build()
         )
 
+        // Initialize PendingIntent that will be triggered when a activity transition occurs
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        mActivityTransitionsPendingIntent =
+        activityTransitionsPendingIntent =
             PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
 
-        // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs.
-        mTransitionsReceiver = TransitionsReceiver()
+        // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs
+        transitionsReceiver = TransitionsReceiver()
 
         printToScreen("App initialized.")
     }
 
+    /**
+     * Handles on-start lifecycle phase
+     */
     override fun onStart() {
         super.onStart()
-        registerReceiver(mTransitionsReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION));
+
+        // Register the BroadcastReceiver to listen for activity transitions
+        registerReceiver(transitionsReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION))
     }
 
+    /**
+     * Handles on-pause lifecycle phase
+     */
     override fun onPause() {
+
+        // Disable activity transitions when user leaves the app
         if (activityTrackingEnabled) {
-            disableActivityTransitions();
+            disableActivityTransitions()
         }
         super.onPause()
     }
 
+    /**
+     * Handles on-pause lifecycle phase
+     */
     override fun onStop() {
-        unregisterReceiver(mTransitionsReceiver);
+
+        // Unregister activity transition receiver when user leaves the app
+        unregisterReceiver(transitionsReceiver)
         super.onStop()
     }
 
+    /**
+     * Handles on-activity-result lifecycle phase
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Start activity recognition if the permission was approved.
+
+        // Start activity recognition if the permission was approved
         if (activityRecognitionPermissionApproved() && !activityTrackingEnabled) {
             enableActivityTransitions()
         }
+
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -112,8 +137,12 @@ class MainActivity : AppCompatActivity() {
     // Actions
     //
 
+    /**
+     * Handles click on activity recognition button
+     */
     fun onClickEnableOrDisableActivityRecognition(view: View?) {
 
+        // Enable/Disable activity tracking and ask for permissions if needed
         if (activityRecognitionPermissionApproved()) {
             if (activityTrackingEnabled) {
                 disableActivityTransitions()
@@ -122,8 +151,10 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // Request permission and start activity for result. If the permission is approved, we
-            // want to make sure we start activity recognition tracking.
+            // want to make sure we start activity recognition tracking
             val startIntent = Intent(this, PermissionRationalActivity::class.java)
+
+            @Suppress("DEPRECATION")
             startActivityForResult(startIntent, 0)
         }
     }
@@ -139,11 +170,12 @@ class MainActivity : AppCompatActivity() {
     private fun enableActivityTransitions() {
         Log.d(TAG, "enableActivityTransitions()")
 
+        // Create request and listen for activity changes
         val request = ActivityTransitionRequest(activityTransitionList)
 
         // Register for Transitions Updates.
         val task = ActivityRecognition.getClient(this)
-            .requestActivityTransitionUpdates(request, mActivityTransitionsPendingIntent)
+            .requestActivityTransitionUpdates(request, activityTransitionsPendingIntent)
 
         task.addOnSuccessListener {
             activityTrackingEnabled = true
@@ -162,8 +194,9 @@ class MainActivity : AppCompatActivity() {
     private fun disableActivityTransitions() {
         Log.d(TAG, "disableActivityTransitions()")
 
+        // Stop listening for activity changes.
         ActivityRecognition.getClient(this)
-            .removeActivityTransitionUpdates(mActivityTransitionsPendingIntent)
+            .removeActivityTransitionUpdates(activityTransitionsPendingIntent)
             .addOnSuccessListener {
                 activityTrackingEnabled = false
                 printToScreen("Transitions successfully unregistered.")
@@ -180,10 +213,9 @@ class MainActivity : AppCompatActivity() {
      */
     private fun activityRecognitionPermissionApproved(): Boolean {
 
-        return if (runningQOrLater) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACTIVITY_RECOGNITION
+                this, Manifest.permission.ACTIVITY_RECOGNITION
             )
         } else {
             true
@@ -194,7 +226,7 @@ class MainActivity : AppCompatActivity() {
      * Prints message to screen
      */
     private fun printToScreen(message: String) {
-        mLogFragment?.getLogView()?.println(message)
+        mLogFragment?.logView?.println(message)
         Log.d(TAG, message)
     }
 
@@ -203,7 +235,7 @@ class MainActivity : AppCompatActivity() {
     //
 
     /**
-     * Handles intents from from the Transitions API.
+     * Handles intents from the Transitions API
      */
     inner class TransitionsReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -230,6 +262,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+
+        /**
+         * Converts activity to a string
+         */
         private fun toActivityString(activity: Int): String {
             return when (activity) {
                 DetectedActivity.STILL -> "STILL"
@@ -238,6 +274,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Converts transition type to string
+         */
         private fun toTransitionType(transitionType: Int): String {
             return when (transitionType) {
                 ActivityTransition.ACTIVITY_TRANSITION_ENTER -> "ENTER"

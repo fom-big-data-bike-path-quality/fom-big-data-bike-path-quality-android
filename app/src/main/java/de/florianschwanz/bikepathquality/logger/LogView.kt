@@ -13,49 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.florianschwanz.bikepathquality.logger;
+package de.florianschwanz.bikepathquality.logger
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.TextView;
+import android.app.Activity
+import android.content.Context
+import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatTextView
 
 /**
  * Outputs log data via Simple TextView.
  */
-public class LogView extends androidx.appcompat.widget.AppCompatTextView {
+class LogView : AppCompatTextView {
+    constructor(context: Context?) : super(context!!) {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(
+        context!!, attrs
+    )
 
-    public LogView(Context context) {
-        super(context);
-    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context!!, attrs, defStyle
+    )
 
-    public LogView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public LogView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+    //
+    // Helpers
+    //
 
     /**
      * Formats the log data and prints it out to the LogView.
      * @param msg The actual message to be logged. The actual message to be logged.
      */
-    public void println(final String msg) {
+    fun println(msg: String) {
 
         // In case this was originally called from an AsyncTask or some other off-UI thread,
         // make sure the update occurs within the UI thread.
-        ((Activity) getContext()).runOnUiThread( (new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Display the text we just generated within the LogView.
-                appendToLog(msg);
-            }
-        })));
+        (context as Activity).runOnUiThread(Thread { // Display the text we just generated within the LogView.
+            appendToLog(msg)
+        })
     }
 
-    /** Outputs the string as a new line of log data in the LogView. */
-    public void appendToLog(String s) {
-        append("\n" + s);
+    /** Outputs the string as a new line of log data in the LogView.  */
+    fun appendToLog(s: String) {
+        append(
+            """
+    
+    $s
+    """.trimIndent()
+        )
     }
 }
