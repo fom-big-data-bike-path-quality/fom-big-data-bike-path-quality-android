@@ -73,25 +73,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Add activity transitions to track
         activityTransitionList.add(
             ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
+                .setActivityType(DetectedActivity.ON_BICYCLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build()
         )
         activityTransitionList.add(
             ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build()
-        )
-        activityTransitionList.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.STILL)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()
-        )
-        activityTransitionList.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.STILL)
+                .setActivityType(DetectedActivity.ON_BICYCLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build()
         )
