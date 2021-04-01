@@ -9,4 +9,12 @@
     <string name="no_thanks_activity_permission_rational">No Thanks</string>
     <string name="continue_activity_permission_rational">Continue</string>
     <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
+
+    <string name="accelerometer">Accelerometer</string>
+    <string name="accelerometerX">x: %1$.1f</string>
+    <string name="accelerometerY">y: %1$.1f</string>
+    <string name="accelerometerZ">z: %1$.1f</string>
+    <string name="defaultAccelerometerX">x: -</string>
+    <string name="defaultAccelerometerY">y: -</string>
+    <string name="defaultAccelerometerZ">z: -</string>
 </resources>

@@ -7,11 +7,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -23,7 +28,11 @@ import java.util.*
 /**
  * Main activity
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SensorEventListener {
+
+    private var tvAccelerometerX: TextView? = null
+    private var tvAccelerometerY: TextView? = null
+    private var tvAccelerometerZ: TextView? = null
 
     private var activityTrackingEnabled = false
     private var activityTransitionList = mutableListOf<ActivityTransition>()
@@ -35,6 +44,9 @@ class MainActivity : AppCompatActivity() {
     private var transitionsReceiver: MainActivity.TransitionsReceiver? = null
     private var mLogFragment: LogFragment? = null
 
+    private lateinit var sensorManager: SensorManager
+    private var mAccelerometer: Sensor? = null
+
     //
     // Lifecycle phases
     //
@@ -44,10 +56,18 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        mLogFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
+
+        initView()
+        initActivityTransitions()
+        initSensors()
+
+        printToScreen("App initialized.")
+    }
+
+    /**
+     * Initializes activity transitions
+     */
+    private fun initActivityTransitions() {
         activityTrackingEnabled = false
 
         // Add activity transitions to track
@@ -83,8 +103,28 @@ class MainActivity : AppCompatActivity() {
 
         // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs
         transitionsReceiver = TransitionsReceiver()
+    }
 
-        printToScreen("App initialized.")
+    /**
+     * Initializes view
+     */
+    private fun initView() {
+        setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        tvAccelerometerX = findViewById(R.id.tvAccelerometerX)
+        tvAccelerometerY = findViewById(R.id.tvAccelerometerY)
+        tvAccelerometerZ = findViewById(R.id.tvAccelerometerZ)
+
+        setSupportActionBar(toolbar)
+        mLogFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
+    }
+
+    /**
+     * Initializes sensory
+     */
+    private fun initSensors() {
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
 
     /**
@@ -98,6 +138,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * Handles on-resume lifecycle phase
+     */
+    override fun onResume() {
+        super.onResume()
+
+        mAccelerometer?.also { accelerometer ->
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST)
+        }
+    }
+
+    /**
      * Handles on-pause lifecycle phase
      */
     override fun onPause() {
@@ -106,6 +157,9 @@ class MainActivity : AppCompatActivity() {
         if (activityTrackingEnabled) {
             disableActivityTransitions()
         }
+
+        sensorManager.unregisterListener(this)
+
         super.onPause()
     }
 
@@ -157,6 +211,23 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(startIntent, 0)
         }
+    }
+
+    /**
+     * Handles sensor value changes
+     */
+    override fun onSensorChanged(event: SensorEvent) {
+        when (event.sensor.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                handleAccelerometerSensorEvent(event)
+            }
+        }
+    }
+
+    /**
+     * Handles sensor accuracy changes
+     */
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
     }
 
     //
@@ -219,6 +290,21 @@ class MainActivity : AppCompatActivity() {
             )
         } else {
             true
+        }
+    }
+
+    /**
+     * Handles accelerometer sensor event
+     */
+    private fun handleAccelerometerSensorEvent(event: SensorEvent?) {
+        if (event != null) {
+            tvAccelerometerX?.text = resources.getString(R.string.accelerometerX, event.values[0])
+            tvAccelerometerY?.text = resources.getString(R.string.accelerometerY, event.values[1])
+            tvAccelerometerZ?.text = resources.getString(R.string.accelerometerZ, event.values[2])
+        } else {
+            tvAccelerometerX?.text = resources.getString(R.string.defaultAccelerometerX)
+            tvAccelerometerY?.text = resources.getString(R.string.defaultAccelerometerY)
+            tvAccelerometerZ?.text = resources.getString(R.string.defaultAccelerometerZ)
         }
     }
 
