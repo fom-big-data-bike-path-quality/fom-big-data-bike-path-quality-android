@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ActivityTransitionCardFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        style="Widget.MaterialComponents.CardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:cardMaxElevation="8dp"
+        app:cardPreventCornerOverlap="true"
+
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/AppTheme.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_transition" />
+
+            <TextView
+                android:id="@+id/subTitle"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/measurements"
+                android:textColor="?android:textColorSecondary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/ivStill"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/still"
+                    android:src="@drawable/ic_baseline_emoji_people_24"
+                    app:tint="@color/grey_500" />
+
+                <ImageView
+                    android:id="@+id/ivWalking"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/walking"
+                    android:src="@drawable/ic_baseline_directions_walk_24"
+                    app:tint="@color/grey_500" />
+
+                <ImageView
+                    android:id="@+id/ivRunning"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/running"
+                    android:src="@drawable/ic_baseline_directions_run_24"
+                    app:tint="@color/grey_500" />
+
+                <ImageView
+                    android:id="@+id/ivOnBicycle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/on_bycicle"
+                    android:src="@drawable/ic_baseline_pedal_bike_24"
+                    app:tint="@color/grey_500" />
+
+                <ImageView
+                    android:id="@+id/ivInVehicle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/in_verhicle"
+                    android:src="@drawable/ic_baseline_directions_car_24"
+                    app:tint="@color/grey_500" />
+
+                <ImageView
+                    android:id="@+id/ivUnknown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/unknown"
+                    android:src="@drawable/ic_baseline_help_outline_24"
+                    app:tint="@color/grey_500" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

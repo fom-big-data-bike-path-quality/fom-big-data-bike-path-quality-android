@@ -10,6 +10,16 @@
     <string name="continue_activity_permission_rational">Continue</string>
     <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
 
+    <string name="measurements">Measurements</string>
+
+    <string name="activity_transition">Activity Transition</string>
+    <string name="still">still</string>
+    <string name="walking">walking</string>
+    <string name="running">running</string>
+    <string name="on_bycicle">on bicycle</string>
+    <string name="in_verhicle">in vehicle</string>
+    <string name="unknown">unknown</string>
+
     <string name="accelerometer">Accelerometer</string>
     <string name="accelerometerX">x: %1$.1f</string>
     <string name="accelerometerY">y: %1$.1f</string>

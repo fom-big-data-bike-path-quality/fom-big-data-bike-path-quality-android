@@ -16,11 +16,15 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
+import de.florianschwanz.bikepathquality.fragments.AccelerometerCardViewModel
+import de.florianschwanz.bikepathquality.fragments.AccelerometerDto
+import de.florianschwanz.bikepathquality.fragments.ActivityTransitionDto
+import de.florianschwanz.bikepathquality.fragments.ActivityTransitionViewModel
 import de.florianschwanz.bikepathquality.logger.LogFragment
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,10 +33,6 @@ import java.util.*
  * Main activity
  */
 class MainActivity : AppCompatActivity(), SensorEventListener {
-
-    private var tvAccelerometerX: TextView? = null
-    private var tvAccelerometerY: TextView? = null
-    private var tvAccelerometerZ: TextView? = null
 
     private var activityTrackingEnabled = false
     private var activityTransitionList = mutableListOf<ActivityTransition>()
@@ -71,18 +71,16 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         activityTrackingEnabled = false
 
         // Add activity transitions to track
-        activityTransitionList.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.ON_BICYCLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()
-        )
-        activityTransitionList.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.ON_BICYCLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build()
-        )
+        activityTransitionList.addTransition(DetectedActivity.STILL, ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+        activityTransitionList.addTransition(DetectedActivity.STILL, ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+        activityTransitionList.addTransition(DetectedActivity.WALKING, ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+        activityTransitionList.addTransition(DetectedActivity.WALKING, ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+        activityTransitionList.addTransition(DetectedActivity.RUNNING, ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+        activityTransitionList.addTransition(DetectedActivity.RUNNING, ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+        activityTransitionList.addTransition(DetectedActivity.ON_BICYCLE, ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+        activityTransitionList.addTransition(DetectedActivity.ON_BICYCLE, ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+        activityTransitionList.addTransition(DetectedActivity.IN_VEHICLE, ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+        activityTransitionList.addTransition(DetectedActivity.IN_VEHICLE, ActivityTransition.ACTIVITY_TRANSITION_EXIT)
 
         // Initialize PendingIntent that will be triggered when a activity transition occurs
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
@@ -93,15 +91,19 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         transitionsReceiver = TransitionsReceiver()
     }
 
+    fun MutableList<ActivityTransition>.addTransition(activityType: Int, acvtivityTransition: Int) = this.add(
+        ActivityTransition.Builder()
+            .setActivityType(activityType)
+            .setActivityTransition(acvtivityTransition)
+            .build()
+    )
+
     /**
      * Initializes view
      */
     private fun initView() {
         setContentView(R.layout.activity_main)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        tvAccelerometerX = findViewById(R.id.tvAccelerometerX)
-        tvAccelerometerY = findViewById(R.id.tvAccelerometerY)
-        tvAccelerometerZ = findViewById(R.id.tvAccelerometerZ)
 
         setSupportActionBar(toolbar)
         mLogFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
@@ -234,7 +236,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         // Register for Transitions Updates.
         val task = ActivityRecognition.getClient(this)
-            .requestActivityTransitionUpdates(request, activityTransitionsPendingIntent)
+            .requestActivityTransitionUpdates(request, activityTransitionsPendingIntent!!)
 
         task.addOnSuccessListener {
             activityTrackingEnabled = true
@@ -255,7 +257,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         // Stop listening for activity changes.
         ActivityRecognition.getClient(this)
-            .removeActivityTransitionUpdates(activityTransitionsPendingIntent)
+            .removeActivityTransitionUpdates(activityTransitionsPendingIntent!!)
             .addOnSuccessListener {
                 activityTrackingEnabled = false
                 printToScreen("Transitions successfully unregistered.")
@@ -285,14 +287,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
      * Handles accelerometer sensor event
      */
     private fun handleAccelerometerSensorEvent(event: SensorEvent?) {
+
+        val viewModel: AccelerometerCardViewModel by viewModels()
+
         if (event != null) {
-            tvAccelerometerX?.text = resources.getString(R.string.accelerometerX, event.values[0])
-            tvAccelerometerY?.text = resources.getString(R.string.accelerometerY, event.values[1])
-            tvAccelerometerZ?.text = resources.getString(R.string.accelerometerZ, event.values[2])
+            viewModel.data.value =
+                AccelerometerDto(event.values[0], event.values[1], event.values[2])
         } else {
-            tvAccelerometerX?.text = resources.getString(R.string.defaultAccelerometerX)
-            tvAccelerometerY?.text = resources.getString(R.string.defaultAccelerometerY)
-            tvAccelerometerZ?.text = resources.getString(R.string.defaultAccelerometerZ)
+            viewModel.data.value = AccelerometerDto(0f, 0f, 0f)
         }
     }
 
@@ -325,6 +327,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result = ActivityTransitionResult.extractResult(intent)
                 for (event in result!!.transitionEvents) {
+
+                    val viewModel: ActivityTransitionViewModel by viewModels()
+                    viewModel.data.value = ActivityTransitionDto(event.activityType, event.transitionType)
+
                     val info = "Transition: " + toActivityString(event.activityType) +
                             " (" + toTransitionType(event.transitionType) + ")" + "   " +
                             SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())

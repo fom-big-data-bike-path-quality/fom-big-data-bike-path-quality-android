@@ -31,42 +31,23 @@
         android:orientation="vertical">
 
         <fragment
+            android:id="@+id/activity_transition_card_fragment"
+            android:name="de.florianschwanz.bikepathquality.fragments.ActivityTransitionCardFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
+            android:id="@+id/accelerometer_card_fragment"
+            android:name="de.florianschwanz.bikepathquality.fragments.AccelerometerCardFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
             android:id="@+id/log_fragment"
             android:name="de.florianschwanz.bikepathquality.logger.LogFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvAccelerometer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/accelerometer"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/tvAccelerometerX"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerX" />
-
-            <TextView
-                android:id="@+id/tvAccelerometerY"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerY" />
-
-            <TextView
-                android:id="@+id/tvAccelerometerZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerZ" />
-        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -74,6 +55,7 @@
             android:layout_weight="1"
             android:onClick="onClickEnableOrDisableActivityRecognition"
             android:text="@string/enable_disable_button_activity_recognition" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
