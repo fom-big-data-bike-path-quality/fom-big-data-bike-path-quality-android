@@ -14,10 +14,6 @@ import de.florianschwanz.bikepathquality.R
  */
 class AccelerometerCardFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = AccelerometerCardFragment()
-    }
-
     private lateinit var viewModel: AccelerometerCardViewModel
 
     //

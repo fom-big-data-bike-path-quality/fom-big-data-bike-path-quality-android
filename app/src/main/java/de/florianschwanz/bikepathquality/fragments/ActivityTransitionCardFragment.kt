@@ -1,8 +1,6 @@
 package de.florianschwanz.bikepathquality.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +16,6 @@ import de.florianschwanz.bikepathquality.R
  * Activity transition card fragment
  */
 class ActivityTransitionCardFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = ActivityTransitionCardFragment()
-    }
 
     private lateinit var viewModel: ActivityTransitionViewModel
 
@@ -78,23 +72,23 @@ class ActivityTransitionCardFragment : Fragment() {
      *
      * @param color color resource
      */
-    fun ImageView.tint(color: Int) = this.setColorFilter(
+    private fun ImageView.tint(color: Int) = this.setColorFilter(
         ContextCompat.getColor(
             requireContext(),
             color
         ), android.graphics.PorterDuff.Mode.MULTIPLY
-    );
+    )
 
-    /**
-     * Retrieves color attribute
-     */
-    fun getColorAttribute(attribute: Int, context: Context = requireContext()): Int {
-        val typedValue = TypedValue()
-        val typedArray = context.getTheme().obtainStyledAttributes(typedValue.data, intArrayOf(attribute))
-        val color: Int = typedArray.getColor(0, 0)
-
-        typedArray.recycle()
-
-        return color
-    }
+//    /**
+//     * Retrieves color attribute
+//     */
+//    private fun getColorAttribute(attribute: Int, context: Context = requireContext()): Int {
+//        val typedValue = TypedValue()
+//        val typedArray = context.theme.obtainStyledAttributes(typedValue.data, intArrayOf(attribute))
+//        val color: Int = typedArray.getColor(0, 0)
+//
+//        typedArray.recycle()
+//
+//        return color
+//    }
 }

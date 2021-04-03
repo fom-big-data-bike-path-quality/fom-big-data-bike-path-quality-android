@@ -1,11 +1,10 @@
 package de.florianschwanz.bikepathquality.fragments
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import de.florianschwanz.bikepathquality.livedata.ActivityTransitionLiveData
 
-data class ActivityTransitionDto(val activityType: Int, val transitionType: Int)
+class ActivityTransitionViewModel(application: Application) : AndroidViewModel(application) {
 
-class ActivityTransitionViewModel : ViewModel() {
-
-    val data = MutableLiveData<ActivityTransitionDto>()
+    val data = ActivityTransitionLiveData(application)
 }

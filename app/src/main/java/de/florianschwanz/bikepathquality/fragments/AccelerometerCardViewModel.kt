@@ -1,11 +1,13 @@
 package de.florianschwanz.bikepathquality.fragments
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import de.florianschwanz.bikepathquality.livedata.AccelerometerLiveData
+import de.florianschwanz.bikepathquality.model.AccelerometerModel
 
-data class AccelerometerDto(val x: Float, val y: Float, val z: Float)
+class AccelerometerCardViewModel(application: Application) : AndroidViewModel(application) {
 
-class AccelerometerCardViewModel : ViewModel() {
-
-    val data = MutableLiveData<AccelerometerDto>()
+    val data = AccelerometerLiveData(application)
 }
