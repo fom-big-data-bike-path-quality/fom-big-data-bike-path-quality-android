@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
-import de.florianschwanz.bikepathquality.ActivityTransitionPermissionRationalActivity
+import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity
 import de.florianschwanz.bikepathquality.R
 
 /**

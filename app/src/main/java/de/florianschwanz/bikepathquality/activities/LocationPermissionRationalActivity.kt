@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality
+package de.florianschwanz.bikepathquality.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
+import de.florianschwanz.bikepathquality.R
 
 /**
  * Displays rationale for allowing the location permission and allows user to accept

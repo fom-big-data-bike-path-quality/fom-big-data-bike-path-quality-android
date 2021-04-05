@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import de.florianschwanz.bikepathquality.LocationPermissionRationalActivity
+import de.florianschwanz.bikepathquality.activities.LocationPermissionRationalActivity
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.utils.GpsUtils
 
