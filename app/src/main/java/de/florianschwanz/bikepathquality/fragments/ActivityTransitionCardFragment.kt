@@ -1,15 +1,21 @@
 package de.florianschwanz.bikepathquality.fragments
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
+import de.florianschwanz.bikepathquality.ActivityTransitionPermissionRationalActivity
 import de.florianschwanz.bikepathquality.R
 
 /**
@@ -18,6 +24,13 @@ import de.florianschwanz.bikepathquality.R
 class ActivityTransitionCardFragment : Fragment() {
 
     private lateinit var viewModel: ActivityTransitionViewModel
+
+    private lateinit var ivStill: ImageView
+    private lateinit var ivWalking: ImageView
+    private lateinit var ivRunning: ImageView
+    private lateinit var ivOnBicycle: ImageView
+    private lateinit var ivInVehicle: ImageView
+    private lateinit var ivUnknown: ImageView
 
     //
     // Lifecycle phases
@@ -32,40 +45,96 @@ class ActivityTransitionCardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.activity_transition_fragment, container, false)
 
-        val ivStill: ImageView = view.findViewById(R.id.ivStill)
-        val ivWalking: ImageView = view.findViewById(R.id.ivWalking)
-        val ivRunning: ImageView = view.findViewById(R.id.ivRunning)
-        val ivOnBicycle: ImageView = view.findViewById(R.id.ivOnBicycle)
-        val ivInVehicle: ImageView = view.findViewById(R.id.ivInVehicle)
-        val ivUnknown: ImageView = view.findViewById(R.id.ivUnknown)
-
-        viewModel =
-            ViewModelProvider(requireActivity()).get(ActivityTransitionViewModel::class.java)
-        viewModel.data.observe(viewLifecycleOwner, {
-
-            val color = when (it.transitionType) {
-//                ActivityTransition.ACTIVITY_TRANSITION_ENTER -> getColorAttribute(R.attr.colorSecondary)
-//                else -> getColorAttribute(R.attr.colorOnSurface)
-                ActivityTransition.ACTIVITY_TRANSITION_ENTER -> R.color.teal_700
-                else -> R.color.grey_500
-            }
-
-            when (it.activityType) {
-                DetectedActivity.STILL -> ivStill.tint(color)
-                DetectedActivity.WALKING -> ivWalking.tint(color)
-                DetectedActivity.RUNNING -> ivRunning.tint(color)
-                DetectedActivity.ON_BICYCLE -> ivOnBicycle.tint(color)
-                DetectedActivity.IN_VEHICLE -> ivInVehicle.tint(color)
-                DetectedActivity.UNKNOWN -> ivUnknown.tint(color)
-            }
-        })
+        ivStill = view.findViewById(R.id.ivStill)
+        ivWalking = view.findViewById(R.id.ivWalking)
+        ivRunning = view.findViewById(R.id.ivRunning)
+        ivOnBicycle = view.findViewById(R.id.ivOnBicycle)
+        ivInVehicle = view.findViewById(R.id.ivInVehicle)
+        ivUnknown = view.findViewById(R.id.ivUnknown)
 
         return view
+    }
+
+    /**
+     * Handles on-start lifecycle phase
+     */
+    override fun onStart() {
+        super.onStart()
+        invokeActivityTransitionAction()
     }
 
     //
     // Helpers
     //
+
+    /**
+     * Invokes activity transaction action
+     */
+    private fun invokeActivityTransitionAction() {
+        when {
+            isPermissionsGranted() -> {
+                viewModel =
+                    ViewModelProvider(requireActivity()).get(ActivityTransitionViewModel::class.java)
+                viewModel.data.observe(viewLifecycleOwner, {
+
+                    val color = when (it.transitionType) {
+//                ActivityTransition.ACTIVITY_TRANSITION_ENTER -> getColorAttribute(R.attr.colorSecondary)
+//                else -> getColorAttribute(R.attr.colorOnSurface)
+                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> R.color.teal_700
+                        else -> R.color.grey_500
+                    }
+
+                    when (it.activityType) {
+                        DetectedActivity.STILL -> ivStill.tint(color)
+                        DetectedActivity.WALKING -> ivWalking.tint(color)
+                        DetectedActivity.RUNNING -> ivRunning.tint(color)
+                        DetectedActivity.ON_BICYCLE -> ivOnBicycle.tint(color)
+                        DetectedActivity.IN_VEHICLE -> ivInVehicle.tint(color)
+                        DetectedActivity.UNKNOWN -> ivUnknown.tint(color)
+                    }
+                })
+            }
+
+            else -> activity?.let {
+                requestPermission()
+            }
+        }
+    }
+
+    /**
+     * Checks if permissions are granted
+     */
+    private fun isPermissionsGranted() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            isGranted(Manifest.permission.ACTIVITY_RECOGNITION)
+        } else {
+            true
+        }
+
+    /**
+     * Determines if a given permission is granted
+     */
+    private fun isGranted(permission: String) =
+        ActivityCompat.checkSelfPermission(
+            requireContext(),
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+
+    /**
+     * Requests permission for activity recognition
+     */
+    private fun requestPermission() {
+
+        // Enable/Disable activity tracking and ask for permissions if needed
+        if (!isPermissionsGranted()) {
+            // Request permission and start activity for result
+            val startIntent =
+                Intent(requireActivity(), ActivityTransitionPermissionRationalActivity::class.java)
+
+            @Suppress("DEPRECATION")
+            startActivityForResult(startIntent, 0)
+        }
+    }
 
     /**
      * Tints a image view in a given color

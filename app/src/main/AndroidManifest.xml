@@ -4,6 +4,8 @@
 
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -13,8 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality">
         <activity
-            android:name=".PermissionRationalActivity"
+            android:name=".ActivityTransitionPermissionRationalActivity"
             android:label="@string/title_activity_permission_rational"
+            android:theme="@style/Theme.BikePathQuality.NoActionBar" />
+
+        <activity
+            android:name=".LocationPermissionRationalActivity"
+            android:label="@string/title_location_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
 
         <activity

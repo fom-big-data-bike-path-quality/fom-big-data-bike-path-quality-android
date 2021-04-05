@@ -50,26 +50,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     //
-    // Actions
-    //
-
-    /**
-     * Handles click on activity recognition button
-     */
-    private fun requestPermissionActivityRecognition() {
-
-        // Enable/Disable activity tracking and ask for permissions if needed
-        if (!activityRecognitionPermissionApproved()) {
-            // Request permission and start activity for result. If the permission is approved, we
-            // want to make sure we start activity recognition tracking
-            val startIntent = Intent(this, PermissionRationalActivity::class.java)
-
-            @Suppress("DEPRECATION")
-            startActivityForResult(startIntent, 0)
-        }
-    }
-
-    //
     // Helpers
     //
 

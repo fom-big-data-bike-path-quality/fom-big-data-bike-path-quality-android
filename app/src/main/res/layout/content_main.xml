@@ -43,6 +43,12 @@
             android:layout_height="wrap_content" />
 
         <fragment
+            android:id="@+id/location_card_fragment"
+            android:name="de.florianschwanz.bikepathquality.fragments.LocationCardFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
             android:id="@+id/log_fragment"
             android:name="de.florianschwanz.bikepathquality.logger.LogFragment"
             android:layout_width="match_parent"

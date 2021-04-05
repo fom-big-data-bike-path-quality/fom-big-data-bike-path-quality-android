@@ -20,12 +20,12 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4c9699"
+    android:background="?attr/colorSecondary"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".PermissionRationalActivity">
+    tools:context=".ActivityTransitionPermissionRationalActivity">
 
     <Button
         android:id="@+id/deny_permission_request"
@@ -37,7 +37,7 @@
         android:onClick="onClickDenyPermissionRequest"
         android:stateListAnimator="@null"
         android:text="@string/no_thanks_activity_permission_rational"
-        android:textColor="#ffffff"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -52,7 +52,7 @@
         android:onClick="onClickApprovePermissionRequest"
         android:stateListAnimator="@null"
         android:text="@string/continue_activity_permission_rational"
-        android:textColor="#ffffff"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +66,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/main_message_activity_permission_rational"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ffffff"
+        android:textColor="?attr/colorOnSecondary"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:text="@string/details_message_activity_permission_rational"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ffffff"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintBottom_toTopOf="@+id/deny_permission_request"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -10,14 +10,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
-import java.util.*
 
 /**
  * Displays rationale for allowing the activity recognition permission and allows user to accept
- * the permission. After permission is accepted, finishes the activity so main activity can
- * show transitions.
+ * the permission
  */
-class PermissionRationalActivity : AppCompatActivity(), OnRequestPermissionsResultCallback {
+class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
+    OnRequestPermissionsResultCallback {
 
     //
     // Lifecycle phases
@@ -30,13 +29,17 @@ class PermissionRationalActivity : AppCompatActivity(), OnRequestPermissionsResu
         super.onCreate(savedInstanceState)
 
         // If permissions granted, we start the main activity (shut this activity down)
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (isGranted(Manifest.permission.ACTIVITY_RECOGNITION)) {
             finish()
         }
-        setContentView(R.layout.activity_permission_rational)
+        setContentView(R.layout.activity_transition_permission_rational)
     }
+
+    /**
+     * Determines if a given permission is granted
+     */
+    private fun isGranted(permission: String) =
+        ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
     /**
      * Callback received when a permissions request has been completed
@@ -45,8 +48,8 @@ class PermissionRationalActivity : AppCompatActivity(), OnRequestPermissionsResu
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val permissionResult = "Request code: " + requestCode + ", Permissions: " +
-                Arrays.toString(permissions) + ", Results: " + Arrays.toString(grantResults)
+        val permissionResult =
+            "Request code: ${requestCode}, Permissions: ${permissions.contentToString()}, Results: ${grantResults.contentToString()}"
         Log.d(TAG, "onRequestPermissionsResult(): $permissionResult")
         if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
             // Close activity regardless of user's decision (decision picked up in main activity).
