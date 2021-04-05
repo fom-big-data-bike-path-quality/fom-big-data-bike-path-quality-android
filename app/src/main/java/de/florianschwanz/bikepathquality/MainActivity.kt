@@ -1,34 +1,16 @@
 package de.florianschwanz.bikepathquality
 
-import android.Manifest
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
-import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.*
-import de.florianschwanz.bikepathquality.fragments.ActivityTransitionViewModel
-import de.florianschwanz.bikepathquality.logger.LogFragment
-import de.florianschwanz.bikepathquality.model.ActivityTransitionModel
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
  * Main activity
  */
 class MainActivity : AppCompatActivity() {
-
-    private var mLogFragment: LogFragment? = null
 
     //
     // Lifecycle phases
@@ -39,44 +21,21 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-        setSupportActionBar(toolbar)
-        mLogFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-        printToScreen("App initialized.")
-    }
-
-    //
-    // Helpers
-    //
-
-    /**
-     * On devices Android 10 and beyond (29+), you need to ask for the ACTIVITY_RECOGNITION via the
-     * run-time permissions.
-     */
-    private fun activityRecognitionPermissionApproved(): Boolean {
-
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACTIVITY_RECOGNITION
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_sensors,
+                R.id.navigation_log
             )
-        } else {
-            true
-        }
-    }
+        )
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-    /**
-     * Prints message to screen
-     */
-    private fun printToScreen(message: String) {
-        mLogFragment?.logView?.println(message)
-        Log.d(TAG, message)
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
+//        setSupportActionBar(toolbar)
     }
 }

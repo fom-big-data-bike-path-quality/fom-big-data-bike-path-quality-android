@@ -15,6 +15,9 @@
     <string name="continue_activity_permission_rational">Continue</string>
     <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
 
+    <string name="title_sensors">Sensors</string>
+    <string name="title_log">Log</string>
+
     <string name="measurements">Measurements</string>
 
     <string name="activity_transition">Activity Transition</string>
