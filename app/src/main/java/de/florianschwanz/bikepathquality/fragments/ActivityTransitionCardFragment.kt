@@ -12,11 +12,16 @@ import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
-import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity
+import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity
+import de.florianschwanz.bikepathquality.storage.LogEntry
+import de.florianschwanz.bikepathquality.storage.LogEntryViewModel
+import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
 
 /**
  * Activity transition card fragment
@@ -24,6 +29,9 @@ import de.florianschwanz.bikepathquality.R
 class ActivityTransitionCardFragment : Fragment() {
 
     private lateinit var viewModel: ActivityTransitionViewModel
+    private val logEntryViewModel: LogEntryViewModel by viewModels {
+        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).repository)
+    }
 
     private lateinit var ivStill: ImageView
     private lateinit var ivWalking: ImageView

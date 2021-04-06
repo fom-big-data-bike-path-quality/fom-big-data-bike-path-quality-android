@@ -69,8 +69,8 @@ class LocationCardFragment : Fragment() {
         super.onAttach(context)
 
         GpsUtils(context).turnGPSOn(object : GpsUtils.OnGpsListener {
-            override fun gpsStatus(isGPSEnabled: Boolean) {
-                this@LocationCardFragment.isGPSEnabled = isGPSEnabled
+            override fun gpsStatus(isGPSEnable: Boolean) {
+                this@LocationCardFragment.isGPSEnabled = isGPSEnable
             }
         })
     }
@@ -140,11 +140,6 @@ class LocationCardFragment : Fragment() {
     }
 
     companion object {
-
-        /** ID to identify location requests */
-        val LOCATION_REQUEST = 100
-
-        /** ID to identify GPS requests */
-        val GPS_REQUEST = 101
+        const val GPS_REQUEST = 101
     }
 }

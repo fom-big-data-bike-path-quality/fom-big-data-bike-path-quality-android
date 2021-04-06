@@ -13,14 +13,14 @@ interface LogEntryDao {
     fun getAll(): Flow<List<LogEntry>>
 
     @Insert
-    fun insert(logEntry: LogEntry)
+    suspend fun insert(logEntry: LogEntry)
 
     @Insert
-    fun insertAll(vararg logEntries: LogEntry)
+    suspend fun insertAll(vararg logEntries: LogEntry)
 
     @Delete
-    fun delete(logEntry: LogEntry)
+    suspend fun delete(logEntry: LogEntry)
 
     @Query("DELETE FROM logentry")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

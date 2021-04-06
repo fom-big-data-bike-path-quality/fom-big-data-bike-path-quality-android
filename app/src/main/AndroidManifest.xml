@@ -4,23 +4,24 @@
 
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".BikePathQualityApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BikePathQuality">
+        android:theme="@style/Theme.BikePathQuality.NoActionBar">
         <activity
-            android:name=".activities.ActivityTransitionPermissionRationalActivity"
+            android:name="de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity"
             android:label="@string/title_activity_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
 
         <activity
-            android:name=".activities.LocationPermissionRationalActivity"
+            android:name="de.florianschwanz.bikepathquality.activities.LocationPermissionRationalActivity"
             android:label="@string/title_location_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
 

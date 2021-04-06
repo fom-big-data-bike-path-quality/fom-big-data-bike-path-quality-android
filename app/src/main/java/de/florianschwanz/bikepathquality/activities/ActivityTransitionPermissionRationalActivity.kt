@@ -84,8 +84,6 @@ class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
 
     companion object {
         private const val TAG = "PermissionRationalActivity"
-
-        /* Id to identify Activity Recognition permission request */
         private const val PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45
     }
 }

@@ -71,7 +71,7 @@ class AccelerometerLiveData(context: Context) :
                 // where t is the low-pass filter's time-constant and
                 // dT is the event delivery rate.
 
-                val alpha: Float = 0.8f
+                val alpha = 0.8f
 
                 // Isolate the force of gravity with the low-pass filter.
                 gravity.x = alpha * gravity.x + (1 - alpha) * event.values[0]

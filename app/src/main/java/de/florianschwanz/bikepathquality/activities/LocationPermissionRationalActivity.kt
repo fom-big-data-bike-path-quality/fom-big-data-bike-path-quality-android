@@ -86,8 +86,6 @@ class LocationPermissionRationalActivity : AppCompatActivity(), OnRequestPermiss
 
     companion object {
         private const val TAG = "LocationPermissionRationalActivity"
-
-        /* Id to identify Activity Recognition permission request */
         private const val PERMISSION_REQUEST_LOCATION = 46
     }
 }
