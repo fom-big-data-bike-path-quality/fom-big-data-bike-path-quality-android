@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +39,7 @@ class LogFragment : Fragment() {
         toolbar.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.action_clear -> {
-                    println("foo")
+                    viewModel.deleteAll()
                 }
                 else -> {}
             }
@@ -54,12 +54,5 @@ class LogFragment : Fragment() {
         })
 
         return view
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id: Int = item.getItemId()
-        return if (id == R.id.action_clear) {
-            true
-        } else super.onOptionsItemSelected(item)
     }
 }

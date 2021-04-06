@@ -7,9 +7,13 @@ class LogEntryRepository(private val logEntryDao: LogEntryDao) {
 
     val logEntries: Flow<List<LogEntry>> = logEntryDao.getAll()
 
-    @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(logEntry: LogEntry) {
         logEntryDao.insert(logEntry)
+    }
+
+    @WorkerThread
+    suspend fun deleteAll() {
+        logEntryDao.deleteAll()
     }
 }

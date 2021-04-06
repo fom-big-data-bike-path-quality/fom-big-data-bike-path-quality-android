@@ -20,6 +20,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.BikePathQuality.ActionBar">
+        <item name="background">@color/transparent</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+    </style>
+
     <style name="Theme.BikePathQuality.Background">
         <item name="android:background">@drawable/main_header_selector</item>
     </style>

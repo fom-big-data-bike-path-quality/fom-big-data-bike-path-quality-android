@@ -7,11 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="de.florianschwanz.bikepathquality.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="de.florianschwanz.bikepathquality.MainActivity">
 
     <LinearLayout
-        android:id="@+id/sample_main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -20,30 +18,23 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/activity_transition_card_fragment"
             android:name="de.florianschwanz.bikepathquality.fragments.ActivityTransitionCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/accelerometer_card_fragment"
             android:name="de.florianschwanz.bikepathquality.fragments.AccelerometerCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/location_card_fragment"
             android:name="de.florianschwanz.bikepathquality.fragments.LocationCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/log_fragment"
-            android:name="de.florianschwanz.bikepathquality.logger.LogFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4" />
 
     </LinearLayout>
 

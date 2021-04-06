@@ -10,4 +10,8 @@ class LogEntryViewModel(private val repository: LogEntryRepository) : ViewModel(
     fun insert(logEntry: LogEntry) = viewModelScope.launch {
         repository.insert(logEntry)
     }
+
+    fun deleteAll() = viewModelScope.launch {
+        repository.deleteAll()
+    }
 }
