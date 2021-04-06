@@ -85,12 +85,22 @@ class ActivityTransitionCardFragment : Fragment() {
                     ViewModelProvider(requireActivity()).get(ActivityTransitionViewModel::class.java)
                 viewModel.data.observe(viewLifecycleOwner, {
 
+                    val activeColor = R.color.teal_700
+                    val inactiveColor = R.color.grey_500
+
                     val color = when (it.transitionType) {
 //                ActivityTransition.ACTIVITY_TRANSITION_ENTER -> getColorAttribute(R.attr.colorSecondary)
 //                else -> getColorAttribute(R.attr.colorOnSurface)
-                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> R.color.teal_700
-                        else -> R.color.grey_500
+                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> activeColor
+                        else -> inactiveColor
                     }
+
+                    ivStill.tint(inactiveColor)
+                    ivWalking.tint(inactiveColor)
+                    ivRunning.tint(inactiveColor)
+                    ivOnBicycle.tint(inactiveColor)
+                    ivInVehicle.tint(inactiveColor)
+                    ivUnknown.tint(inactiveColor)
 
                     when (it.activityType) {
                         DetectedActivity.STILL -> ivStill.tint(color)
