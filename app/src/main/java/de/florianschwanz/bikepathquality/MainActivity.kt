@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var activityTransitionViewModel: ActivityTransitionViewModel
     private val logEntryViewModel: LogEntryViewModel by viewModels {
-        LogEntryViewModelFactory((this.application as BikePathQualityApplication).repository)
+        LogEntryViewModelFactory((this.application as BikePathQualityApplication).logEntryRepository)
     }
 
     //

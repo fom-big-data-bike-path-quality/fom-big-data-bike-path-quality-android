@@ -19,7 +19,6 @@ import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity
-import de.florianschwanz.bikepathquality.storage.LogEntry
 import de.florianschwanz.bikepathquality.storage.LogEntryViewModel
 import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
 
@@ -30,7 +29,7 @@ class ActivityTransitionCardFragment : Fragment() {
 
     private lateinit var viewModel: ActivityTransitionViewModel
     private val logEntryViewModel: LogEntryViewModel by viewModels {
-        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).repository)
+        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
     }
 
     private lateinit var ivStill: ImageView

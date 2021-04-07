@@ -6,6 +6,12 @@
     app:startDestination="@+id/navigation_sensors">
 
     <fragment
+        android:id="@+id/navigation_activities"
+        android:name="de.florianschwanz.bikepathquality.fragments.ActivitiesFragment"
+        android:label="@string/title_activities"
+        tools:layout="@layout/activities_fragment" />
+
+    <fragment
         android:id="@+id/navigation_sensors"
         android:name="de.florianschwanz.bikepathquality.fragments.SensorsFragment"
         android:label="@string/title_sensors"

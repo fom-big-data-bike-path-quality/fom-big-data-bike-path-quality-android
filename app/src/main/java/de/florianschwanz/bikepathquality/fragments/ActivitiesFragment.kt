@@ -11,15 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModel
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
-import de.florianschwanz.bikepathquality.ui.LogEntryListAdapter
+import de.florianschwanz.bikepathquality.storage.BikeActivityViewModel
+import de.florianschwanz.bikepathquality.storage.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.ui.BikeActivityListAdapter
 
+class ActivitiesFragment : Fragment() {
 
-class LogFragment : Fragment() {
-
-    private val viewModel: LogEntryViewModel by viewModels {
-        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
+    private val viewModel: BikeActivityViewModel by viewModels {
+        BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivitiesRepository)
     }
 
     override fun onCreateView(
@@ -28,20 +27,19 @@ class LogFragment : Fragment() {
     ): View? {
         setHasOptionsMenu(true);
 
-        val view = inflater.inflate(R.layout.log_fragment, container, false)
+        val view = inflater.inflate(R.layout.activities_fragment, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rvLog)
-        val adapter = LogEntryListAdapter()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rvActivities)
+        val adapter = BikeActivityListAdapter(context)
 
-        toolbar.inflateMenu(R.menu.menu_log_fragment)
+        toolbar.inflateMenu(R.menu.menu_activities_fragment)
         toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
+            when(it.itemId) {
                 R.id.action_clear -> {
                     viewModel.deleteAll()
                 }
-                else -> {
-                }
+                else -> {}
             }
 
             false
@@ -49,7 +47,7 @@ class LogFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModel.allLogEntries.observe(viewLifecycleOwner, {
+        viewModel.allBikeActivities.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
 

@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/navigation_activities"
+        android:icon="@drawable/ic_baseline_pedal_bike_24"
+        android:title="@string/title_activities" />
+
+    <item
         android:id="@+id/navigation_sensors"
         android:icon="@drawable/ic_baseline_sensors_24"
         android:title="@string/title_sensors" />
