@@ -8,9 +8,9 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Entity
-data class LogEntry(
+data class BikeActivity(
 
     @PrimaryKey val uid: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "timestamp") val timestamp: Instant = Instant.now(),
-    @ColumnInfo(name = "message") val message: String?
+    @ColumnInfo(name = "start_time") val startTime: Instant = Instant.now(),
+    @ColumnInfo(name = "end_time") val endTime: Instant? = null
 )

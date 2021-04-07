@@ -1,6 +1,7 @@
 package de.florianschwanz.bikepathquality.storage
 
 import androidx.room.TypeConverter
+import java.time.Instant
 import java.util.*
 
 
@@ -18,4 +19,10 @@ class Converters {
     @TypeConverter
     fun datestampToCalendar(value: Long): Calendar =
         Calendar.getInstance().apply { timeInMillis = value }
+
+    @TypeConverter
+    fun instantToDatestamp(instant: Instant?): Long? = instant?.toEpochMilli()
+
+    @TypeConverter
+    fun datestampToInstant(value: Long?): Instant? = value?.let { Instant.ofEpochMilli(it) }
 }

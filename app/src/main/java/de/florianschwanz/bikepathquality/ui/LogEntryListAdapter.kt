@@ -31,7 +31,7 @@ class LogEntryListAdapter :
         var sdf: SimpleDateFormat = SimpleDateFormat("yyyy MMM dd HH:mm:ss", Locale.ENGLISH)
 
         fun bind(item: LogEntry) {
-            tvTimestamp.text = sdf.format(item.timestamp.time)
+            tvTimestamp.text = sdf.format(Date.from(item.timestamp))
             tvMessage.text = item.message
         }
 

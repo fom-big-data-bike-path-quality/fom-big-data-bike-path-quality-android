@@ -6,11 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [LogEntry::class], version = 1)
+@Database(entities = [LogEntry::class, BikeActivity::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun logEntryDao(): LogEntryDao
+    abstract fun bikeActivityDao(): BikeActivityDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
