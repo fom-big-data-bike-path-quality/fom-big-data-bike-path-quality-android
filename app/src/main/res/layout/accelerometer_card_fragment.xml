@@ -44,19 +44,19 @@
                 android:id="@+id/tvAccelerometerX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerX" />
+                android:text="@string/default_accelerometer_x" />
 
             <TextView
                 android:id="@+id/tvAccelerometerY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerY" />
+                android:text="@string/default_accelerometer_y" />
 
             <TextView
                 android:id="@+id/tvAccelerometerZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defaultAccelerometerZ" />
+                android:text="@string/default_accelerometer_z" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

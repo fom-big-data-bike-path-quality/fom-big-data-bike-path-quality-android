@@ -35,9 +35,9 @@ class AccelerometerCardFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(AccelerometerCardViewModel::class.java)
         viewModel.data.observe(viewLifecycleOwner, {
-            tvAccelerometerX.text = resources.getString(R.string.accelerometerX, it.x)
-            tvAccelerometerY.text = resources.getString(R.string.accelerometerY, it.y)
-            tvAccelerometerZ.text = resources.getString(R.string.accelerometerZ, it.z)
+            tvAccelerometerX.text = resources.getString(R.string.accelerometer_x, it.x)
+            tvAccelerometerY.text = resources.getString(R.string.accelerometer_y, it.y)
+            tvAccelerometerZ.text = resources.getString(R.string.accelerometer_z, it.z)
         })
 
         return view

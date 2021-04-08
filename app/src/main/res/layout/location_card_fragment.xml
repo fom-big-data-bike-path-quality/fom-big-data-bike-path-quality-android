@@ -44,13 +44,13 @@
                 android:id="@+id/tvLon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defaultLon" />
+                android:text="@string/default_lon" />
 
             <TextView
                 android:id="@+id/tvLat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/defaultLat" />
+                android:text="@string/default_lat" />
 
         </LinearLayout>
 

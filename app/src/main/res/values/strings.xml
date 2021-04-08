@@ -32,18 +32,18 @@
     <string name="unknown">unknown</string>
 
     <string name="accelerometer">Accelerometer</string>
-    <string name="accelerometerX">x: %1$.1f</string>
-    <string name="accelerometerY">y: %1$.1f</string>
-    <string name="accelerometerZ">z: %1$.1f</string>
-    <string name="defaultAccelerometerX">x: -</string>
-    <string name="defaultAccelerometerY">y: -</string>
-    <string name="defaultAccelerometerZ">z: -</string>
+    <string name="accelerometer_x">x: %1$.1f</string>
+    <string name="accelerometer_y">y: %1$.1f</string>
+    <string name="accelerometer_z">z: %1$.1f</string>
+    <string name="default_accelerometer_x">x: -</string>
+    <string name="default_accelerometer_y">y: -</string>
+    <string name="default_accelerometer_z">z: -</string>
 
     <string name="location">Location</string>
     <string name="lon">lon: %1$.3f</string>
     <string name="lat">lat: %1$.3f</string>
-    <string name="defaultLon">lon: -</string>
-    <string name="defaultLat">lat: -</string>
+    <string name="default_lon">lon: -</string>
+    <string name="default_lat">lat: -</string>
 
     <string name="bike_activity">Bike Activity</string>
     <string name="default_start_time">10:42</string>
@@ -52,6 +52,5 @@
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>
     </plurals>
-
-    <string name="defaultDuration">not yet completed</string>
+    <string name="default_duration">not yet completed</string>
 </resources>
