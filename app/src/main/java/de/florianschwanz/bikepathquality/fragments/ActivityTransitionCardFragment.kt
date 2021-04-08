@@ -28,9 +28,6 @@ import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
 class ActivityTransitionCardFragment : Fragment() {
 
     private lateinit var viewModel: ActivityTransitionViewModel
-    private val logEntryViewModel: LogEntryViewModel by viewModels {
-        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
-    }
 
     private lateinit var ivStill: ImageView
     private lateinit var ivWalking: ImageView

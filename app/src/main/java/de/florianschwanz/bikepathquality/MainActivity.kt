@@ -10,9 +10,8 @@ import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import de.florianschwanz.bikepathquality.fragments.ActivityTransitionViewModel
-import de.florianschwanz.bikepathquality.storage.LogEntry
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModel
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.storage.*
+import java.time.Instant
 
 /**
  * Main activity
@@ -23,6 +22,12 @@ class MainActivity : AppCompatActivity() {
     private val logEntryViewModel: LogEntryViewModel by viewModels {
         LogEntryViewModelFactory((this.application as BikePathQualityApplication).logEntryRepository)
     }
+    private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
+        BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
+    }
+
+    // Currently performed biking activity
+    private var activeActivity: BikeActivity? = null
 
     //
     // Lifecycle phases
@@ -40,19 +45,54 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
+        handleActiveBikeActivity()
+        handleActivityTransitions()
+    }
+
+    /**
+     * Retrieves most recent unfinished bike activity from the database
+     */
+    private fun handleActiveBikeActivity() {
+        bikeActivityViewModel.allActiveBikeActivities.observe(this, {
+            it.takeIf { it.isNotEmpty() }?.let { bikeActivities ->
+                activeActivity = bikeActivities.first()
+            }
+        })
+    }
+
+    /**
+     * Listens to activity transitions related to bicycle and if necessary
+     * <li>creates a new bike activity
+     * <li>finished an active bike activity
+     */
+    private fun handleActivityTransitions() {
         activityTransitionViewModel =
             ViewModelProvider(this).get(ActivityTransitionViewModel::class.java)
         activityTransitionViewModel.data.observeForever {
             log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
-        }
 
-        log("Initialize app")
+            if (it.activityType == DetectedActivity.ON_BICYCLE) {
+                when (it.transitionType) {
+                    ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
+                        // Create new bike activity if there no ongoing one
+                        if (activeActivity == null) {
+                            bikeActivityViewModel.insert(BikeActivity())
+                        }
+                    }
+                    ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
+                        // Finish active bike activity if there is one
+                        activeActivity?.let { bikeActivity ->
+                            bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun log(message: String) {
         logEntryViewModel.insert(LogEntry(message = message))
     }
-
 
     companion object {
 

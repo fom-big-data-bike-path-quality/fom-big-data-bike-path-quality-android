@@ -48,6 +48,10 @@
     <string name="bike_activity">Bike Activity</string>
     <string name="default_start_time">10:42</string>
     <string name="bike">Bike</string>
-    <string name="duration">%1$d min</string>
+    <plurals name="duration">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
     <string name="defaultDuration">not yet completed</string>
 </resources>
