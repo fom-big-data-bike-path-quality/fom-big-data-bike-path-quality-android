@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AccelerometerCardFragment">
@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:padding="10dp"
         app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
@@ -19,18 +18,20 @@
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <TextView
                 android:id="@+id/title"
                 style="@style/AppTheme.Headline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/accelerometer" />
+                android:text="@string/accelerometer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/subTitle"
@@ -38,26 +39,95 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/measurements"
-                android:textColor="?android:textColorSecondary" />
+                android:textColor="?android:textColorSecondary"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <!-- X -->
+
+            <TextView
+                android:id="@+id/tvLabelX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="24dp"
+                android:text="@string/label_accelerometer_x"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/subTitle" />
+
+            <TextView
+                android:id="@+id/tvMinusX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="8dp"
+                android:text="@string/label_minus"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@+id/tvLabelX"
+                app:layout_constraintTop_toBottomOf="@+id/subTitle" />
 
             <TextView
                 android:id="@+id/tvAccelerometerX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_accelerometer_x" />
+                app:layout_constraintStart_toEndOf="@+id/tvMinusX"
+                app:layout_constraintTop_toBottomOf="@+id/subTitle" />
+
+            <!-- Y -->
+
+            <TextView
+                android:id="@+id/tvLabelY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="24dp"
+                android:text="@string/label_accelerometer_y"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelX" />
+
+            <TextView
+                android:id="@+id/tvMinusY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="8dp"
+                android:text="@string/label_minus"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@+id/tvLabelY"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelX" />
 
             <TextView
                 android:id="@+id/tvAccelerometerY"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_accelerometer_y" />
+                app:layout_constraintStart_toEndOf="@+id/tvMinusY"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelX" />
+
+            <!-- Z -->
+
+            <TextView
+                android:id="@+id/tvLabelZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="24dp"
+                android:text="@string/label_accelerometer_z"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelY" />
+
+            <TextView
+                android:id="@+id/tvMinusZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="8dp"
+                android:text="@string/label_minus"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@+id/tvLabelZ"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelY" />
 
             <TextView
                 android:id="@+id/tvAccelerometerZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_accelerometer_z" />
-        </LinearLayout>
+                app:layout_constraintStart_toEndOf="@+id/tvMinusZ"
+                app:layout_constraintTop_toBottomOf="@+id/tvLabelY" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
