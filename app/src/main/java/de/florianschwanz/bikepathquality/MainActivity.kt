@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         bikeActivityViewModel.allActiveBikeActivities.observe(this, {
             it.takeIf { it.isNotEmpty() }?.let { bikeActivities ->
                 activeActivity = bikeActivities.first()
+                log("new active activity ${activeActivity?.uid.toString().substring(0, 17)}...")
             }
         })
     }
@@ -69,20 +70,24 @@ class MainActivity : AppCompatActivity() {
         activityTransitionViewModel =
             ViewModelProvider(this).get(ActivityTransitionViewModel::class.java)
         activityTransitionViewModel.data.observeForever {
-            log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
 
             if (it.activityType == DetectedActivity.ON_BICYCLE) {
+
+                log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
+
                 when (it.transitionType) {
                     ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
                         // Create new bike activity if there no ongoing one
                         if (activeActivity == null) {
-                            bikeActivityViewModel.insert(BikeActivity())
+                            activeActivity = BikeActivity()
+                            bikeActivityViewModel.insert(activeActivity!!)
                         }
                     }
                     ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
                         // Finish active bike activity if there is one
                         activeActivity?.let { bikeActivity ->
                             bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
+                            activeActivity = null
                         }
                     }
                 }
@@ -90,6 +95,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Logs message
+     */
     private fun log(message: String) {
         logEntryViewModel.insert(LogEntry(message = message))
     }
