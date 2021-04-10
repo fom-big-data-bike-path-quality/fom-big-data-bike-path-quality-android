@@ -56,4 +56,5 @@
         <item quantity="other">%d mins</item>
     </plurals>
     <string name="default_duration">not yet completed</string>
+    <string name="ongoing">oingoing</string>
 </resources>

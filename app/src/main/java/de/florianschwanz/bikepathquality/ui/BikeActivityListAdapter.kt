@@ -4,6 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
+
 
 class BikeActivityListAdapter(val context: Context?) :
     ListAdapter<BikeActivity, BikeActivityListAdapter.BikeActivityViewHolder>(BikeActivityComparator()) {
@@ -30,6 +35,7 @@ class BikeActivityListAdapter(val context: Context?) :
     class BikeActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
+        private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
 
         var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
@@ -37,11 +43,21 @@ class BikeActivityListAdapter(val context: Context?) :
 
         fun bind(item: BikeActivity, context: Context?) {
 
-            item.endTime?.run {
+            if (item.endTime != null) {
+                ivOngoing.visibility = View.INVISIBLE
+
                 val diff = item.endTime.toEpochMilli() - item.startTime.toEpochMilli()
                 val duration = (diff / 1000 / 60).toInt()
                 tvDuration.text =
                     context?.resources?.getQuantityString(R.plurals.duration, duration, duration)
+            } else {
+                val animation: Animation = AlphaAnimation(1f, 0f)
+                animation.duration = 1000
+                animation.interpolator = LinearInterpolator()
+                animation.repeatCount = Animation.INFINITE
+                animation.repeatMode = Animation.REVERSE
+                ivOngoing.visibility = View.VISIBLE
+                ivOngoing.startAnimation(animation)
             }
 
             tvStartTime.text =
