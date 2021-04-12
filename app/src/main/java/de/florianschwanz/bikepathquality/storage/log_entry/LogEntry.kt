@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.storage
+package de.florianschwanz.bikepathquality.storage.log_entry
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

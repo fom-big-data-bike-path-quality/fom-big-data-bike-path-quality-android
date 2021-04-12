@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModel
-import de.florianschwanz.bikepathquality.storage.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModel
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModelFactory
 import de.florianschwanz.bikepathquality.ui.LogEntryListAdapter
 
 

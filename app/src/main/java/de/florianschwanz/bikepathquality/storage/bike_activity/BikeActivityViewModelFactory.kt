@@ -1,15 +1,15 @@
-package de.florianschwanz.bikepathquality.storage
+package de.florianschwanz.bikepathquality.storage.bike_activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class LogEntryViewModelFactory(private val repository: LogEntryRepository) :
+class BikeActivityViewModelFactory(private val repository: BikeActivityRepository) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LogEntryViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(BikeActivityViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogEntryViewModel(repository) as T
+            return BikeActivityViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

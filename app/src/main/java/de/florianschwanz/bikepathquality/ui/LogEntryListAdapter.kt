@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.storage.LogEntry
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntry
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -30,13 +30,14 @@ class LogEntryListAdapter :
         private val tvTimestamp: TextView = itemView.findViewById(R.id.tvTimestamp)
         private val tvMessage: TextView = itemView.findViewById(R.id.tvMessage)
 
-        var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
-        var sdf: SimpleDateFormat = SimpleDateFormat("yyyy MMM dd HH:mm:ss", Locale.ENGLISH)
+        private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
+        private var sdf: SimpleDateFormat = SimpleDateFormat("yyyy MMM dd HH:mm:ss", Locale.ENGLISH)
 
         fun bind(item: LogEntry) {
-            tvTimestamp.text = if (item.timestamp.isToday()) sdfShort.format(Date.from(item.timestamp)) else sdf.format(
-                Date.from(item.timestamp)
-            )
+            tvTimestamp.text =
+                if (item.timestamp.isToday()) sdfShort.format(Date.from(item.timestamp)) else sdf.format(
+                    Date.from(item.timestamp)
+                )
             tvMessage.text = item.message
         }
 

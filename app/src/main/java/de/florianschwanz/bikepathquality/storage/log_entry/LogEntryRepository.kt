@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.storage
+package de.florianschwanz.bikepathquality.storage.log_entry
 
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow

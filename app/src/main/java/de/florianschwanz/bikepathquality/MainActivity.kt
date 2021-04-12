@@ -10,7 +10,10 @@ import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import de.florianschwanz.bikepathquality.fragments.ActivityTransitionViewModel
-import de.florianschwanz.bikepathquality.storage.*
+import de.florianschwanz.bikepathquality.storage.bike_activity.*
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntry
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModel
+import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModelFactory
 import java.time.Instant
 
 /**

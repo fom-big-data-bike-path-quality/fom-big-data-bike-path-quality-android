@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.storage.BikeActivityViewModel
-import de.florianschwanz.bikepathquality.storage.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.storage.bike_activity.BikeActivityViewModel
+import de.florianschwanz.bikepathquality.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.ui.BikeActivityListAdapter
 
 class ActivitiesFragment : Fragment() {
@@ -35,11 +35,12 @@ class ActivitiesFragment : Fragment() {
 
         toolbar.inflateMenu(R.menu.menu_activities_fragment)
         toolbar.setOnMenuItemClickListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.action_clear -> {
                     viewModel.deleteAll()
                 }
-                else -> {}
+                else -> {
+                }
             }
 
             false
