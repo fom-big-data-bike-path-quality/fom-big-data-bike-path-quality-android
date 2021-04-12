@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
 
     // Currently performed biking activity
     private var activeActivity: BikeActivity? = null
+    private var activeActivityType = -1
+    private var activeTransitionType = -1
 
     //
     // Lifecycle phases
@@ -69,9 +71,11 @@ class MainActivity : AppCompatActivity() {
     private fun handleActivityTransitions() {
         activityTransitionViewModel =
             ViewModelProvider(this).get(ActivityTransitionViewModel::class.java)
-        activityTransitionViewModel.data.observeForever {
+        activityTransitionViewModel.data.observe(this, {
 
-            if (it.activityType == DetectedActivity.ON_BICYCLE) {
+            if ((it.activityType != activeActivityType || it.transitionType != activeTransitionType) &&
+                it.activityType == DetectedActivity.ON_BICYCLE
+            ) {
 
                 log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
 
@@ -92,7 +96,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
+
+            activeActivityType = it.activityType
+            activeTransitionType = it.transitionType
+        })
     }
 
     /**
