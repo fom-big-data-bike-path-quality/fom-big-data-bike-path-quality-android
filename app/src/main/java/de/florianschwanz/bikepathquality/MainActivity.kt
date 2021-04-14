@@ -89,6 +89,12 @@ class MainActivity : AppCompatActivity() {
         bikeActivityViewModel.activeBikeActivity.observe(this, {
             activeActivity = it
             log("new active activity ${activeActivity?.uid.toString()}")
+
+            if (activeActivity != null) {
+                activityDetailTracker.run()
+            } else {
+                activityDetailHandler.removeCallbacks(activityDetailTracker)
+            }
         })
     }
 
@@ -109,14 +115,12 @@ class MainActivity : AppCompatActivity() {
                         // Create new bike activity if there no ongoing one
                         if (activeActivity == null) {
                             bikeActivityViewModel.insert(BikeActivity())
-                            activityDetailTracker.run()
                         }
                     }
                     ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
                         // Finish active bike activity if there is one
-                        activeActivity?.let {
-                            bikeActivityViewModel.update(it.copy(endTime = Instant.now()))
-                            activityDetailHandler.removeCallbacks(activityDetailTracker)
+                        activeActivity?.let { bikeActivity ->
+                            bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
                         }
                     }
                 }
