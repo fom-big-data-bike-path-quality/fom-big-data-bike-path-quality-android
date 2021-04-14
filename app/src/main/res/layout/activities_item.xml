@@ -60,5 +60,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
+    <TextView
+        android:id="@+id/tvDelimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="@string/delimiter"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/tvDuration"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_details"
+        app:layout_constraintStart_toEndOf="@id/tvDelimiter"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

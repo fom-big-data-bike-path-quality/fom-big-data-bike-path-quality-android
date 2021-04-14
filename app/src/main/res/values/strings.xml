@@ -57,4 +57,11 @@
     </plurals>
     <string name="default_duration">not yet completed</string>
     <string name="ongoing">oingoing</string>
+    <string name="delimiter">·</string>
+    <plurals name="details">
+        <item quantity="zero">no details</item>
+        <item quantity="one">%d detail</item>
+        <item quantity="other">%d details</item>
+    </plurals>
+    <string name="default_details">no details</string>
 </resources>
