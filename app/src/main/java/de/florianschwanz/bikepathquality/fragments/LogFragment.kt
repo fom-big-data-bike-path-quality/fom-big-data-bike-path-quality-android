@@ -51,6 +51,7 @@ class LogFragment : Fragment() {
 
         viewModel.allLogEntries.observe(viewLifecycleOwner, {
             adapter.submitList(it)
+            adapter.notifyDataSetChanged()
         })
 
         return view

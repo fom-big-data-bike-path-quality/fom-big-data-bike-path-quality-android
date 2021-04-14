@@ -48,8 +48,9 @@ class ActivitiesFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModel.allBikeActivities.observe(viewLifecycleOwner, {
+        viewModel.allBikeActivitiesWithDetails.observe(viewLifecycleOwner, {
             adapter.submitList(it)
+            adapter.notifyDataSetChanged()
         })
 
         return view
