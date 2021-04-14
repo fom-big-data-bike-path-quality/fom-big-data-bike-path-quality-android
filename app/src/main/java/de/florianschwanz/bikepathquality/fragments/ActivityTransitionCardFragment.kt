@@ -23,7 +23,7 @@ import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermission
  */
 class ActivityTransitionCardFragment : Fragment() {
 
-    private lateinit var viewModel: ActivityTransitionViewModel
+    private lateinit var viewModel: ActivityTransitionCardViewModel
 
     private lateinit var ivStill: ImageView
     private lateinit var ivWalking: ImageView
@@ -74,7 +74,7 @@ class ActivityTransitionCardFragment : Fragment() {
         when {
             isPermissionsGranted() -> {
                 viewModel =
-                    ViewModelProvider(requireActivity()).get(ActivityTransitionViewModel::class.java)
+                    ViewModelProvider(requireActivity()).get(ActivityTransitionCardViewModel::class.java)
                 viewModel.data.observe(viewLifecycleOwner, {
 
                     val activeColor = R.color.teal_700
