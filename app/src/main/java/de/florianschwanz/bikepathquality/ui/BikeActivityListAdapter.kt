@@ -1,6 +1,5 @@
 package de.florianschwanz.bikepathquality.ui
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,6 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.storage.bike_activity.BikeActivityWithDetails
@@ -19,18 +16,24 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BikeActivityListAdapter(val context: Context?) :
-    ListAdapter<BikeActivityWithDetails, BikeActivityListAdapter.BikeActivityViewHolder>(
-        BikeActivityComparator()
-    ) {
+class BikeActivityListAdapter :
+    RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
+
+    var data = listOf<BikeActivityWithDetails>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BikeActivityViewHolder {
         return BikeActivityViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: BikeActivityViewHolder, position: Int) {
-        val current = getItem(position)
-        holder.bind(current, context)
+        val current = data[position]
+        holder.bind(current)
     }
 
     class BikeActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,7 +45,8 @@ class BikeActivityListAdapter(val context: Context?) :
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivityWithDetails, context: Context?) {
+        fun bind(item: BikeActivityWithDetails) {
+            val resources = itemView.context.resources
 
             if (item.bikeActivity.endTime != null) {
                 ivOngoing.visibility = View.INVISIBLE
@@ -51,8 +55,8 @@ class BikeActivityListAdapter(val context: Context?) :
                     item.bikeActivity.endTime.toEpochMilli() - item.bikeActivity.startTime.toEpochMilli()
                 val duration = (diff / 1000 / 60).toInt()
                 tvDuration.text =
-                    context?.resources?.getQuantityString(R.plurals.duration, duration, duration)
-                tvDetails.text = context?.resources?.getQuantityString(
+                    resources.getQuantityString(R.plurals.duration, duration, duration)
+                tvDetails.text = resources.getQuantityString(
                     R.plurals.details,
                     item.bikeActivityDetails.size,
                     item.bikeActivityDetails.size
@@ -82,22 +86,6 @@ class BikeActivityListAdapter(val context: Context?) :
                     .inflate(R.layout.activities_item, parent, false)
                 return BikeActivityViewHolder(view)
             }
-        }
-    }
-
-    class BikeActivityComparator : DiffUtil.ItemCallback<BikeActivityWithDetails>() {
-        override fun areItemsTheSame(
-            oldItem: BikeActivityWithDetails,
-            newItem: BikeActivityWithDetails
-        ): Boolean {
-            return oldItem === newItem
-        }
-
-        override fun areContentsTheSame(
-            oldItem: BikeActivityWithDetails,
-            newItem: BikeActivityWithDetails
-        ): Boolean {
-            return oldItem.bikeActivity.startTime == newItem.bikeActivity.startTime
         }
     }
 }

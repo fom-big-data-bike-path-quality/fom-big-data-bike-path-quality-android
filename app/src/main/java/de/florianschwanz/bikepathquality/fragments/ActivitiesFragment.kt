@@ -25,13 +25,13 @@ class ActivitiesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
 
         val view = inflater.inflate(R.layout.activities_fragment, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvActivities)
-        val adapter = BikeActivityListAdapter(context)
+        val adapter = BikeActivityListAdapter()
 
         toolbar.inflateMenu(R.menu.menu_activities_fragment)
         toolbar.setOnMenuItemClickListener {
@@ -49,8 +49,8 @@ class ActivitiesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.allBikeActivitiesWithDetails.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
+            adapter.data = it
+            recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         })
 
         return view

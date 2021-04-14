@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.storage.log_entry.LogEntry
@@ -14,15 +12,22 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class LogEntryListAdapter :
-    ListAdapter<LogEntry, LogEntryListAdapter.LogEntryViewHolder>(LogEntryComparator()) {
+class LogEntryListAdapter : RecyclerView.Adapter<LogEntryListAdapter.LogEntryViewHolder>() {
+
+    var data = listOf<LogEntry>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogEntryViewHolder {
         return LogEntryViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: LogEntryViewHolder, position: Int) {
-        val current = getItem(position)
+        val current = data[position]
         holder.bind(current)
     }
 
@@ -50,16 +55,6 @@ class LogEntryListAdapter :
                     .inflate(R.layout.log_item, parent, false)
                 return LogEntryViewHolder(view)
             }
-        }
-    }
-
-    class LogEntryComparator : DiffUtil.ItemCallback<LogEntry>() {
-        override fun areItemsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-            return oldItem === newItem
-        }
-
-        override fun areContentsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-            return oldItem.message == newItem.message
         }
     }
 }

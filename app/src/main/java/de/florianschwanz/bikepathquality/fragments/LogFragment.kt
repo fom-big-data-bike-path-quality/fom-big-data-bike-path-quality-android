@@ -15,7 +15,6 @@ import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModelFactory
 import de.florianschwanz.bikepathquality.ui.LogEntryListAdapter
 
-
 class LogFragment : Fragment() {
 
     private val viewModel: LogEntryViewModel by viewModels {
@@ -26,7 +25,7 @@ class LogFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
 
         val view = inflater.inflate(R.layout.log_fragment, container, false)
 
@@ -50,8 +49,8 @@ class LogFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.allLogEntries.observe(viewLifecycleOwner, {
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
+            adapter.data = it
+            recyclerView.smoothScrollToPosition(adapter.data.size - 1)
         })
 
         return view
