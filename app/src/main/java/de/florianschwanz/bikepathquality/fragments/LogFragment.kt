@@ -50,7 +50,9 @@ class LogFragment : Fragment() {
 
         viewModel.allLogEntries.observe(viewLifecycleOwner, {
             adapter.data = it
-            recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+            if (adapter.data.size > 0 ) {
+                recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+            }
         })
 
         return view
