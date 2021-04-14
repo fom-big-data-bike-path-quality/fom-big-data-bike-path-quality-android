@@ -9,8 +9,6 @@ import de.florianschwanz.bikepathquality.R
 
 class SensorsFragment : Fragment() {
 
-    private lateinit var viewModel: SensorsViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

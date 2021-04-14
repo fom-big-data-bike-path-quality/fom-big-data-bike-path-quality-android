@@ -13,8 +13,9 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import de.florianschwanz.bikepathquality.activities.LocationPermissionRationalActivity
+import de.florianschwanz.bikepathquality.MainActivityViewModel
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.activities.LocationPermissionRationalActivity
 import de.florianschwanz.bikepathquality.utils.GpsUtils
 
 /**
@@ -22,7 +23,7 @@ import de.florianschwanz.bikepathquality.utils.GpsUtils
  */
 class LocationCardFragment : Fragment() {
 
-    private lateinit var viewModel: LocationCardViewModel
+    private lateinit var viewModel: MainActivityViewModel
 
     private lateinit var tvLon: TextView
     private lateinit var tvLat: TextView
@@ -94,8 +95,8 @@ class LocationCardFragment : Fragment() {
         when {
             isPermissionsGranted() -> {
                 viewModel =
-                    ViewModelProvider(requireActivity()).get(LocationCardViewModel::class.java)
-                viewModel.data.observe(viewLifecycleOwner, {
+                    ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+                viewModel.locationLiveData.observe(viewLifecycleOwner, {
                     tvLon.text = resources.getString(R.string.lon, it.lon)
                     tvLat.text = resources.getString(R.string.lat, it.lat)
                 })

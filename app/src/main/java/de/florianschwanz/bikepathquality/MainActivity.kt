@@ -101,26 +101,21 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.activityTransitionLiveData.observe(this, {
 
-            if ((it.activityType != activeActivityType || it.transitionType != activeTransitionType) &&
-                it.activityType == targetEactivityType
-            ) {
+            log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
 
-                log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
-
+            if (it.activityType == targetActivityType) {
                 when (it.transitionType) {
                     ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
                         // Create new bike activity if there no ongoing one
                         if (activeActivity == null) {
-                            activeActivity = BikeActivity()
-                            bikeActivityViewModel.insert(activeActivity!!)
+                            bikeActivityViewModel.insert(BikeActivity())
                             activityDetailTracker.run()
                         }
                     }
                     ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
                         // Finish active bike activity if there is one
-                        activeActivity?.let { bikeActivity ->
-                            bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
-                            activeActivity = null
+                        activeActivity?.let {
+                            bikeActivityViewModel.update(it.copy(endTime = Instant.now()))
                             activityDetailHandler.removeCallbacks(activityDetailTracker)
                         }
                     }

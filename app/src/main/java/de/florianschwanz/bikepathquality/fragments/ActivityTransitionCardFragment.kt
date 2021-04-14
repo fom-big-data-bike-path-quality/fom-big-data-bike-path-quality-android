@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
+import de.florianschwanz.bikepathquality.MainActivityViewModel
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermissionRationalActivity
 
@@ -27,7 +28,7 @@ import de.florianschwanz.bikepathquality.activities.ActivityTransitionPermission
  */
 class ActivityTransitionCardFragment : Fragment() {
 
-    private lateinit var viewModel: ActivityTransitionCardViewModel
+    private lateinit var viewModel: MainActivityViewModel
 
     private lateinit var ivStill: ImageView
     private lateinit var ivWalking: ImageView
@@ -77,9 +78,8 @@ class ActivityTransitionCardFragment : Fragment() {
     private fun invokeActivityTransitionAction() {
         when {
             isPermissionsGranted() -> {
-                viewModel =
-                    ViewModelProvider(requireActivity()).get(ActivityTransitionCardViewModel::class.java)
-                viewModel.data.observe(viewLifecycleOwner, {
+                viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+                viewModel.activityTransitionLiveData.observe(viewLifecycleOwner, {
 
                     val activeColor =
                         context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.teal_700
