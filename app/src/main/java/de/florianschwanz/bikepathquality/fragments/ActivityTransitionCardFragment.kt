@@ -1,14 +1,18 @@
 package de.florianschwanz.bikepathquality.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -77,12 +81,12 @@ class ActivityTransitionCardFragment : Fragment() {
                     ViewModelProvider(requireActivity()).get(ActivityTransitionCardViewModel::class.java)
                 viewModel.data.observe(viewLifecycleOwner, {
 
-                    val activeColor = R.color.teal_700
-                    val inactiveColor = R.color.grey_500
+                    val activeColor =
+                        context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.teal_700
+                    val inactiveColor =
+                        context?.getColorFromAttr(R.attr.colorOnSurface) ?: R.color.grey_500
 
                     val color = when (it.transitionType) {
-//                ActivityTransition.ACTIVITY_TRANSITION_ENTER -> getColorAttribute(R.attr.colorSecondary)
-//                else -> getColorAttribute(R.attr.colorOnSurface)
                         ActivityTransition.ACTIVITY_TRANSITION_ENTER -> activeColor
                         else -> inactiveColor
                     }
@@ -158,16 +162,13 @@ class ActivityTransitionCardFragment : Fragment() {
         ), android.graphics.PorterDuff.Mode.MULTIPLY
     )
 
-//    /**
-//     * Retrieves color attribute
-//     */
-//    private fun getColorAttribute(attribute: Int, context: Context = requireContext()): Int {
-//        val typedValue = TypedValue()
-//        val typedArray = context.theme.obtainStyledAttributes(typedValue.data, intArrayOf(attribute))
-//        val color: Int = typedArray.getColor(0, 0)
-//
-//        typedArray.recycle()
-//
-//        return color
-//    }
+    @ColorInt
+    fun Context.getColorFromAttr(
+        @AttrRes attrColor: Int,
+        typedValue: TypedValue = TypedValue(),
+        resolveRefs: Boolean = false
+    ): Int {
+        theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+        return typedValue.data
+    }
 }
