@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         BikeActivityDetailViewModelFactory((this.application as BikePathQualityApplication).bikeActivityDetailsRepository)
     }
 
-    private val targetEactivityType = DetectedActivity.WALKING
+    private val targetActivityType = DetectedActivity.ON_BICYCLE
 
     // Currently performed biking activity
     private var activeActivity: BikeActivity? = null
