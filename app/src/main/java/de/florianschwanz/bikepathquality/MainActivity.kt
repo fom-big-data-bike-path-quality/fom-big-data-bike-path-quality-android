@@ -1,6 +1,8 @@
 package de.florianschwanz.bikepathquality
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -9,7 +11,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import de.florianschwanz.bikepathquality.fragments.ActivityTransitionViewModel
 import de.florianschwanz.bikepathquality.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryViewModel
@@ -21,18 +22,42 @@ import java.time.Instant
  */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var activityTransitionViewModel: ActivityTransitionViewModel
+    private lateinit var viewModel: MainActivityViewModel
+
     private val logEntryViewModel: LogEntryViewModel by viewModels {
         LogEntryViewModelFactory((this.application as BikePathQualityApplication).logEntryRepository)
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
     }
+    private val bikeActivityDetailViewModel: BikeActivityDetailViewModel by viewModels {
+        BikeActivityDetailViewModelFactory((this.application as BikePathQualityApplication).bikeActivityDetailsRepository)
+    }
+
+    private val targetEactivityType = DetectedActivity.WALKING
 
     // Currently performed biking activity
     private var activeActivity: BikeActivity? = null
     private var activeActivityType = -1
     private var activeTransitionType = -1
+
+    private var currentLon = 0.0
+    private var currentLat = 0.0
+    private var currentAccelerometerX = 0.0f
+    private var currentAccelerometerY = 0.0f
+    private var currentAccelerometerZ = 0.0f
+
+    private val activityDetailInterval = 10_000L
+    private val activityDetailHandler = Handler(Looper.getMainLooper())
+    private var activityDetailTracker: Runnable = object : Runnable {
+        override fun run() {
+            try {
+                trackActivityDetail()
+            } finally {
+                activityDetailHandler.postDelayed(this, activityDetailInterval)
+            }
+        }
+    }
 
     //
     // Lifecycle phases
@@ -50,8 +75,11 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+
         handleActiveBikeActivity()
         handleActivityTransitions()
+        handleActivityDetailTracking()
     }
 
     /**
@@ -61,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         bikeActivityViewModel.allActiveBikeActivities.observe(this, {
             it.takeIf { it.isNotEmpty() }?.let { bikeActivities ->
                 activeActivity = bikeActivities.first()
-                log("new active activity ${activeActivity?.uid.toString().substring(0, 17)}...")
+                log("new active activity ${activeActivity?.uid.toString()}")
             }
         })
     }
@@ -72,12 +100,11 @@ class MainActivity : AppCompatActivity() {
      * <li>finished an active bike activity
      */
     private fun handleActivityTransitions() {
-        activityTransitionViewModel =
-            ViewModelProvider(this).get(ActivityTransitionViewModel::class.java)
-        activityTransitionViewModel.data.observe(this, {
+
+        viewModel.activityTransitionLiveData.observe(this, {
 
             if ((it.activityType != activeActivityType || it.transitionType != activeTransitionType) &&
-                it.activityType == DetectedActivity.ON_BICYCLE
+                it.activityType == targetEactivityType
             ) {
 
                 log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
@@ -88,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                         if (activeActivity == null) {
                             activeActivity = BikeActivity()
                             bikeActivityViewModel.insert(activeActivity!!)
+                            activityDetailTracker.run()
                         }
                     }
                     ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
@@ -95,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                         activeActivity?.let { bikeActivity ->
                             bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
                             activeActivity = null
+                            activityDetailHandler.removeCallbacks(activityDetailTracker)
                         }
                     }
                 }
@@ -105,11 +134,42 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun handleActivityDetailTracking() {
+        viewModel.accelerometerLiveData.observe(this, {
+            currentAccelerometerX = it.x
+            currentAccelerometerY = it.y
+            currentAccelerometerZ = it.z
+        })
+        viewModel.locationLiveData.observe(this, {
+            currentLon = it.lon
+            currentLat = it.lat
+        })
+    }
+
     /**
      * Logs message
      */
     private fun log(message: String) {
         logEntryViewModel.insert(LogEntry(message = message))
+    }
+
+    /**
+     * Tracks an activity detail and persists it
+     */
+    private fun trackActivityDetail() = activeActivity?.let {
+
+        log("new tracking for ${it.uid}")
+
+        bikeActivityDetailViewModel.insert(
+            BikeActivityDetail(
+                activityUid = it.uid,
+                lon = currentLon,
+                lat = currentLat,
+                accelerometerX = currentAccelerometerX,
+                accelerometerY = currentAccelerometerY,
+                accelerometerZ = currentAccelerometerZ
+            )
+        )
     }
 
     companion object {
