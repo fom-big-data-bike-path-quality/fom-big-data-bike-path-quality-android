@@ -86,11 +86,9 @@ class MainActivity : AppCompatActivity() {
      * Retrieves most recent unfinished bike activity from the database
      */
     private fun handleActiveBikeActivity() {
-        bikeActivityViewModel.allActiveBikeActivities.observe(this, {
-            it.takeIf { it.isNotEmpty() }?.let { bikeActivities ->
-                activeActivity = bikeActivities.first()
-                log("new active activity ${activeActivity?.uid.toString()}")
-            }
+        bikeActivityViewModel.activeBikeActivity.observe(this, {
+            activeActivity = it
+            log("new active activity ${activeActivity?.uid.toString()}")
         })
     }
 

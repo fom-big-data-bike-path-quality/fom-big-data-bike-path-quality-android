@@ -12,6 +12,8 @@ class BikeActivityRepository(private val bikeActivityDao: BikeActivityDao) {
 
     val activeActivities: Flow<List<BikeActivity>> = bikeActivityDao.getAllActive()
 
+    val activeActivity: Flow<BikeActivity> = bikeActivityDao.getActive()
+
     @WorkerThread
     suspend fun insert(bikeActivity: BikeActivity) {
         bikeActivityDao.insert(bikeActivity)
