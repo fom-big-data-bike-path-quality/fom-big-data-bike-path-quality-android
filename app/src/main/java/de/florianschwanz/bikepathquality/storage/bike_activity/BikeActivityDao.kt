@@ -9,6 +9,10 @@ interface BikeActivityDao {
     @Query("SELECT * FROM bikeactivity")
     fun getAll(): Flow<List<BikeActivity>>
 
+    @Transaction
+    @Query("SELECT * FROM bikeactivity")
+    fun getAllWithDetails(): Flow<List<BikeActivityWithDetails>>
+
     @Query("SELECT * FROM bikeactivity WHERE end_time IS NULL ORDER BY start_time DESC")
     fun getAllActive(): Flow<List<BikeActivity>>
 

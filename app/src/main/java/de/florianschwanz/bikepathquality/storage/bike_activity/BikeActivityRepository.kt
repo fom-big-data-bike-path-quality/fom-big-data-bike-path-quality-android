@@ -7,6 +7,9 @@ class BikeActivityRepository(private val bikeActivityDao: BikeActivityDao) {
 
     val bikeActivities: Flow<List<BikeActivity>> = bikeActivityDao.getAll()
 
+    val bikeActivitiesWithDetails: Flow<List<BikeActivityWithDetails>> =
+        bikeActivityDao.getAllWithDetails()
+
     val activeActivities: Flow<List<BikeActivity>> = bikeActivityDao.getAllActive()
 
     @WorkerThread

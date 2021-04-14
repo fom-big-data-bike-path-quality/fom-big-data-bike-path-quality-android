@@ -10,6 +10,9 @@ class BikeActivityViewModel(private val repository: BikeActivityRepository) : Vi
 
     val allBikeActivities: LiveData<List<BikeActivity>> = repository.bikeActivities.asLiveData()
 
+    val allBikeActivitiesWithDetails: LiveData<List<BikeActivityWithDetails>> =
+        repository.bikeActivitiesWithDetails.asLiveData()
+
     val allActiveBikeActivities: LiveData<List<BikeActivity>> =
         repository.activeActivities.asLiveData()
 
