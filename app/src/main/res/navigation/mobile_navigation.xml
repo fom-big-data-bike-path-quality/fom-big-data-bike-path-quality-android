@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_activities"
-        android:name="de.florianschwanz.bikepathquality.fragments.ActivitiesFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.ActivitiesFragment"
         android:label="@string/title_activities"
         tools:layout="@layout/activities_fragment" />
 
     <fragment
         android:id="@+id/navigation_sensors"
-        android:name="de.florianschwanz.bikepathquality.fragments.SensorsFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.SensorsFragment"
         android:label="@string/title_sensors"
         tools:layout="@layout/sensors_fragment" />
 
     <fragment
         android:id="@+id/navigation_log"
-        android:name="de.florianschwanz.bikepathquality.fragments.LogFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.LogFragment"
         android:label="@string/title_log"
         tools:layout="@layout/log_fragment" />
 

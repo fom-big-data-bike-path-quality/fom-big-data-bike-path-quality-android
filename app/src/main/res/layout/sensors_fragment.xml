@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="de.florianschwanz.bikepathquality.MainActivity">
+    tools:context="de.florianschwanz.bikepathquality.ui.main.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,19 +20,19 @@
 
         <fragment
             android:id="@+id/activity_transition_card_fragment"
-            android:name="de.florianschwanz.bikepathquality.fragments.ActivityTransitionCardFragment"
+            android:name="de.florianschwanz.bikepathquality.ui.main.fragments.ActivityTransitionCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/accelerometer_card_fragment"
-            android:name="de.florianschwanz.bikepathquality.fragments.AccelerometerCardFragment"
+            android:name="de.florianschwanz.bikepathquality.ui.main.fragments.AccelerometerCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/location_card_fragment"
-            android:name="de.florianschwanz.bikepathquality.fragments.LocationCardFragment"
+            android:name="de.florianschwanz.bikepathquality.ui.main.fragments.LocationCardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

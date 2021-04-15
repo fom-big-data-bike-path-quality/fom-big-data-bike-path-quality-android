@@ -1,10 +1,10 @@
 package de.florianschwanz.bikepathquality
 
 import android.app.Application
-import de.florianschwanz.bikepathquality.storage.AppDatabase
-import de.florianschwanz.bikepathquality.storage.bike_activity.BikeActivityDetailRepository
-import de.florianschwanz.bikepathquality.storage.bike_activity.BikeActivityRepository
-import de.florianschwanz.bikepathquality.storage.log_entry.LogEntryRepository
+import de.florianschwanz.bikepathquality.data.storage.AppDatabase
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDetailRepository
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityRepository
+import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryRepository
 
 class BikePathQualityApplication : Application() {
 
