@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.ui.main.activities
+package de.florianschwanz.bikepathquality.ui.rationale
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,11 +13,10 @@ import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import de.florianschwanz.bikepathquality.R
 
 /**
- * Displays rationale for allowing the activity recognition permission and allows user to accept
+ * Displays rationale for allowing the location permission and allows user to accept
  * the permission
  */
-class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
-    OnRequestPermissionsResultCallback {
+class LocationPermissionRationaleActivity : AppCompatActivity(), OnRequestPermissionsResultCallback {
 
     //
     // Lifecycle phases
@@ -30,10 +29,10 @@ class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
 
         // If permissions granted, we start the main activity (shut this activity down)
-        if (isGranted(Manifest.permission.ACTIVITY_RECOGNITION)) {
+        if (isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && isGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             finish()
         }
-        setContentView(R.layout.activity_transition_permission_rational)
+        setContentView(R.layout.location_permission_rational)
     }
 
     /**
@@ -52,7 +51,7 @@ class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
         val permissionResult =
             "Request code: ${requestCode}, Permissions: ${permissions.contentToString()}, Results: ${grantResults.contentToString()}"
         Log.d(TAG, "onRequestPermissionsResult(): $permissionResult")
-        if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
             // Close activity regardless of user's decision (decision picked up in main activity).
             finish()
         }
@@ -69,8 +68,11 @@ class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
     fun onClickApprovePermissionRequest(view: View?) {
         Log.d(TAG, "onClickApprovePermissionRequest()")
         ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-            PERMISSION_REQUEST_ACTIVITY_RECOGNITION
+            this, arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            PERMISSION_REQUEST_LOCATION
         )
     }
 
@@ -83,7 +85,7 @@ class ActivityTransitionPermissionRationalActivity : AppCompatActivity(),
     }
 
     companion object {
-        private const val TAG = "PermissionRationalActivity"
-        private const val PERMISSION_REQUEST_ACTIVITY_RECOGNITION = 45
+        private const val TAG = "LocationPermissionRationalActivity"
+        private const val PERMISSION_REQUEST_LOCATION = 46
     }
 }

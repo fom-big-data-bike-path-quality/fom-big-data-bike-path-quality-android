@@ -16,15 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
         <activity
-            android:name="de.florianschwanz.bikepathquality.ui.main.activities.ActivityTransitionPermissionRationalActivity"
+            android:name=".ui.rationale.ActivityTransitionPermissionRationalActivity"
             android:label="@string/title_activity_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
-
         <activity
-            android:name="de.florianschwanz.bikepathquality.ui.main.activities.LocationPermissionRationalActivity"
+            android:name=".ui.rationale.LocationPermissionRationalActivity"
             android:label="@string/title_location_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
-
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/app_name"

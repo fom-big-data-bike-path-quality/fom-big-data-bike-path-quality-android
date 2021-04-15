@@ -19,9 +19,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
-import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.ui.main.activities.ActivityTransitionPermissionRationalActivity
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
+import de.florianschwanz.bikepathquality.ui.rationale.ActivityTransitionPermissionRationaleActivity
 
 /**
  * Activity transition card fragment
@@ -78,7 +78,8 @@ class ActivityTransitionCardFragment : Fragment() {
     private fun invokeActivityTransitionAction() {
         when {
             isPermissionsGranted() -> {
-                viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+                viewModel =
+                    ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
                 viewModel.activityTransitionLiveData.observe(viewLifecycleOwner, {
 
                     val activeColor =
@@ -143,7 +144,7 @@ class ActivityTransitionCardFragment : Fragment() {
         if (!isPermissionsGranted()) {
             // Request permission and start activity for result
             val startIntent =
-                Intent(requireActivity(), ActivityTransitionPermissionRationalActivity::class.java)
+                Intent(requireActivity(), ActivityTransitionPermissionRationaleActivity::class.java)
 
             @Suppress("DEPRECATION")
             startActivityForResult(startIntent, 0)

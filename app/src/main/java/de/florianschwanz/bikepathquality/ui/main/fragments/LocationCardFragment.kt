@@ -13,9 +13,9 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.ui.main.activities.LocationPermissionRationalActivity
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
+import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRationaleActivity
 import de.florianschwanz.bikepathquality.utils.GpsUtils
 
 /**
@@ -133,7 +133,7 @@ class LocationCardFragment : Fragment() {
         if (!isPermissionsGranted()) {
             // Request permission and start activity for result
             val startIntent =
-                Intent(requireActivity(), LocationPermissionRationalActivity::class.java)
+                Intent(requireActivity(), LocationPermissionRationaleActivity::class.java)
 
             @Suppress("DEPRECATION")
             startActivityForResult(startIntent, 0)
