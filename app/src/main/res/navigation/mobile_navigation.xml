@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_activities"
-        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.ActivitiesFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.BikeActivitiesFragment"
         android:label="@string/title_activities"
-        tools:layout="@layout/activities_fragment" />
+        tools:layout="@layout/bike_activities_fragment" />
 
     <fragment
         android:id="@+id/navigation_sensors"

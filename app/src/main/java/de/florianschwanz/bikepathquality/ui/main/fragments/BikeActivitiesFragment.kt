@@ -23,7 +23,7 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.ui.main.adapters.BikeActivityListAdapter
 import java.time.Instant
 
-class ActivitiesFragment : Fragment() {
+class BikeActivitiesFragment : Fragment() {
 
     private val logEntryViewModel: LogEntryViewModel by viewModels {
         LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
@@ -41,7 +41,7 @@ class ActivitiesFragment : Fragment() {
     ): View? {
         setHasOptionsMenu(true)
 
-        val view = inflater.inflate(R.layout.activities_fragment, container, false)
+        val view = inflater.inflate(R.layout.bike_activities_fragment, container, false)
 
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvActivities)

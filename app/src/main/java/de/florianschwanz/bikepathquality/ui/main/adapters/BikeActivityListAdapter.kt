@@ -83,7 +83,7 @@ class BikeActivityListAdapter :
         companion object {
             fun create(parent: ViewGroup): BikeActivityViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.activities_item, parent, false)
+                    .inflate(R.layout.bike_activities_item, parent, false)
                 return BikeActivityViewHolder(view)
             }
         }
