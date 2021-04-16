@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_sensors">
-
-    <fragment
-        android:id="@+id/navigation_activities"
-        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.BikeActivitiesFragment"
-        android:label="@string/title_activities"
-        tools:layout="@layout/bike_activities_fragment" />
+    app:startDestination="@+id/navigation_activities">
 
     <fragment
         android:id="@+id/navigation_sensors"
         android:name="de.florianschwanz.bikepathquality.ui.main.fragments.SensorsFragment"
         android:label="@string/title_sensors"
         tools:layout="@layout/sensors_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_activities"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.BikeActivitiesFragment"
+        android:label="@string/title_activities"
+        tools:layout="@layout/bike_activities_fragment" />
 
     <fragment
         android:id="@+id/navigation_log"
