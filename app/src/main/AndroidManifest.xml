@@ -16,11 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
         <activity
-            android:name=".ui.rationale.ActivityTransitionPermissionRationalActivity"
+            android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
             android:label="@string/title_activity_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
         <activity
-            android:name=".ui.rationale.LocationPermissionRationalActivity"
+            android:name=".ui.rationale.LocationPermissionRationaleActivity"
             android:label="@string/title_location_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
         <activity
