@@ -10,9 +10,11 @@ class BikeActivityRepository(private val bikeActivityDao: BikeActivityDao) {
     val bikeActivitiesWithDetails: Flow<List<BikeActivityWithDetails>> =
         bikeActivityDao.getAllWithDetails()
 
-    val activeActivities: Flow<List<BikeActivity>> = bikeActivityDao.getAllActive()
-
     val activeActivity: Flow<BikeActivity> = bikeActivityDao.getActive()
+
+    fun singleBikeActivityWithDetails(uid: String): Flow<BikeActivityWithDetails> {
+        return bikeActivityDao.getSingleWithDetails(uid)
+    }
 
     @WorkerThread
     suspend fun insert(bikeActivity: BikeActivity) {

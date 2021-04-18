@@ -49,7 +49,7 @@ class BikeActivitiesFragment : Fragment() {
         val ivStartStop = view.findViewById<ImageView>(R.id.ivStartStop)
         val tvStartStop = view.findViewById<TextView>(R.id.tvStartStop)
 
-        val adapter = BikeActivityListAdapter()
+        val adapter = BikeActivityListAdapter(requireActivity())
 
         toolbar.inflateMenu(R.menu.menu_activities_fragment)
         toolbar.setOnMenuItemClickListener {

@@ -1,5 +1,9 @@
 package de.florianschwanz.bikepathquality.ui.main.adapters
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +15,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
+import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
+import de.florianschwanz.bikepathquality.ui.details.EXTRA_BIKE_ACTIVITY_UID
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BikeActivityListAdapter :
+class BikeActivityListAdapter(val activity: Activity) :
     RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
 
     var data = listOf<BikeActivityWithDetails>()
@@ -28,7 +34,7 @@ class BikeActivityListAdapter :
     override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BikeActivityViewHolder {
-        return BikeActivityViewHolder.create(parent)
+        return BikeActivityViewHolder.create(activity, parent)
     }
 
     override fun onBindViewHolder(holder: BikeActivityViewHolder, position: Int) {
@@ -36,7 +42,8 @@ class BikeActivityListAdapter :
         holder.bind(current)
     }
 
-    class BikeActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class BikeActivityViewHolder(val activity: Activity, itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
@@ -75,16 +82,24 @@ class BikeActivityListAdapter :
                 if (item.bikeActivity.startTime.isToday()) sdfShort.format(Date.from(item.bikeActivity.startTime)) else sdf.format(
                     Date.from(item.bikeActivity.startTime)
                 )
+
+            itemView.setOnClickListener {
+                val intent = Intent(activity.applicationContext, BikeActivityDetailsActivity::class.java).apply {
+                    putExtra(EXTRA_BIKE_ACTIVITY_UID, item.bikeActivity.uid.toString())
+                }
+
+                activity.startActivity(intent)
+            }
         }
 
         private fun Instant.isToday() =
             this.truncatedTo(ChronoUnit.DAYS).equals(Instant.now().truncatedTo(ChronoUnit.DAYS))
 
         companion object {
-            fun create(parent: ViewGroup): BikeActivityViewHolder {
+            fun create(activity: Activity, parent: ViewGroup): BikeActivityViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.bike_activities_item, parent, false)
-                return BikeActivityViewHolder(view)
+                return BikeActivityViewHolder(activity, view)
             }
         }
     }

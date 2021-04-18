@@ -22,6 +22,7 @@
     <string name="title_activities">Activities</string>
     <string name="title_sensors">Sensors</string>
     <string name="title_log">Log</string>
+    <string name="title_bike_activity_details">Bike Activity Details</string>
 
     <string name="measurements">Measurements</string>
 
@@ -52,6 +53,7 @@
 
     <string name="bike_activity">Bike Activity</string>
     <string name="default_start_time">10:42</string>
+    <string name="default_stop_time">10:42</string>
     <string name="bike">Bike</string>
     <plurals name="duration">
         <item quantity="one">%d min</item>
@@ -60,6 +62,7 @@
     <string name="default_duration">not yet completed</string>
     <string name="ongoing">oingoing</string>
     <string name="delimiter">·</string>
+    <string name="delimiter_dash">-</string>
     <plurals name="details">
         <item quantity="zero">no details</item>
         <item quantity="one">%d detail</item>

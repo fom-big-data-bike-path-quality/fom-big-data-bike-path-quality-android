@@ -16,6 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
         <activity
+            android:name=".ui.details.BikeActivityDetailsActivity"
+            android:label="@string/title_bike_activity_details"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
             android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
             android:label="@string/title_activity_permission_rational"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
