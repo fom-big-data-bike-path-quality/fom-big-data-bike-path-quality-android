@@ -5,10 +5,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivityDetailListAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,12 +38,17 @@ class BikeActivityDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_bike_activity_details)
         setTitle(R.string.empty)
 
-        val tvTitle: TextView = findViewById(R.id.tvTitle)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvDetails: TextView = findViewById(R.id.tvDetails)
+        val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
+
+        val adapter = BikeActivityDetailListAdapter()
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -73,6 +81,8 @@ class BikeActivityDetailsActivity : AppCompatActivity() {
                 tvDelimiter.visibility = View.INVISIBLE
                 tvStopTime.visibility = View.INVISIBLE
             }
+
+            adapter.data = it.bikeActivityDetails
         })
     }
 }
