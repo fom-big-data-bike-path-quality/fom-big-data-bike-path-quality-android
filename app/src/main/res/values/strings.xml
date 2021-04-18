@@ -60,7 +60,7 @@
         <item quantity="other">%d mins</item>
     </plurals>
     <string name="default_duration">not yet completed</string>
-    <string name="ongoing">oingoing</string>
+    <string name="ongoing">ongoing</string>
     <string name="delimiter">·</string>
     <string name="delimiter_dash">-</string>
     <plurals name="details">
