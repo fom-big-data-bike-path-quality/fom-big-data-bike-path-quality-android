@@ -69,4 +69,9 @@
         <item quantity="other">%d details</item>
     </plurals>
     <string name="default_details">no details</string>
+
+    <string name="duration">duration</string>
+    <string name="details">details</string>
+
+    <string name="empty" />
 </resources>

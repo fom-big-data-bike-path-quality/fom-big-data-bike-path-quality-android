@@ -33,11 +33,14 @@ class BikeActivityDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bike_activity_details)
+        setTitle(R.string.empty)
 
         val tvTitle: TextView = findViewById(R.id.tvTitle)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
+        val tvDuration: TextView = findViewById(R.id.tvDuration)
+        val tvDetails: TextView = findViewById(R.id.tvDetails)
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -55,6 +58,17 @@ class BikeActivityDetailsActivity : AppCompatActivity() {
                 tvStopTime.text = sdfShort.format(Date.from(it.bikeActivity.endTime))
                 tvDelimiter.visibility = View.VISIBLE
                 tvStopTime.visibility = View.VISIBLE
+
+                val diff =
+                    it.bikeActivity.endTime.toEpochMilli() - it.bikeActivity.startTime.toEpochMilli()
+                val duration = (diff / 1000 / 60).toInt()
+                tvDuration.text =
+                    resources.getQuantityString(R.plurals.duration, duration, duration)
+                tvDetails.text = resources.getQuantityString(
+                    R.plurals.details,
+                    it.bikeActivityDetails.size,
+                    it.bikeActivityDetails.size
+                )
             } else {
                 tvDelimiter.visibility = View.INVISIBLE
                 tvStopTime.visibility = View.INVISIBLE
