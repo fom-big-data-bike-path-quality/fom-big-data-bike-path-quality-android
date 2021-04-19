@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,6 +55,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val ivCheck: ImageView = findViewById(R.id.ivCheck)
+        val tvUploaded: TextView = findViewById(R.id.tvUploaded)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
@@ -74,6 +78,17 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
             tvStartTime.text = sdf.format(Date.from(it.bikeActivity.startTime))
+
+            if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                ivCheck.visibility = View.INVISIBLE
+                tvUploaded.visibility = View.INVISIBLE
+                fab.visibility = View.VISIBLE
+            } else {
+                ivCheck.visibility = View.VISIBLE
+                tvUploaded.visibility = View.VISIBLE
+                fab.visibility = View.INVISIBLE
+
+            }
 
             if (it.bikeActivity.endTime != null) {
                 tvStopTime.text = sdfShort.format(Date.from(it.bikeActivity.endTime))
@@ -98,10 +113,18 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             adapter.data = it.bikeActivityDetails
 
             fab.setOnClickListener { view ->
-                val serviceResultReceiver =
-                    FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
-                serviceResultReceiver.receiver = this
-                FirestoreService.enqueueWork(this, it, serviceResultReceiver)
+                if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                    val serviceResultReceiver =
+                        FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
+                    serviceResultReceiver.receiver = this
+                    FirestoreService.enqueueWork(this, it, serviceResultReceiver)
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        R.string.action_upload_already_done,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
     }
@@ -112,6 +135,12 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     override fun onReceiveFirestoreServiceResult(resultCode: Int, resultData: Bundle?) {
         when (resultCode) {
             FirestoreService.RESULT_SUCCESS -> {
+
+                Toast.makeText(
+                    applicationContext,
+                    R.string.action_upload_successful,
+                    Toast.LENGTH_LONG
+                ).show()
 
                 resultData
                     ?.getString(FirestoreService.EXTRA_BIKE_ACTIVITY_UID)
@@ -130,6 +159,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     }
             }
             FirestoreService.RESULT_FAILURE -> {
+
+                Toast.makeText(
+                    applicationContext,
+                    R.string.action_upload_failed,
+                    Toast.LENGTH_LONG
+                ).show()
+
                 resultData?.getString(FirestoreService.EXTRA_ERROR_MESSAGE)?.let { log(it) }
             }
         }

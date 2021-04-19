@@ -29,13 +29,39 @@
         <TextView
             android:id="@+id/tvTitle"
             style="@style/AppTheme.Headline"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text='@string/bike_activity'
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/check"
+            android:gravity="center_vertical"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:src="@drawable/ic_baseline_check_circle_outline_24"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toEndOf="@id/tvTitle"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:tint="@color/green_500" />
+
+        <TextView
+            android:id="@+id/tvUploaded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text='@string/action_uploaded'
+            android:textColor="@color/green_500"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toEndOf="@id/ivCheck"
+            app:layout_constraintTop_toTopOf="@id/tvTitle" />
 
         <ImageView
             android:id="@+id/ivBike"
@@ -83,7 +109,7 @@
             android:id="@+id/ivWatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:contentDescription="@string/duration"
             android:gravity="center_vertical"
             android:scaleX="0.6"

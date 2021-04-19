@@ -59,7 +59,7 @@ class FirestoreService : JobIntentService() {
         const val RESULT_SUCCESS = 0
         const val RESULT_FAILURE = 1
 
-        const val UPLOAD_JOB_ID = 1000
+        private const val UPLOAD_JOB_ID = 1000
         private const val ACTION_UPLOAD_BIKE_ACTIVITY = "action.UPLOAD_DATA"
 
         private val gson = GsonBuilder()

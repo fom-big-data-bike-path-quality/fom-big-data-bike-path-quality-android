@@ -8,6 +8,11 @@
     <string name="action_stop_activity">Stop biking</string>
     <string name="action_upload">Upload</string>
 
+    <string name="action_upload_successful">Uploaded data successfully</string>
+    <string name="action_upload_failed">Uploading data failed</string>
+    <string name="action_upload_already_done">Data has been updated already</string>
+    <string name="action_uploaded">Uploaded</string>
+
     <string name="title_activity_permission_rational">PermissionRationalActivity</string>
     <string name="main_message_activity_permission_rational">Track activity changes by letting us read your phone\'s activity transitions.</string>
     <string name="details_message_activity_permission_rational">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
@@ -56,6 +61,7 @@
     <string name="default_start_time">10:42</string>
     <string name="default_stop_time">10:42</string>
     <string name="bike">Bike</string>
+    <string name="check">Check</string>
     <plurals name="duration">
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>

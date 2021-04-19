@@ -1,9 +1,7 @@
 package de.florianschwanz.bikepathquality.ui.main.adapters
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.details.EXTRA_BIKE_ACTIVITY_UID
@@ -45,6 +44,7 @@ class BikeActivityListAdapter(val activity: Activity) :
     class BikeActivityViewHolder(val activity: Activity, itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
+        private val ivCheck: ImageView = itemView.findViewById(R.id.ivCheck)
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
         private val tvDetails: TextView = itemView.findViewById(R.id.tvDetails)
@@ -54,6 +54,12 @@ class BikeActivityListAdapter(val activity: Activity) :
 
         fun bind(item: BikeActivityWithDetails) {
             val resources = itemView.context.resources
+
+            if (item.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                ivCheck.visibility = View.INVISIBLE
+            } else {
+                ivCheck.visibility = View.VISIBLE
+            }
 
             if (item.bikeActivity.endTime != null) {
                 ivOngoing.visibility = View.INVISIBLE
@@ -84,7 +90,10 @@ class BikeActivityListAdapter(val activity: Activity) :
                 )
 
             itemView.setOnClickListener {
-                val intent = Intent(activity.applicationContext, BikeActivityDetailsActivity::class.java).apply {
+                val intent = Intent(
+                    activity.applicationContext,
+                    BikeActivityDetailsActivity::class.java
+                ).apply {
                     putExtra(EXTRA_BIKE_ACTIVITY_UID, item.bikeActivity.uid.toString())
                 }
 
