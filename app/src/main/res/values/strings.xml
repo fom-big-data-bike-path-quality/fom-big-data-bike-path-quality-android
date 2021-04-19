@@ -6,6 +6,7 @@
     <string name="action_clear_log">Clear log</string>
     <string name="action_start_activity">Start biking</string>
     <string name="action_stop_activity">Stop biking</string>
+    <string name="action_upload">Upload</string>
 
     <string name="title_activity_permission_rational">PermissionRationalActivity</string>
     <string name="main_message_activity_permission_rational">Track activity changes by letting us read your phone\'s activity transitions.</string>
@@ -75,4 +76,5 @@
     <string name="activity_detail">%1$.3f/%2$.3f\t\t\t\t%3$.1f, %4$.1f, %5$.1f</string>
 
     <string name="empty" />
+
 </resources>

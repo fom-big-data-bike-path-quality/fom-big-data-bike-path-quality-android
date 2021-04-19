@@ -146,7 +146,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/ivList" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -159,5 +158,16 @@
         app:layout_constraintTop_toBottomOf="@id/clDescription"
         tools:listitem="@layout/bike_activity_details_item" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="@string/action_upload"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_outline_cloud_upload_24"
+        app:tint="?attr/colorOnPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

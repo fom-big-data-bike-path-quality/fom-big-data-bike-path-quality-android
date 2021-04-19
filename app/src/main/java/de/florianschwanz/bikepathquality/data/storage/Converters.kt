@@ -1,6 +1,7 @@
 package de.florianschwanz.bikepathquality.data.storage
 
 import androidx.room.TypeConverter
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import java.time.Instant
 import java.util.*
 
@@ -25,4 +26,10 @@ class Converters {
 
     @TypeConverter
     fun datestampToInstant(value: Long?): Instant? = value?.let { Instant.ofEpochMilli(it) }
+
+    @TypeConverter
+    fun toBikeActivityStatus(value: String) = enumValueOf<BikeActivityStatus>(value)
+
+    @TypeConverter
+    fun fromBikeActivityStatus(value: BikeActivityStatus) = value.name
 }
