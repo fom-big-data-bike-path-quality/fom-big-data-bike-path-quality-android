@@ -78,6 +78,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
             tvStartTime.text = sdf.format(Date.from(it.bikeActivity.startTime))
+            tvStartTime.visibility = View.VISIBLE
 
             if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {
                 ivCheck.visibility = View.INVISIBLE
