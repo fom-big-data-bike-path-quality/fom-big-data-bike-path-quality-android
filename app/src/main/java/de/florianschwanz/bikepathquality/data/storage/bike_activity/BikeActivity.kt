@@ -18,5 +18,6 @@ data class BikeActivity(
     @PrimaryKey val uid: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "start_time") val startTime: Instant = Instant.now(),
     @ColumnInfo(name = "end_time") val endTime: Instant? = null,
-    @ColumnInfo(name = "status") val status: BikeActivityStatus = BikeActivityStatus.LOCAL
+    @ColumnInfo(name = "status") val status: BikeActivityStatus = BikeActivityStatus.LOCAL,
+    @ColumnInfo(name = "surface_type") val surfaceType: String? = null
 )

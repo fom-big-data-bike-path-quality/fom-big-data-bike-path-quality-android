@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,6 +58,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
+        val spSurfaceType: Spinner = findViewById(R.id.spSurfaceType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvDetails: TextView = findViewById(R.id.tvDetails)
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
@@ -76,6 +75,15 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.surface_array,
+            android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spSurfaceType.adapter = it
+        }
+
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
             tvStartTime.text = sdf.format(Date.from(it.bikeActivity.startTime))
             tvStartTime.visibility = View.VISIBLE
@@ -88,7 +96,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 ivCheck.visibility = View.VISIBLE
                 tvUploaded.visibility = View.VISIBLE
                 fab.visibility = View.INVISIBLE
-
             }
 
             if (it.bikeActivity.endTime != null) {
@@ -112,6 +119,25 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             }
 
             adapter.data = it.bikeActivityDetails
+
+            spSurfaceType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedItem =
+                        if (position > 0) parent.getItemAtPosition(position).toString() else null
+
+                    // Update bike activity surface
+                    bikeActivityViewModel.update(
+                        it.bikeActivity.copy(surfaceType = selectedItem)
+                    )
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
 
             fab.setOnClickListener { view ->
                 if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {

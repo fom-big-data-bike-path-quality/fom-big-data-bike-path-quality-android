@@ -81,6 +81,39 @@
     <string name="details">details</string>
     <string name="activity_detail">%1$.3f/%2$.3f\t\t\t\t%3$.1f, %4$.1f, %5$.1f</string>
 
+    <string-array name="surface_array">
+        <item>Select a surface</item>
+        <item>paved</item>
+        <item>asphalt</item>
+        <item>concrete</item>
+        <item>conrete:lanes</item>
+        <item>conrete:plates</item>
+        <item>paving_stones</item>
+        <item>sett</item>
+        <item>unhewn_cobblestone</item>
+        <item>cobblestone</item>
+        <item>metal</item>
+        <item>wood</item>
+        <item>stepping_stones</item>
+        <item>unpaved</item>
+        <item>compacted</item>
+        <item>fine_gravel</item>
+        <item>gravel</item>
+        <item>rock</item>
+        <item>pebblestone</item>
+        <item>ground</item>
+        <item>dirt</item>
+        <item>earth</item>
+        <item>grass</item>
+        <item>grass_paver</item>
+        <item>mud</item>
+        <item>sand</item>
+        <item>woodchips</item>
+        <item>snow</item>
+        <item>ice</item>
+        <item>salt</item>
+    </string-array>
+
     <string name="empty" />
 
 </resources>
