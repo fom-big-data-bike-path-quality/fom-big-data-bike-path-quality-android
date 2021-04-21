@@ -26,6 +26,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50" />
+
         <TextView
             android:id="@+id/tvTitle"
             style="@style/AppTheme.Headline"
@@ -112,11 +119,22 @@
 
         <Spinner
             android:id="@+id/spSurfaceType"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            app:layout_constraintStart_toStartOf="@id/tvTitle"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivBike" />
+
+        <Spinner
+            android:id="@+id/spSmoothnessType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@id/spSurfaceType" />
 
         <ImageView
             android:id="@+id/ivWatch"

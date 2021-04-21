@@ -114,6 +114,18 @@
         <item>salt</item>
     </string-array>
 
+    <string-array name="smoothness_array">
+        <item>Select smoothness</item>
+        <item>excellent</item>
+        <item>good</item>
+        <item>intermediate</item>
+        <item>bad</item>
+        <item>very_bad</item>
+        <item>horrible</item>
+        <item>very_horrible</item>
+        <item>impassable</item>
+    </string-array>
+
     <string name="empty" />
 
 </resources>

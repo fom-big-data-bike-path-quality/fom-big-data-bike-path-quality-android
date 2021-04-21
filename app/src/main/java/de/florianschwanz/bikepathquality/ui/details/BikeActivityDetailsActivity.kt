@@ -59,6 +59,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
         val spSurfaceType: Spinner = findViewById(R.id.spSurfaceType)
+        val spSmoothness: Spinner = findViewById(R.id.spSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvDetails: TextView = findViewById(R.id.tvDetails)
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
@@ -76,12 +77,17 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
         ArrayAdapter.createFromResource(
-            this,
-            R.array.surface_array,
-            android.R.layout.simple_spinner_item
+            this, R.array.surface_array, android.R.layout.simple_spinner_item
         ).also {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spSurfaceType.adapter = it
+        }
+
+        ArrayAdapter.createFromResource(
+            this, R.array.smoothness_array, android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spSmoothness.adapter = it
         }
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
@@ -130,9 +136,28 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     val selectedItem =
                         if (position > 0) parent.getItemAtPosition(position).toString() else null
 
-                    // Update bike activity surface
+                    // Update bike activity surface type
                     bikeActivityViewModel.update(
                         it.bikeActivity.copy(surfaceType = selectedItem)
+                    )
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+
+            spSmoothness.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedItem =
+                        if (position > 0) parent.getItemAtPosition(position).toString() else null
+
+                    // Update bike activity smoothness type
+                    bikeActivityViewModel.update(
+                        it.bikeActivity.copy(smoothnessType = selectedItem)
                     )
                 }
 

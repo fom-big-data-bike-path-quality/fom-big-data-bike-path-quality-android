@@ -19,5 +19,6 @@ data class BikeActivity(
     @ColumnInfo(name = "start_time") val startTime: Instant = Instant.now(),
     @ColumnInfo(name = "end_time") val endTime: Instant? = null,
     @ColumnInfo(name = "status") val status: BikeActivityStatus = BikeActivityStatus.LOCAL,
-    @ColumnInfo(name = "surface_type") val surfaceType: String? = null
+    @ColumnInfo(name = "surface_type") val surfaceType: String? = null,
+    @ColumnInfo(name = "smoothness_type") val smoothnessType: String? = null
 )
