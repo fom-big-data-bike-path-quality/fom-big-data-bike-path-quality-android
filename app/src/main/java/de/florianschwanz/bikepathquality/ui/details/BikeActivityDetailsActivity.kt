@@ -59,7 +59,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
         val spSurfaceType: Spinner = findViewById(R.id.spSurfaceType)
-        val spSmoothness: Spinner = findViewById(R.id.spSmoothnessType)
+        val spSmoothnessType: Spinner = findViewById(R.id.spSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvDetails: TextView = findViewById(R.id.tvDetails)
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
@@ -87,7 +87,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             this, R.array.smoothness_array, android.R.layout.simple_spinner_item
         ).also {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spSmoothness.adapter = it
+            spSmoothnessType.adapter = it
         }
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
@@ -97,10 +97,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {
                 ivCheck.visibility = View.INVISIBLE
                 tvUploaded.visibility = View.INVISIBLE
-                fab.visibility = View.VISIBLE
+                spSurfaceType.isEnabled = true
+                spSmoothnessType.isEnabled = true
+
+                if (it.bikeActivity.surfaceType != null && it.bikeActivity.smoothnessType != null) {
+                    fab.visibility = View.VISIBLE
+                } else {
+                    fab.visibility = View.INVISIBLE
+                }
             } else {
                 ivCheck.visibility = View.VISIBLE
                 tvUploaded.visibility = View.VISIBLE
+                spSurfaceType.isEnabled = false
+                spSmoothnessType.isEnabled = false
                 fab.visibility = View.INVISIBLE
             }
 
@@ -145,7 +154,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
-            spSmoothness.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            spSmoothnessType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
                     view: View,
