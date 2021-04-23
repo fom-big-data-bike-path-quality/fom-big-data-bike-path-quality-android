@@ -33,7 +33,7 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
         if (isGranted(Manifest.permission.ACTIVITY_RECOGNITION)) {
             finish()
         }
-        setContentView(R.layout.activity_transition_permission_rational)
+        setContentView(R.layout.activity_transition_permission_rationale)
     }
 
     /**

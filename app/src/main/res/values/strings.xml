@@ -13,16 +13,16 @@
     <string name="action_upload_already_done">Data has been updated already</string>
     <string name="action_uploaded">Uploaded</string>
 
-    <string name="title_activity_permission_rational">PermissionRationalActivity</string>
-    <string name="main_message_activity_permission_rational">Track activity changes by letting us read your phone\'s activity transitions.</string>
-    <string name="details_message_activity_permission_rational">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
+    <string name="title_activity_permission_rationale">PermissionRationaleActivity</string>
+    <string name="main_message_activity_permission_rationale">Track activity changes by letting us read your phone\'s activity transitions.</string>
+    <string name="details_message_activity_permission_rationale">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
 
-    <string name="title_location_permission_rational">PermissionRationalLocation</string>
-    <string name="main_message_location_permission_rational">Track location by letting us read your phone\'s position.</string>
-    <string name="details_message_location_permission_rational">This app\'s experience requires access to your phone\'s position to connect collected data to a geolocation.</string>
+    <string name="title_location_permission_rationale">PermissionRationaleLocation</string>
+    <string name="main_message_location_permission_rationale">Track location by letting us read your phone\'s position.</string>
+    <string name="details_message_location_permission_rationale">This app\'s experience requires access to your phone\'s position to connect collected data to a geolocation.</string>
 
-    <string name="no_thanks_activity_permission_rational">No Thanks</string>
-    <string name="continue_activity_permission_rational">Continue</string>
+    <string name="no_thanks_activity_permission_rationale">No Thanks</string>
+    <string name="continue_activity_permission_rationale">Continue</string>
     <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
 
     <string name="title_activities">Activities</string>
@@ -36,8 +36,8 @@
     <string name="still">still</string>
     <string name="walking">walking</string>
     <string name="running">running</string>
-    <string name="on_bycicle">on bicycle</string>
-    <string name="in_verhicle">in vehicle</string>
+    <string name="on_bicycle">on bicycle</string>
+    <string name="in_vehicle">in vehicle</string>
     <string name="unknown">unknown</string>
 
     <string name="accelerometer">Accelerometer</string>
@@ -51,7 +51,7 @@
 
     <string name="location">Location</string>
     <string name="label_lon">lon:</string>
-    <string name="label_lat">lon:</string>
+    <string name="label_lat">lat:</string>
     <string name="lon">%1$.3f</string>
     <string name="lat">%1$.3f</string>
     <string name="default_lon">-</string>

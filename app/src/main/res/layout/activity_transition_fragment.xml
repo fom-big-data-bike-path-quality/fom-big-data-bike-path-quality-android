@@ -83,7 +83,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/on_bycicle"
+                    android:contentDescription="@string/on_bicycle"
                     android:src="@drawable/ic_baseline_pedal_bike_24"
                     app:tint="@color/grey_500" />
 
@@ -92,7 +92,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/in_verhicle"
+                    android:contentDescription="@string/in_vehicle"
                     android:src="@drawable/ic_baseline_directions_car_24"
                     app:tint="@color/grey_500" />
 

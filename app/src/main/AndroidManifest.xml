@@ -22,11 +22,11 @@
             android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
-            android:label="@string/title_activity_permission_rational"
+            android:label="@string/title_activity_permission_rationale"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
         <activity
             android:name=".ui.rationale.LocationPermissionRationaleActivity"
-            android:label="@string/title_location_permission_rational"
+            android:label="@string/title_location_permission_rationale"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
         <activity
             android:name=".ui.main.MainActivity"

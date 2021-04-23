@@ -32,7 +32,7 @@ class LocationPermissionRationaleActivity : AppCompatActivity(), OnRequestPermis
         if (isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && isGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             finish()
         }
-        setContentView(R.layout.location_permission_rational)
+        setContentView(R.layout.activity_location_permission_rationale)
     }
 
     /**
