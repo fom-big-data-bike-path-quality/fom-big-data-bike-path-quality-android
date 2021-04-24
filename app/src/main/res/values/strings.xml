@@ -126,6 +126,8 @@
         <item>impassable</item>
     </string-array>
 
+    <string name="mapbox_access_token">pk.eyJ1IjoiYmlrZXBhdGgtcXVhbGl0eSIsImEiOiJja25zbjFjaGwyZWNvMnZwcjloNmd4dXc5In0.qWYKDWYq-cZhT2AGUZZPQA</string>
+
     <string name="empty" />
 
 </resources>
