@@ -1,5 +1,6 @@
 package de.florianschwanz.bikepathquality.ui.details
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.Style
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
@@ -38,6 +42,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
     private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
+    private var mapView: MapView? = null
+
     //
     // Lifecycle phases
     //
@@ -47,11 +53,17 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
+
         setContentView(R.layout.activity_bike_activity_details)
         setTitle(R.string.empty)
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        mapView = findViewById(R.id.mapView)
+        mapView?.onCreate(savedInstanceState)
 
         val ivCheck: ImageView = findViewById(R.id.ivCheck)
         val tvUploaded: TextView = findViewById(R.id.tvUploaded)
@@ -91,6 +103,20 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         }
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!).observe(this, {
+
+            val mapStyle =
+                when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                    Configuration.UI_MODE_NIGHT_YES -> Style.DARK
+                    Configuration.UI_MODE_NIGHT_NO -> Style.LIGHT
+                    Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.LIGHT
+                    else -> Style.LIGHT
+                }
+
+            mapView?.getMapAsync { mapboxMap ->
+                mapboxMap.setStyle(mapStyle) {
+                }
+            }
+
             tvStartTime.text = sdf.format(Date.from(it.bikeActivity.startTime))
             tvStartTime.visibility = View.VISIBLE
 
@@ -173,7 +199,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
-            fab.setOnClickListener { view ->
+            fab.setOnClickListener { _ ->
                 if (it.bikeActivity.status != BikeActivityStatus.UPLOADED) {
                     val serviceResultReceiver =
                         FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
@@ -188,6 +214,54 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
             }
         })
+    }
+
+    /**
+     * Handles on-resume lifecycle phase
+     */
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    /**
+     * Handles on-start lifecycle phase
+     */
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    /**
+     * Handles on-stop lifecycle phase
+     */
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    /**
+     * Handles on-pause lifecycle phase
+     */
+    override fun onPause() {
+        super.onPause()
+        mapView?.onPause()
+    }
+
+    /**
+     * Handles on-low-memory lifecycle phase
+     */
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
+    }
+
+    /**
+     * Handles on-destroy lifecycle phase
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
     }
 
     /**
