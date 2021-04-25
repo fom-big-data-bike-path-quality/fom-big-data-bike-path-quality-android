@@ -160,20 +160,22 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             )
                         )
 
-                        val latLngBounds = LatLngBounds.Builder()
-                        bikeActivityWithDetails.bikeActivityDetails.forEach { bikeActivityDetail ->
-                            latLngBounds.include(
-                                LatLng(
-                                    bikeActivityDetail.lat,
-                                    bikeActivityDetail.lon
+                        if (bikeActivityWithDetails.bikeActivityDetails.size > 1) {
+                            val latLngBounds = LatLngBounds.Builder()
+                            bikeActivityWithDetails.bikeActivityDetails.forEach { bikeActivityDetail ->
+                                latLngBounds.include(
+                                    LatLng(
+                                        bikeActivityDetail.lat,
+                                        bikeActivityDetail.lon
+                                    )
                                 )
+                            }
+
+                            mapboxMap.easeCamera(
+                                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
+                                1
                             )
                         }
-
-                        mapboxMap.easeCamera(
-                            CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
-                            1
-                        )
 
                         mapboxMap.uiSettings.isZoomGesturesEnabled = false
                         mapboxMap.uiSettings.isScrollGesturesEnabled = false
