@@ -1,8 +1,10 @@
 package de.florianschwanz.bikepathquality.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +19,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.RESULT_BIKE_ACTIVITY_UID
 import java.time.Instant
 
 /**
@@ -36,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         BikeActivityDetailViewModelFactory((this.application as BikePathQualityApplication).bikeActivityDetailsRepository)
     }
 
-    private val targetActivityType = DetectedActivity.ON_BICYCLE
+    private val targetActivityType = DetectedActivity.WALKING
 
     // Currently performed biking activity
     private var activeActivity: BikeActivity? = null
@@ -83,6 +86,33 @@ class MainActivity : AppCompatActivity() {
         handleActivityTransitions()
         handleActivityDetailTracking()
     }
+
+    /**
+     * Handles activity result
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_BIKE_ACTIVITY_DETAILS && resultCode == RESULT_OK) {
+            data?.getStringExtra(RESULT_BIKE_ACTIVITY_UID)?.let { bikeActivityUid ->
+                bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid)
+                    .observe(this) { bikeActivityWithDetails ->
+                        bikeActivityWithDetails?.let {
+                            bikeActivityViewModel.delete(it.bikeActivity)
+                            Toast.makeText(
+                                applicationContext,
+                                R.string.action_activity_deleted,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            }
+        }
+    }
+
+    //
+    // Helpers
+    //
 
     /**
      * Retrieves most recent unfinished bike activity from the database
@@ -172,6 +202,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        val REQUEST_BIKE_ACTIVITY_DETAILS = 1
+
 
         /**
          * Converts activity to a string

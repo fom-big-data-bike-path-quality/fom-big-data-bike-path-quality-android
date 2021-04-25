@@ -25,6 +25,10 @@ class BikeActivityViewModel(private val repository: BikeActivityRepository) : Vi
         repository.update(bikeActivity)
     }
 
+    fun delete(bikeActivity: BikeActivity) = viewModelScope.launch {
+        repository.delete(bikeActivity)
+    }
+
     fun deleteAll() = viewModelScope.launch {
         repository.deleteAll()
     }

@@ -15,7 +15,8 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
-import de.florianschwanz.bikepathquality.ui.details.EXTRA_BIKE_ACTIVITY_UID
+import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_BIKE_ACTIVITY_UID
+import de.florianschwanz.bikepathquality.ui.main.MainActivity.Companion.REQUEST_BIKE_ACTIVITY_DETAILS
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -97,7 +98,7 @@ class BikeActivityListAdapter(val activity: Activity) :
                     putExtra(EXTRA_BIKE_ACTIVITY_UID, item.bikeActivity.uid.toString())
                 }
 
-                activity.startActivity(intent)
+                activity.startActivityForResult(intent, REQUEST_BIKE_ACTIVITY_DETAILS)
             }
         }
 

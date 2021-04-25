@@ -1,16 +1,20 @@
 package de.florianschwanz.bikepathquality.ui.details
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
+import android.view.Menu
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,9 +45,6 @@ import de.florianschwanz.bikepathquality.services.FirestoreServiceResultReceiver
 import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivityDetailListAdapter
 import java.text.SimpleDateFormat
 import java.util.*
-
-
-const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
 
 class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver {
 
@@ -80,6 +81,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         mapView = findViewById(R.id.mapView)
         mapView?.onCreate(savedInstanceState)
 
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         val ivCheck: ImageView = findViewById(R.id.ivCheck)
         val tvUploaded: TextView = findViewById(R.id.tvUploaded)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
@@ -120,172 +122,194 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!)
             .observe(this, { bikeActivityWithDetails ->
 
-                val mapStyle =
-                    when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                        Configuration.UI_MODE_NIGHT_YES -> Style.DARK
-                        Configuration.UI_MODE_NIGHT_NO -> Style.LIGHT
-                        Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.LIGHT
-                        else -> Style.LIGHT
+                bikeActivityWithDetails?.let {
+                    toolbar.setOnMenuItemClickListener {
+                        when (it.itemId) {
+                            R.id.action_delete -> {
+                                val resultIntent = Intent()
+                                resultIntent.putExtra(
+                                    RESULT_BIKE_ACTIVITY_UID,
+                                    bikeActivityWithDetails.bikeActivity.uid.toString()
+                                )
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
+                            }
+                            else -> {
+                            }
+                        }
+
+                        false
                     }
 
-                val mapRouteCoordinates: List<Point> =
-                    bikeActivityWithDetails.bikeActivityDetails.map {
-                        Point.fromLngLat(
-                            it.lon,
-                            it.lat
-                        )
-                    }
 
-                mapView?.getMapAsync { mapboxMap ->
-                    mapboxMap.setStyle(mapStyle) {
-                        it.addSource(
-                            GeoJsonSource(
-                                "line-source",
-                                FeatureCollection.fromFeatures(
-                                    arrayOf<Feature>(
-                                        Feature.fromGeometry(
-                                            LineString.fromLngLats(mapRouteCoordinates)
+                    val mapStyle =
+                        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                            Configuration.UI_MODE_NIGHT_YES -> Style.DARK
+                            Configuration.UI_MODE_NIGHT_NO -> Style.LIGHT
+                            Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.LIGHT
+                            else -> Style.LIGHT
+                        }
+
+                    val mapRouteCoordinates: List<Point> =
+                        bikeActivityWithDetails.bikeActivityDetails.map {
+                            Point.fromLngLat(
+                                it.lon,
+                                it.lat
+                            )
+                        }
+
+                    mapView?.getMapAsync { mapboxMap ->
+                        mapboxMap.setStyle(mapStyle) {
+                            it.addSource(
+                                GeoJsonSource(
+                                    "line-source",
+                                    FeatureCollection.fromFeatures(
+                                        arrayOf<Feature>(
+                                            Feature.fromGeometry(
+                                                LineString.fromLngLats(mapRouteCoordinates)
+                                            )
                                         )
                                     )
                                 )
                             )
-                        )
-                        it.addLayer(
-                            LineLayer("linelayer", "line-source").withProperties(
-                                PropertyFactory.lineDasharray(arrayOf(0.01f, 2f)),
-                                PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                                PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                                PropertyFactory.lineWidth(5f),
-                                PropertyFactory.lineColor(Color.parseColor(getThemeColorInHex(R.attr.colorPrimary)))
+                            it.addLayer(
+                                LineLayer("linelayer", "line-source").withProperties(
+                                    PropertyFactory.lineDasharray(arrayOf(0.01f, 2f)),
+                                    PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                                    PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                                    PropertyFactory.lineWidth(5f),
+                                    PropertyFactory.lineColor(Color.parseColor(getThemeColorInHex(R.attr.colorPrimary)))
+                                )
                             )
-                        )
 
-                        if (bikeActivityWithDetails.bikeActivityDetails.size > 1) {
-                            val latLngBounds = LatLngBounds.Builder()
-                            bikeActivityWithDetails.bikeActivityDetails.forEach { bikeActivityDetail ->
-                                latLngBounds.include(
-                                    LatLng(
-                                        bikeActivityDetail.lat,
-                                        bikeActivityDetail.lon
+                            if (bikeActivityWithDetails.bikeActivityDetails.size > 1) {
+                                val latLngBounds = LatLngBounds.Builder()
+                                bikeActivityWithDetails.bikeActivityDetails.forEach { bikeActivityDetail ->
+                                    latLngBounds.include(
+                                        LatLng(
+                                            bikeActivityDetail.lat,
+                                            bikeActivityDetail.lon
+                                        )
                                     )
+                                }
+
+                                mapboxMap.easeCamera(
+                                    CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
+                                    1
                                 )
                             }
 
-                            mapboxMap.easeCamera(
-                                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
-                                1
-                            )
+                            mapboxMap.uiSettings.isZoomGesturesEnabled = false
+                            mapboxMap.uiSettings.isScrollGesturesEnabled = false
+                            mapboxMap.uiSettings.isRotateGesturesEnabled = false
                         }
-
-                        mapboxMap.uiSettings.isZoomGesturesEnabled = false
-                        mapboxMap.uiSettings.isScrollGesturesEnabled = false
-                        mapboxMap.uiSettings.isRotateGesturesEnabled = false
                     }
-                }
 
-                tvStartTime.text =
-                    sdf.format(Date.from(bikeActivityWithDetails.bikeActivity.startTime))
-                tvStartTime.visibility = View.VISIBLE
+                    tvStartTime.text =
+                        sdf.format(Date.from(bikeActivityWithDetails.bikeActivity.startTime))
+                    tvStartTime.visibility = View.VISIBLE
 
-                if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
-                    ivCheck.visibility = View.INVISIBLE
-                    tvUploaded.visibility = View.INVISIBLE
-                    spSurfaceType.isEnabled = true
-                    spSmoothnessType.isEnabled = true
+                    if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                        ivCheck.visibility = View.INVISIBLE
+                        tvUploaded.visibility = View.INVISIBLE
+                        spSurfaceType.isEnabled = true
+                        spSmoothnessType.isEnabled = true
 
-                    if (bikeActivityWithDetails.bikeActivity.surfaceType != null && bikeActivityWithDetails.bikeActivity.smoothnessType != null) {
-                        fab.visibility = View.VISIBLE
+                        if (bikeActivityWithDetails.bikeActivity.surfaceType != null && bikeActivityWithDetails.bikeActivity.smoothnessType != null) {
+                            fab.visibility = View.VISIBLE
+                        } else {
+                            fab.visibility = View.INVISIBLE
+                        }
                     } else {
+                        ivCheck.visibility = View.VISIBLE
+                        tvUploaded.visibility = View.VISIBLE
+                        spSurfaceType.isEnabled = false
+                        spSmoothnessType.isEnabled = false
                         fab.visibility = View.INVISIBLE
                     }
-                } else {
-                    ivCheck.visibility = View.VISIBLE
-                    tvUploaded.visibility = View.VISIBLE
-                    spSurfaceType.isEnabled = false
-                    spSmoothnessType.isEnabled = false
-                    fab.visibility = View.INVISIBLE
-                }
 
-                if (bikeActivityWithDetails.bikeActivity.endTime != null) {
-                    tvStopTime.text =
-                        sdfShort.format(Date.from(bikeActivityWithDetails.bikeActivity.endTime))
-                    tvDelimiter.visibility = View.VISIBLE
-                    tvStopTime.visibility = View.VISIBLE
+                    if (bikeActivityWithDetails.bikeActivity.endTime != null) {
+                        tvStopTime.text =
+                            sdfShort.format(Date.from(bikeActivityWithDetails.bikeActivity.endTime))
+                        tvDelimiter.visibility = View.VISIBLE
+                        tvStopTime.visibility = View.VISIBLE
 
-                    val diff =
-                        bikeActivityWithDetails.bikeActivity.endTime.toEpochMilli() - bikeActivityWithDetails.bikeActivity.startTime.toEpochMilli()
-                    val duration = (diff / 1000 / 60).toInt()
-                    tvDuration.text =
-                        resources.getQuantityString(R.plurals.duration, duration, duration)
-                    tvDetails.text = resources.getQuantityString(
-                        R.plurals.details,
-                        bikeActivityWithDetails.bikeActivityDetails.size,
-                        bikeActivityWithDetails.bikeActivityDetails.size
-                    )
-                } else {
-                    tvDelimiter.visibility = View.INVISIBLE
-                    tvStopTime.visibility = View.INVISIBLE
-                }
-
-                adapter.data = bikeActivityWithDetails.bikeActivityDetails
-
-                spSurfaceType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-                        val selectedItem =
-                            if (position > 0) parent.getItemAtPosition(position)
-                                .toString() else null
-
-                        // Update bike activity surface type
-                        bikeActivityViewModel.update(
-                            bikeActivityWithDetails.bikeActivity.copy(surfaceType = selectedItem)
-                        )
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
-
-                spSmoothnessType.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>,
-                            view: View,
-                            position: Int,
-                            id: Long
-                        ) {
-                            val selectedItem =
-                                if (position > 0) parent.getItemAtPosition(position)
-                                    .toString() else null
-
-                            // Update bike activity smoothness type
-                            bikeActivityViewModel.update(
-                                bikeActivityWithDetails.bikeActivity.copy(smoothnessType = selectedItem)
-                            )
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>) {}
-                    }
-
-                fab.setOnClickListener {
-                    if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
-                        val serviceResultReceiver =
-                            FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
-                        serviceResultReceiver.receiver = this
-                        FirestoreService.enqueueWork(
-                            this,
-                            bikeActivityWithDetails,
-                            serviceResultReceiver
+                        val diff =
+                            bikeActivityWithDetails.bikeActivity.endTime.toEpochMilli() - bikeActivityWithDetails.bikeActivity.startTime.toEpochMilli()
+                        val duration = (diff / 1000 / 60).toInt()
+                        tvDuration.text =
+                            resources.getQuantityString(R.plurals.duration, duration, duration)
+                        tvDetails.text = resources.getQuantityString(
+                            R.plurals.details,
+                            bikeActivityWithDetails.bikeActivityDetails.size,
+                            bikeActivityWithDetails.bikeActivityDetails.size
                         )
                     } else {
-                        Toast.makeText(
-                            applicationContext,
-                            R.string.action_upload_already_done,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        tvDelimiter.visibility = View.INVISIBLE
+                        tvStopTime.visibility = View.INVISIBLE
+                    }
+
+                    adapter.data = bikeActivityWithDetails.bikeActivityDetails
+
+                    spSurfaceType.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>,
+                                view: View,
+                                position: Int,
+                                id: Long
+                            ) {
+                                val selectedItem =
+                                    if (position > 0) parent.getItemAtPosition(position)
+                                        .toString() else null
+
+                                // Update bike activity surface type
+                                bikeActivityViewModel.update(
+                                    bikeActivityWithDetails.bikeActivity.copy(surfaceType = selectedItem)
+                                )
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>) {}
+                        }
+
+                    spSmoothnessType.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>,
+                                view: View,
+                                position: Int,
+                                id: Long
+                            ) {
+                                val selectedItem =
+                                    if (position > 0) parent.getItemAtPosition(position)
+                                        .toString() else null
+
+                                // Update bike activity smoothness type
+                                bikeActivityViewModel.update(
+                                    bikeActivityWithDetails.bikeActivity.copy(smoothnessType = selectedItem)
+                                )
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>) {}
+                        }
+
+                    fab.setOnClickListener {
+                        if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                            val serviceResultReceiver =
+                                FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
+                            serviceResultReceiver.receiver = this
+                            FirestoreService.enqueueWork(
+                                this,
+                                bikeActivityWithDetails,
+                                serviceResultReceiver
+                            )
+                        } else {
+                            Toast.makeText(
+                                applicationContext,
+                                R.string.action_upload_already_done,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             })
@@ -337,6 +361,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     override fun onDestroy() {
         super.onDestroy()
         mapView?.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_bike_activity_details_activity, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     /**
@@ -400,5 +429,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         theme.resolveAttribute(attribute, outValue, true)
 
         return String.format("#%06X", 0xFFFFFF and outValue.data)
+    }
+
+    companion object {
+        const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
+        const val RESULT_BIKE_ACTIVITY_UID = "result.BIKE_ACTIVITY_UID"
     }
 }

@@ -27,6 +27,11 @@ class BikeActivityRepository(private val bikeActivityDao: BikeActivityDao) {
     }
 
     @WorkerThread
+    suspend fun delete(bikeActivity: BikeActivity) {
+        bikeActivityDao.delete(bikeActivity)
+    }
+
+    @WorkerThread
     suspend fun deleteAll() {
         bikeActivityDao.deleteAll()
     }

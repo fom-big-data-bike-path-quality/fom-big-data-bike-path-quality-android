@@ -7,11 +7,13 @@
     <string name="action_start_activity">Start biking</string>
     <string name="action_stop_activity">Stop biking</string>
     <string name="action_upload">Upload</string>
+    <string name="action_delete_activity">Delete activity</string>
 
     <string name="action_upload_successful">Uploaded data successfully</string>
     <string name="action_upload_failed">Uploading data failed</string>
     <string name="action_upload_already_done">Data has been updated already</string>
     <string name="action_uploaded">Uploaded</string>
+    <string name="action_activity_deleted">Activity deleted</string>
 
     <string name="title_activity_permission_rationale">PermissionRationaleActivity</string>
     <string name="main_message_activity_permission_rationale">Track activity changes by letting us read your phone\'s activity transitions.</string>
