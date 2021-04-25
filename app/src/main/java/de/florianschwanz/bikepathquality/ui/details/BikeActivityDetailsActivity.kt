@@ -151,12 +151,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         }
 
                     val mapRouteCoordinates: List<Point> =
-                        bikeActivityWithDetails.bikeActivityDetails.map {
-                            Point.fromLngLat(
-                                it.lon,
-                                it.lat
-                            )
-                        }
+                        bikeActivityWithDetails.bikeActivityDetails
+                            .filter { it.lon != 0.0 || it.lat != 0.0 }
+                            .map {
+                                Point.fromLngLat(
+                                    it.lon,
+                                    it.lat
+                                )
+                            }
 
                     mapView?.getMapAsync { mapboxMap ->
                         mapboxMap.setStyle(mapStyle) {
@@ -184,14 +186,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
                             if (bikeActivityWithDetails.bikeActivityDetails.size > 1) {
                                 val latLngBounds = LatLngBounds.Builder()
-                                bikeActivityWithDetails.bikeActivityDetails.forEach { bikeActivityDetail ->
-                                    latLngBounds.include(
-                                        LatLng(
-                                            bikeActivityDetail.lat,
-                                            bikeActivityDetail.lon
+                                bikeActivityWithDetails.bikeActivityDetails
+                                    .filter { it.lon != 0.0 || it.lat != 0.0 }
+                                    .forEach { bikeActivityDetail ->
+                                        latLngBounds.include(
+                                            LatLng(
+                                                bikeActivityDetail.lat,
+                                                bikeActivityDetail.lon
+                                            )
                                         )
-                                    )
-                                }
+                                    }
 
                                 mapboxMap.easeCamera(
                                     CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
