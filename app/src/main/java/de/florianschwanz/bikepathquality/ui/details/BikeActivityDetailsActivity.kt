@@ -179,6 +179,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
                         mapboxMap.uiSettings.isZoomGesturesEnabled = false
                         mapboxMap.uiSettings.isScrollGesturesEnabled = false
+                        mapboxMap.uiSettings.isRotateGesturesEnabled = false
                     }
                 }
 
