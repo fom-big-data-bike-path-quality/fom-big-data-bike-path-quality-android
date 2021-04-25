@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         app:layout_constraintTop_toTopOf="parent"
-        mapbox:mapbox_cameraTargetLat="40.73581"
-        mapbox:mapbox_cameraTargetLng="-73.99155"
-        mapbox:mapbox_cameraZoom="11" />
+        mapbox:mapbox_cameraTargetLat="52.5162746"
+        mapbox:mapbox_cameraTargetLng="13.3777041"
+        mapbox:mapbox_cameraZoom="15" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
