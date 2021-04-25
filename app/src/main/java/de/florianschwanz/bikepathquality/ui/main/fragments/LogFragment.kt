@@ -29,8 +29,8 @@ class LogFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.log_fragment, container, false)
 
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rvLog)
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        val recyclerView: RecyclerView = view.findViewById(R.id.rvLog)
         val adapter = LogEntryListAdapter()
 
         toolbar.inflateMenu(R.menu.menu_log_fragment)
@@ -50,7 +50,7 @@ class LogFragment : Fragment() {
 
         viewModel.allLogEntries.observe(viewLifecycleOwner, {
             adapter.data = it
-            if (adapter.data.size > 0 ) {
+            if (adapter.data.isNotEmpty()) {
                 recyclerView.smoothScrollToPosition(adapter.data.size - 1)
             }
         })

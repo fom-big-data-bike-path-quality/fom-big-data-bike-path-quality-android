@@ -77,7 +77,7 @@ class BikeActivitiesFragment : Fragment() {
 
         bikeActivityViewModel.allBikeActivitiesWithDetails.observe(viewLifecycleOwner, {
             adapter.data = it
-            if (adapter.data.size > 0) {
+            if (adapter.data.isNotEmpty()) {
                 recyclerView.smoothScrollToPosition(adapter.data.size - 1)
             }
         })
