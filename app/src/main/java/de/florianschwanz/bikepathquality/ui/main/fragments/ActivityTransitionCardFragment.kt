@@ -83,7 +83,7 @@ class ActivityTransitionCardFragment : Fragment() {
                 viewModel.activityTransitionLiveData.observe(viewLifecycleOwner, {
 
                     val activeColor =
-                        context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.teal_700
+                        context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.green_700
                     val inactiveColor =
                         context?.getColorFromAttr(R.attr.colorOnSurface) ?: R.color.grey_500
 
