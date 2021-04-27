@@ -7,6 +7,7 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -19,6 +20,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.RESULT_BIKE_ACTIVITY_UID
 import java.time.Instant
 
@@ -85,6 +87,8 @@ class MainActivity : AppCompatActivity() {
         handleActiveBikeActivity()
         handleActivityTransitions()
         handleActivityDetailTracking()
+
+        startTrackingForegroundService()
     }
 
     /**
@@ -173,6 +177,11 @@ class MainActivity : AppCompatActivity() {
             currentLon = it.lon
             currentLat = it.lat
         })
+    }
+
+    private fun startTrackingForegroundService() {
+        val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
+        ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
     }
 
     /**

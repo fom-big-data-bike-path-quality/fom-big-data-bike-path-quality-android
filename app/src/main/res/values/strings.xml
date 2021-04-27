@@ -15,6 +15,11 @@
     <string name="action_uploaded">Uploaded</string>
     <string name="action_activity_deleted">Activity deleted</string>
 
+    <string name="action_tracking_bike_activity_idle">Bike activity</string>
+    <string name="action_tracking_bike_activity_idle_description">Waiting for a bike activity</string>
+    <string name="action_tracking_bike_activity">Bike activity</string>
+    <string name="action_tracking_bike_activity_description">Tracking bike activity</string>
+
     <string name="title_activity_permission_rationale">PermissionRationaleActivity</string>
     <string name="main_message_activity_permission_rationale">Track activity changes by letting us read your phone\'s activity transitions.</string>
     <string name="details_message_activity_permission_rationale">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
