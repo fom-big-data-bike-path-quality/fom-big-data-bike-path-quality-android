@@ -12,9 +12,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
+import de.florianschwanz.bikepathquality.data.livedata.LocationLiveData
 import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRationaleActivity
 import de.florianschwanz.bikepathquality.utils.GpsUtils
 
@@ -22,8 +21,6 @@ import de.florianschwanz.bikepathquality.utils.GpsUtils
  * Location card fragment
  */
 class LocationCardFragment : Fragment() {
-
-    private lateinit var viewModel: MainActivityViewModel
 
     private lateinit var tvLon: TextView
     private lateinit var tvLat: TextView
@@ -54,7 +51,10 @@ class LocationCardFragment : Fragment() {
      * Handles activity-result lifecycle phase
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
                 isGPSEnabled = true
@@ -94,9 +94,7 @@ class LocationCardFragment : Fragment() {
     private fun invokeLocationAction() {
         when {
             isPermissionsGranted() -> {
-                viewModel =
-                    ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-                viewModel.locationLiveData.observe(viewLifecycleOwner, {
+                LocationLiveData(requireActivity()).observe(viewLifecycleOwner, {
                     tvLon.text = resources.getString(R.string.lon, it.lon)
                     tvLat.text = resources.getString(R.string.lat, it.lat)
                 })

@@ -6,18 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.google.common.collect.EvictingQueue
-import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.R
-import java.lang.Math.abs
+import de.florianschwanz.bikepathquality.data.livedata.AccelerometerLiveData
+import kotlin.math.abs
 
 /**
  * Accelerometer card fragment
  */
 class AccelerometerCardFragment : Fragment() {
-
-    private lateinit var viewModel: MainActivityViewModel
 
     //
     // Lifecycle phases
@@ -43,8 +40,7 @@ class AccelerometerCardFragment : Fragment() {
         val accelerometerEvictingQueueY: EvictingQueue<Float> = EvictingQueue.create(100)
         val accelerometerEvictingQueueZ: EvictingQueue<Float> = EvictingQueue.create(100)
 
-        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-        viewModel.accelerometerLiveData.observe(viewLifecycleOwner, {
+        AccelerometerLiveData(requireActivity()).observe(viewLifecycleOwner, {
 
             accelerometerEvictingQueueX.add(it.x)
             accelerometerEvictingQueueY.add(it.y)
@@ -65,5 +61,8 @@ class AccelerometerCardFragment : Fragment() {
         return view
     }
 
+    /**
+     * Returns a minus sign if a given double value is negative, otherwise nothing
+     */
     private fun Double.sign(): String = if (this < 0) "-" else ""
 }
