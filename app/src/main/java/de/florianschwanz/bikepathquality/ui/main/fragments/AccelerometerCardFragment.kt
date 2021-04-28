@@ -6,15 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.common.collect.EvictingQueue
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.livedata.AccelerometerLiveData
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import kotlin.math.abs
 
 /**
  * Accelerometer card fragment
  */
 class AccelerometerCardFragment : Fragment() {
+
+    private lateinit var viewModel: MainActivityViewModel
 
     //
     // Lifecycle phases
@@ -40,7 +43,8 @@ class AccelerometerCardFragment : Fragment() {
         val accelerometerEvictingQueueY: EvictingQueue<Float> = EvictingQueue.create(100)
         val accelerometerEvictingQueueZ: EvictingQueue<Float> = EvictingQueue.create(100)
 
-        AccelerometerLiveData(requireActivity()).observe(viewLifecycleOwner, {
+        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+        viewModel.accelerometerLiveData.observe(viewLifecycleOwner, {
 
             accelerometerEvictingQueueX.add(it.x)
             accelerometerEvictingQueueY.add(it.y)

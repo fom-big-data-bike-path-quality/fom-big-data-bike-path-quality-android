@@ -16,16 +16,19 @@ import androidx.annotation.ColorInt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.livedata.ActivityTransitionLiveData
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.rationale.ActivityTransitionPermissionRationaleActivity
 
 /**
  * Activity transition card fragment
  */
 class ActivityTransitionCardFragment : Fragment() {
+
+    private lateinit var viewModel: MainActivityViewModel
 
     private lateinit var ivStill: ImageView
     private lateinit var ivWalking: ImageView
@@ -75,36 +78,36 @@ class ActivityTransitionCardFragment : Fragment() {
     private fun invokeActivityTransitionAction() {
         when {
             isPermissionsGranted() -> {
-                ActivityTransitionLiveData(requireActivity()).observe(
-                    viewLifecycleOwner,
-                    {
+                viewModel =
+                    ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+                viewModel.activityTransitionLiveData.observe(viewLifecycleOwner, {
 
-                        val activeColor =
-                            context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.green_700
-                        val inactiveColor =
-                            context?.getColorFromAttr(R.attr.colorOnSurface) ?: R.color.grey_500
+                    val activeColor =
+                        context?.getColorFromAttr(R.attr.colorPrimary) ?: R.color.green_700
+                    val inactiveColor =
+                        context?.getColorFromAttr(R.attr.colorOnSurface) ?: R.color.grey_500
 
-                        val color = when (it.transitionType) {
-                            ActivityTransition.ACTIVITY_TRANSITION_ENTER -> activeColor
-                            else -> inactiveColor
-                        }
+                    val color = when (it.transitionType) {
+                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> activeColor
+                        else -> inactiveColor
+                    }
 
-                        ivStill.tint(inactiveColor)
-                        ivWalking.tint(inactiveColor)
-                        ivRunning.tint(inactiveColor)
-                        ivOnBicycle.tint(inactiveColor)
-                        ivInVehicle.tint(inactiveColor)
-                        ivUnknown.tint(inactiveColor)
+                    ivStill.tint(inactiveColor)
+                    ivWalking.tint(inactiveColor)
+                    ivRunning.tint(inactiveColor)
+                    ivOnBicycle.tint(inactiveColor)
+                    ivInVehicle.tint(inactiveColor)
+                    ivUnknown.tint(inactiveColor)
 
-                        when (it.activityType) {
-                            DetectedActivity.STILL -> ivStill.tint(color)
-                            DetectedActivity.WALKING -> ivWalking.tint(color)
-                            DetectedActivity.RUNNING -> ivRunning.tint(color)
-                            DetectedActivity.ON_BICYCLE -> ivOnBicycle.tint(color)
-                            DetectedActivity.IN_VEHICLE -> ivInVehicle.tint(color)
-                            DetectedActivity.UNKNOWN -> ivUnknown.tint(color)
-                        }
-                    })
+                    when (it.activityType) {
+                        DetectedActivity.STILL -> ivStill.tint(color)
+                        DetectedActivity.WALKING -> ivWalking.tint(color)
+                        DetectedActivity.RUNNING -> ivRunning.tint(color)
+                        DetectedActivity.ON_BICYCLE -> ivOnBicycle.tint(color)
+                        DetectedActivity.IN_VEHICLE -> ivInVehicle.tint(color)
+                        DetectedActivity.UNKNOWN -> ivUnknown.tint(color)
+                    }
+                })
             }
 
             else -> activity?.let {
