@@ -184,7 +184,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 )
                             )
 
-                            if (bikeActivityWithDetails.bikeActivityDetails.size > 1) {
+                            if (bikeActivityWithDetails.bikeActivityDetails.filter { it.lon != 0.0 || it.lat != 0.0 }.size > 1) {
                                 val latLngBounds = LatLngBounds.Builder()
                                 bikeActivityWithDetails.bikeActivityDetails
                                     .filter { it.lon != 0.0 || it.lat != 0.0 }
