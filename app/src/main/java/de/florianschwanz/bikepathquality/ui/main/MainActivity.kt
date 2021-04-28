@@ -40,10 +40,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
 
         navView.setupWithNavController(navController)
-
-        // Start tracking foreground service
-        val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
-        ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
     }
 
     /**

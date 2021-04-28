@@ -6,9 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -45,8 +43,11 @@ class TrackingForegroundService : LifecycleService() {
     private var activeActivityType = -1
     private var activeTransitionType = -1
 
+    // Current location
     private var currentLon = 0.0
     private var currentLat = 0.0
+
+    // Current accelerometer values
     private var currentAccelerometerX = 0.0f
     private var currentAccelerometerY = 0.0f
     private var currentAccelerometerZ = 0.0f
@@ -175,8 +176,26 @@ class TrackingForegroundService : LifecycleService() {
             activeActivity = it
 
             if (activeActivity != null) {
+
+                log("Start bike activity")
+
+                showNotification(
+                    title = R.string.action_tracking_bike_activity,
+                    text = R.string.action_tracking_bike_activity_description,
+                    icon = R.drawable.ic_baseline_pedal_bike_24
+                )
+
                 activityDetailTracker.run()
             } else {
+
+                log("Stop bike activity")
+
+                showNotification(
+                    title = R.string.action_tracking_bike_activity_idle,
+                    text = R.string.action_tracking_bike_activity_idle_description,
+                    icon = R.drawable.ic_baseline_pause_24
+                )
+
                 activityDetailHandler.removeCallbacks(activityDetailTracker)
             }
         })
@@ -191,34 +210,24 @@ class TrackingForegroundService : LifecycleService() {
 
         activityTransitionLiveData.observe(this, {
 
-            val message = toTransitionType(it.transitionType) + " " + toActivityString(it.activityType)
-            log(message)
+            log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
 
-            if (it.activityType == targetActivityType) {
-                when (it.transitionType) {
-                    ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
-                        // Create new bike activity if there no ongoing one
-                        if (activeActivity == null) {
-                            bikeActivityViewModel.insert(BikeActivity())
+            if (it.activityType != activeActivityType || it.transitionType != activeTransitionType) {
 
-                            showNotification(
-                                title = R.string.action_tracking_bike_activity,
-                                text = R.string.action_tracking_bike_activity_description,
-                                icon = R.drawable.ic_baseline_pedal_bike_24
-                            )
-                        }
-                    }
-                    ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
-                        // Finish active bike activity if there is one
-                        activeActivity?.let { bikeActivity ->
-                            bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
+                if (activeActivity == null
+                    && it.activityType == targetActivityType
+                    && it.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
+                ) {
+                    bikeActivityViewModel.insert(BikeActivity())
+                } else {
+                    activeActivity?.let { bikeActivity ->
+                        bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
 
-                            showNotification(
-                                title = R.string.action_tracking_bike_activity_idle,
-                                text = R.string.action_tracking_bike_activity_idle_description,
-                                icon = R.drawable.ic_baseline_pause_24
-                            )
-                        }
+                        showNotification(
+                            title = R.string.action_tracking_bike_activity_idle,
+                            text = R.string.action_tracking_bike_activity_idle_description,
+                            icon = R.drawable.ic_baseline_pause_24
+                        )
                     }
                 }
             }
