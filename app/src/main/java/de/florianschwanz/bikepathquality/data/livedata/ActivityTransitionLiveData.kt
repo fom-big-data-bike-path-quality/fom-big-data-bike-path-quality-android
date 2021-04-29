@@ -18,10 +18,6 @@ import de.florianschwanz.bikepathquality.data.model.ActivityTransitionModel
 class ActivityTransitionLiveData(val context: Context) :
     LiveData<ActivityTransitionModel>() {
 
-    /** Name of transition receiver action */
-    private val TRANSITIONS_RECEIVER_ACTION =
-        BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION"
-
     /** Activity transitions pending intent */
     private var activityTransitionsPendingIntent: PendingIntent? = null
 
@@ -33,7 +29,6 @@ class ActivityTransitionLiveData(val context: Context) :
 
     init {
         initActivityTransitions()
-        registerReceiver()
     }
 
     //
@@ -56,6 +51,8 @@ class ActivityTransitionLiveData(val context: Context) :
             .addOnFailureListener { e ->
                 Log.e(TAG, "Transitions Api could NOT be registered: $e")
             }
+
+        registerReceiver()
     }
 
     /**
@@ -71,6 +68,8 @@ class ActivityTransitionLiveData(val context: Context) :
             .addOnFailureListener { e ->
                 Log.e(TAG, "Transitions could not be unregistered: $e")
             }
+
+        unregisterReceiver()
     }
 
     //
@@ -147,6 +146,10 @@ class ActivityTransitionLiveData(val context: Context) :
         context.registerReceiver(transitionsReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION))
     }
 
+    private fun unregisterReceiver() {
+        context.unregisterReceiver(transitionsReceiver)
+    }
+
     //
     // Inner classes
     //
@@ -179,5 +182,7 @@ class ActivityTransitionLiveData(val context: Context) :
 
     companion object {
         private const val TAG = "ActivityTransitionLiveData"
+        private const val TRANSITIONS_RECEIVER_ACTION =
+            BuildConfig.APPLICATION_ID + "TRANSITIONS_RECEIVER_ACTION"
     }
 }
