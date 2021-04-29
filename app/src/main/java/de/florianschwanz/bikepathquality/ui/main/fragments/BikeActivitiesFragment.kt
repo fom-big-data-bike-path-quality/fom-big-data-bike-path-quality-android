@@ -1,15 +1,19 @@
 package de.florianschwanz.bikepathquality.ui.main.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
@@ -20,10 +24,14 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.services.TrackingForegroundService
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.main.adapters.BikeActivityListAdapter
 import java.time.Instant
 
 class BikeActivitiesFragment : Fragment() {
+
+    private lateinit var viewModel: MainActivityViewModel
 
     private val logEntryViewModel: LogEntryViewModel by viewModels {
         LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
@@ -56,6 +64,24 @@ class BikeActivitiesFragment : Fragment() {
             when (it.itemId) {
                 R.id.action_clear -> {
                     bikeActivityViewModel.deleteAll()
+                }
+                ACTION_ENABLED_AUTOMATIC_TRACKING -> {
+                    val trackingForegroundServiceIntent =
+                        Intent(requireActivity(), TrackingForegroundService::class.java)
+                    trackingForegroundServiceIntent.setAction(TrackingForegroundService.ACTION_START)
+                    ContextCompat.startForegroundService(
+                        requireActivity(),
+                        trackingForegroundServiceIntent
+                    )
+                }
+                ACTION_DISABLED_AUTOMATIC_TRACKING -> {
+                    val trackingForegroundServiceIntent =
+                        Intent(requireActivity(), TrackingForegroundService::class.java)
+                    trackingForegroundServiceIntent.setAction(TrackingForegroundService.ACTION_STOP)
+                    ContextCompat.startForegroundService(
+                        requireActivity(),
+                        trackingForegroundServiceIntent
+                    )
                 }
                 else -> {
                 }
@@ -94,13 +120,43 @@ class BikeActivitiesFragment : Fragment() {
             }
         })
 
+        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+        viewModel.trackingServiceEnabled.observe(viewLifecycleOwner, { trackingServiceEnabled ->
+            if (trackingServiceEnabled) {
+                toolbar.menu.removeItem(ACTION_ENABLED_AUTOMATIC_TRACKING)
+                toolbar.menu.add(
+                    Menu.NONE,
+                    ACTION_DISABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_disable_automatic_tracking)
+                )
+            } else {
+                toolbar.menu.removeItem(ACTION_DISABLED_AUTOMATIC_TRACKING)
+                toolbar.menu.add(
+                    Menu.NONE,
+                    ACTION_ENABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_enable_automatic_tracking)
+                )
+            }
+        })
+
         return view
     }
+
+    //
+    // Helpers
+    //
 
     /**
      * Logs message
      */
     private fun log(message: String) {
         logEntryViewModel.insert(LogEntry(message = message))
+    }
+
+    companion object {
+        const val ACTION_ENABLED_AUTOMATIC_TRACKING = 0
+        const val ACTION_DISABLED_AUTOMATIC_TRACKING = 1
     }
 }
