@@ -105,11 +105,19 @@ class TrackingForegroundService : LifecycleService() {
                 handleActivityTransitions()
                 handleActivityDetailTracking()
 
+                val broadCastIntent = Intent(TAG)
+                broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STARTED)
+                sendBroadcast(broadCastIntent)
+
                 log("Start tracking service")
             }
             ACTION_STOP -> {
                 stopForeground(true)
                 stopSelfResult(startId)
+
+                val broadCastIntent = Intent(TAG)
+                broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STOPPED)
+                sendBroadcast(broadCastIntent)
             }
         }
 
@@ -286,11 +294,18 @@ class TrackingForegroundService : LifecycleService() {
     }
 
     companion object {
+        const val TAG = "TrackingForegroundService"
+
         const val ACTION_START = "action.START"
         const val ACTION_STOP = "action.STOP"
 
         const val CHANNEL_ID = "channel.TRACKING"
         const val CHANNEL_NAME = "channel.TRACKING"
+
+        const val EXTRA_ENABLED = "extra.STATUS"
+
+        const val STATUS_STARTED = true
+        const val STATUS_STOPPED = false
 
         /**
          * Converts activity to a string
