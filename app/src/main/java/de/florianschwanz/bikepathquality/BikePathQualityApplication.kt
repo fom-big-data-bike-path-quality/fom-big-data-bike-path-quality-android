@@ -10,6 +10,7 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryRepository
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
+import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.ACTION_START
 
 class BikePathQualityApplication : Application() {
 
@@ -35,6 +36,7 @@ class BikePathQualityApplication : Application() {
         logEntryViewModel.insert(LogEntry(message = "\nStart tracking service"))
 
         val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
+        trackingForegroundServiceIntent.setAction(ACTION_START)
         ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
     }
 }

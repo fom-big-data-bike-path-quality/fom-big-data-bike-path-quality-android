@@ -6,7 +6,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -91,17 +93,25 @@ class TrackingForegroundService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        showNotification(
-            title = R.string.action_tracking_bike_activity_idle,
-            text = R.string.action_tracking_bike_activity_idle_description,
-            icon = R.drawable.ic_baseline_pause_24
-        )
+        when (intent?.action) {
+            ACTION_START -> {
+                showNotification(
+                    title = R.string.action_tracking_bike_activity_idle,
+                    text = R.string.action_tracking_bike_activity_idle_description,
+                    icon = R.drawable.ic_baseline_pause_24
+                )
 
-        handleActiveBikeActivity()
-        handleActivityTransitions()
-        handleActivityDetailTracking()
+                handleActiveBikeActivity()
+                handleActivityTransitions()
+                handleActivityDetailTracking()
 
-        log("Start tracking service")
+                log("Start tracking service")
+            }
+            ACTION_STOP -> {
+                stopForeground(true)
+                stopSelfResult(startId)
+            }
+        }
 
         return START_STICKY
     }
@@ -276,6 +286,9 @@ class TrackingForegroundService : LifecycleService() {
     }
 
     companion object {
+        const val ACTION_START = "action.START"
+        const val ACTION_STOP = "action.STOP"
+
         const val CHANNEL_ID = "channel.TRACKING"
         const val CHANNEL_NAME = "channel.TRACKING"
 
