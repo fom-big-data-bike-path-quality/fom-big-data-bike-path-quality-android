@@ -367,6 +367,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         mapView?.onDestroy()
     }
 
+    /**
+     * Handles click on back button
+     */
+    override fun onBackPressed() {
+        onNavigateUp()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_bike_activity_details_activity, menu)
         return super.onCreateOptionsMenu(menu)
