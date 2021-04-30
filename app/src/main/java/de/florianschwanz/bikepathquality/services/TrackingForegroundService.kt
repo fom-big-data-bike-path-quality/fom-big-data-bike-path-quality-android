@@ -155,6 +155,7 @@ class TrackingForegroundService : LifecycleService() {
             ACTION_STOP -> {
                 stopForeground(true)
                 stopSelfResult(startId)
+                activityDetailHandler.removeCallbacks(activityDetailTracker)
 
                 val broadCastIntent = Intent(TAG)
                 broadCastIntent.putExtra(EXTRA_STATUS, STATUS_STOPPED)
