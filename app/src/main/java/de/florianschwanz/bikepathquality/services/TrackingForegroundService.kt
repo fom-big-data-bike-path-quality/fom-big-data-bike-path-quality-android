@@ -57,33 +57,33 @@ class TrackingForegroundService : LifecycleService() {
     private var currentAccelerometerY = 0.0f
     private var currentAccelerometerZ = 0.0f
 
-    private val activityDetailHandler = Handler(Looper.getMainLooper())
-    private var activityDetailTracker: Runnable = object : Runnable {
+    private val activitySampleHandler = Handler(Looper.getMainLooper())
+    private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
             try {
-                log("new tracking for ${activeActivity?.uid}")
+                log("--- new sample for ${activeActivity?.uid}")
 
-                var startTime = Instant.now().toEpochMilli()
-                var stopTime = Instant.now().toEpochMilli()
-
-                repeat(TRACKING_SAMPLE_SIZE) {
-
-                    log("new sample for ${activeActivity?.uid}")
-
-                    // Sleep until next measurement
-                    while (startTime - stopTime < TRACKING_SAMPLE_INTERVAL) {
-                        Thread.sleep(TRACKING_SAMPLE_INTERVAL / 10)
-                        startTime = Instant.now().toEpochMilli()
+                var sampleDetails = 0
+                val activityDetailHandler = Handler(Looper.getMainLooper())
+                val activityDetailTracker: Runnable = object : Runnable {
+                    override fun run() {
+                        try {
+                            log("------ new detail")
+                            trackActivityDetail()
+                            sampleDetails++
+                        } finally {
+                            if (sampleDetails < TRACKING_SAMPLE_SIZE) {
+                                activityDetailHandler.postDelayed(this, ACTIVITY_DETAIL_DELAY)
+                            } else {
+                                activityDetailHandler.removeCallbacks(this)
+                            }
+                        }
                     }
-
-                    // Make a measurement
-                    trackActivityDetail()
-
-                    stopTime = Instant.now().toEpochMilli()
                 }
 
+                activityDetailTracker.run()
             } finally {
-                activityDetailHandler.postDelayed(this, TRACKING_DELAY)
+                activitySampleHandler.postDelayed(this, ACTIVITY_SAMPLE_DELAY)
             }
         }
     }
@@ -155,7 +155,7 @@ class TrackingForegroundService : LifecycleService() {
             ACTION_STOP -> {
                 stopForeground(true)
                 stopSelfResult(startId)
-                activityDetailHandler.removeCallbacks(activityDetailTracker)
+                activitySampleHandler.removeCallbacks(activitySampleTracker)
 
                 val broadCastIntent = Intent(TAG)
                 broadCastIntent.putExtra(EXTRA_STATUS, STATUS_STOPPED)
@@ -248,7 +248,7 @@ class TrackingForegroundService : LifecycleService() {
                     icon = R.drawable.ic_baseline_pedal_bike_24
                 )
 
-                activityDetailTracker.run()
+                activitySampleTracker.run()
             } else {
 
                 log("Stop bike activity")
@@ -259,7 +259,7 @@ class TrackingForegroundService : LifecycleService() {
                     icon = R.drawable.ic_baseline_pause_24
                 )
 
-                activityDetailHandler.removeCallbacks(activityDetailTracker)
+                activitySampleHandler.removeCallbacks(activitySampleTracker)
             }
         })
     }
@@ -364,10 +364,10 @@ class TrackingForegroundService : LifecycleService() {
         var status = STATUS_STOPPED
 
         /** Delay between samples in millis */
-        const val TRACKING_DELAY = 10_000L
+        const val ACTIVITY_SAMPLE_DELAY = 10_000L
 
-        /** Time between measurements in a sample in millis */
-        const val TRACKING_SAMPLE_INTERVAL = 100L
+        /** Delay between measurements in a sample in millis */
+        const val ACTIVITY_DETAIL_DELAY = 100L
 
         /** Number of measurements per sample */
         const val TRACKING_SAMPLE_SIZE = 5
