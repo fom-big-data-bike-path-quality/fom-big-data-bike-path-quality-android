@@ -28,6 +28,9 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
 import java.time.Instant
 
+/**
+ * Tracking foreground service
+ */
 class TrackingForegroundService : LifecycleService() {
 
     private lateinit var logEntryViewModel: LogEntryViewModel
@@ -54,14 +57,33 @@ class TrackingForegroundService : LifecycleService() {
     private var currentAccelerometerY = 0.0f
     private var currentAccelerometerZ = 0.0f
 
-    private val activityDetailInterval = 10_000L
     private val activityDetailHandler = Handler(Looper.getMainLooper())
     private var activityDetailTracker: Runnable = object : Runnable {
         override fun run() {
             try {
-                trackActivityDetail()
+                log("new tracking for ${activeActivity?.uid}")
+
+                var startTime = Instant.now().toEpochMilli()
+                var stopTime = Instant.now().toEpochMilli()
+
+                repeat(TRACKING_SAMPLE_SIZE) {
+
+                    log("new sample for ${activeActivity?.uid}")
+
+                    // Sleep until next measurement
+                    while (startTime - stopTime < TRACKING_SAMPLE_INTERVAL) {
+                        Thread.sleep(TRACKING_SAMPLE_INTERVAL / 10)
+                        startTime = Instant.now().toEpochMilli()
+                    }
+
+                    // Make a measurement
+                    trackActivityDetail()
+
+                    stopTime = Instant.now().toEpochMilli()
+                }
+
             } finally {
-                activityDetailHandler.postDelayed(this, activityDetailInterval)
+                activityDetailHandler.postDelayed(this, TRACKING_DELAY)
             }
         }
     }
@@ -103,7 +125,7 @@ class TrackingForegroundService : LifecycleService() {
 
                 handleActiveBikeActivity()
                 handleActivityTransitions()
-                handleActivityDetailTracking()
+                handleSensorData()
 
                 val broadCastIntent = Intent(TAG)
                 broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STARTED)
@@ -255,7 +277,10 @@ class TrackingForegroundService : LifecycleService() {
         })
     }
 
-    private fun handleActivityDetailTracking() {
+    /**
+     * Handles sensor data
+     */
+    private fun handleSensorData() {
         accelerometerLiveData.observe(this, {
             currentAccelerometerX = it.x
             currentAccelerometerY = it.y
@@ -271,8 +296,6 @@ class TrackingForegroundService : LifecycleService() {
      * Tracks an activity detail and persists it
      */
     private fun trackActivityDetail() = activeActivity?.let {
-
-        log("new tracking for ${it.uid}")
 
         bikeActivityDetailViewModel.insert(
             BikeActivityDetail(
@@ -306,6 +329,15 @@ class TrackingForegroundService : LifecycleService() {
 
         const val STATUS_STARTED = true
         const val STATUS_STOPPED = false
+
+        /** Delay between samples in millis */
+        const val TRACKING_DELAY = 10_000L
+
+        /** Time between measurements in a sample in millis */
+        const val TRACKING_SAMPLE_INTERVAL = 100L
+
+        /** Number of measurements per sample */
+        const val TRACKING_SAMPLE_SIZE = 5
 
         /**
          * Converts activity to a string
