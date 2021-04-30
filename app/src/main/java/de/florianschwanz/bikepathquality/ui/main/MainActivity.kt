@@ -1,14 +1,19 @@
 package de.florianschwanz.bikepathquality.ui.main
 
+import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -20,6 +25,8 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.EXTRA_ENABLED
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.RESULT_BIKE_ACTIVITY_UID
+import de.florianschwanz.bikepathquality.ui.rationale.ActivityTransitionPermissionRationaleActivity
+import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRationaleActivity
 
 
 /**
@@ -58,6 +65,9 @@ class MainActivity : AppCompatActivity() {
                 viewModel.trackingServiceEnabled.value = intent.extras?.getBoolean(EXTRA_ENABLED)
             }
         }
+
+        requestActivityTransitionPermission()
+        requestLocationPermission()
     }
 
     /**
@@ -107,12 +117,53 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
             }
+        } else if (requestCode == REQUEST_ACTIVITY_TRANSITION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
+            finishAffinity();
+        } else if (requestCode == REQUEST_LOCATION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
+            finishAffinity();
         }
     }
 
     //
     // Helpers
     //
+
+    /**
+     * Requests activity transition permission
+     */
+    private fun requestActivityTransitionPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            !isGranted(Manifest.permission.ACTIVITY_RECOGNITION)
+        ) {
+            val startIntent =
+                Intent(this, ActivityTransitionPermissionRationaleActivity::class.java)
+
+            @Suppress("DEPRECATION")
+            startActivityForResult(startIntent, REQUEST_ACTIVITY_TRANSITION_PERMISSION)
+        }
+    }
+
+    /**
+     * Requests location permission
+     */
+    private fun requestLocationPermission() {
+        if (!isGranted(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            !isGranted(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ) {
+            val startIntent =
+                Intent(this, LocationPermissionRationaleActivity::class.java)
+
+            @Suppress("DEPRECATION")
+            startActivityForResult(startIntent, REQUEST_LOCATION_PERMISSION)
+        }
+    }
+
+    /**
+     * Determines if a given permission is granted
+     */
+    private fun isGranted(permission: String) =
+        ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
     /**
      * Updates notification banner based on tracking service state
@@ -125,6 +176,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val REQUEST_BIKE_ACTIVITY_DETAILS = 1
+        const val REQUEST_ACTIVITY_TRANSITION_PERMISSION = 1
+        const val REQUEST_LOCATION_PERMISSION = 2
+        const val REQUEST_BIKE_ACTIVITY_DETAILS = 3
     }
 }

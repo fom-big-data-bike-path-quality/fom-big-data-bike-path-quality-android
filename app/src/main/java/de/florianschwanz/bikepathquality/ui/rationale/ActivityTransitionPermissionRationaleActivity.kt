@@ -1,6 +1,7 @@
 package de.florianschwanz.bikepathquality.ui.rationale
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -29,8 +30,8 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // If permissions granted, we start the main activity (shut this activity down)
         if (isGranted(Manifest.permission.ACTIVITY_RECOGNITION)) {
+            setResult(Activity.RESULT_OK)
             finish()
         }
         setContentView(R.layout.activity_transition_permission_rationale)
@@ -49,9 +50,7 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val permissionResult =
-            "Request code: ${requestCode}, Permissions: ${permissions.contentToString()}, Results: ${grantResults.contentToString()}"
-        Log.d(TAG, "onRequestPermissionsResult(): $permissionResult")
+
         if (requestCode == PERMISSION_REQUEST_ACTIVITY_RECOGNITION) {
             // Close activity regardless of user's decision (decision picked up in main activity).
             finish()
@@ -67,7 +66,7 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
      */
     @RequiresApi(api = Build.VERSION_CODES.Q)
     fun onClickApprovePermissionRequest(view: View?) {
-        Log.d(TAG, "onClickApprovePermissionRequest()")
+        setResult(Activity.RESULT_OK)
         ActivityCompat.requestPermissions(
             this, arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
             PERMISSION_REQUEST_ACTIVITY_RECOGNITION
@@ -79,6 +78,7 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
      */
     fun onClickDenyPermissionRequest(view: View?) {
         Log.d(TAG, "onClickDenyPermissionRequest()")
+        setResult(Activity.RESULT_CANCELED)
         finish()
     }
 
