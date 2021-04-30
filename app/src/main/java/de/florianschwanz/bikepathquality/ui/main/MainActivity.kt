@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var broadcastReceiver: BroadcastReceiver
 
+    private lateinit var clNotification: ConstraintLayout
+
     //
     // Lifecycle phases
     //
@@ -47,18 +49,9 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        val clNotification: ConstraintLayout = findViewById(R.id.clNotification)
+        clNotification = findViewById(R.id.clNotification)
 
         navView.setupWithNavController(navController)
-
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceEnabled.observe(this, { trackingServiceEnabled ->
-            if (trackingServiceEnabled) {
-                clNotification.maxHeight = 100
-            } else {
-                clNotification.maxHeight = 0
-            }
-        })
 
         broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
@@ -67,13 +60,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles on-resume lifecycle phase
+     */
     override fun onResume() {
         super.onResume()
         registerReceiver(
             broadcastReceiver, IntentFilter(TrackingForegroundService.TAG)
         )
+
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel.trackingServiceEnabled.observe(this, { trackingServiceEnabled ->
+            updateNotificationBanner(clNotification, trackingServiceEnabled)
+        })
+
+        updateNotificationBanner(clNotification, TrackingForegroundService.status)
     }
 
+    /**
+     * Handles on-pause lifecycle phase
+     */
     override fun onPause() {
         super.onPause()
         unregisterReceiver(broadcastReceiver)
@@ -102,6 +108,20 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         }
+    }
+
+    //
+    // Helpers
+    //
+
+    /**
+     * Updates notification banner based on tracking service state
+     */
+    private fun updateNotificationBanner(
+        clNotification: ConstraintLayout,
+        trackingServiceEnabled: Boolean
+    ) {
+        clNotification.maxHeight = if (trackingServiceEnabled) 100 else 0
     }
 
     companion object {

@@ -130,6 +130,7 @@ class TrackingForegroundService : LifecycleService() {
                 val broadCastIntent = Intent(TAG)
                 broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STARTED)
                 sendBroadcast(broadCastIntent)
+                status = STATUS_STARTED
 
                 log("Start tracking service")
             }
@@ -140,6 +141,7 @@ class TrackingForegroundService : LifecycleService() {
                 val broadCastIntent = Intent(TAG)
                 broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STOPPED)
                 sendBroadcast(broadCastIntent)
+                status = STATUS_STOPPED
             }
         }
 
@@ -329,6 +331,7 @@ class TrackingForegroundService : LifecycleService() {
 
         const val STATUS_STARTED = true
         const val STATUS_STOPPED = false
+        var status = STATUS_STOPPED
 
         /** Delay between samples in millis */
         const val TRACKING_DELAY = 10_000L

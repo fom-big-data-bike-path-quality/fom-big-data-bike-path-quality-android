@@ -437,6 +437,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
     companion object {
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
+        const val EXTRA_TRACKING_SERVICE_ENABLED = "extra.TRACKING_SERVICE_ENABLED"
+
         const val RESULT_BIKE_ACTIVITY_UID = "result.BIKE_ACTIVITY_UID"
     }
 }

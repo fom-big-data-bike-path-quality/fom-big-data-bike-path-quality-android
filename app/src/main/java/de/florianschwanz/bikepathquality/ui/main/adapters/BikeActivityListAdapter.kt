@@ -10,13 +10,16 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_BIKE_ACTIVITY_UID
+import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_TRACKING_SERVICE_ENABLED
 import de.florianschwanz.bikepathquality.ui.main.MainActivity.Companion.REQUEST_BIKE_ACTIVITY_DETAILS
+import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -24,6 +27,8 @@ import java.util.*
 
 class BikeActivityListAdapter(val activity: Activity) :
     RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
+
+    private lateinit var viewModel: MainActivityViewModel
 
     var data = listOf<BikeActivityWithDetails>()
         set(value) {
@@ -96,6 +101,7 @@ class BikeActivityListAdapter(val activity: Activity) :
                     BikeActivityDetailsActivity::class.java
                 ).apply {
                     putExtra(EXTRA_BIKE_ACTIVITY_UID, item.bikeActivity.uid.toString())
+                    putExtra(EXTRA_TRACKING_SERVICE_ENABLED, item.bikeActivity.uid.toString())
                 }
 
                 activity.startActivityForResult(intent, REQUEST_BIKE_ACTIVITY_DETAILS)
