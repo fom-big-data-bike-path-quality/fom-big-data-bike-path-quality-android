@@ -13,7 +13,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.SettingsClient
-import de.florianschwanz.bikepathquality.ui.main.fragments.LocationCardFragment.Companion.GPS_REQUEST
+import de.florianschwanz.bikepathquality.ui.main.fragments.cards.LocationCardFragment.Companion.GPS_REQUEST
 import de.florianschwanz.bikepathquality.data.livedata.LocationLiveData
 
 /**

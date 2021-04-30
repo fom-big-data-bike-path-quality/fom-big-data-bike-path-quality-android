@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.ui.main.fragments
+package de.florianschwanz.bikepathquality.ui.main.fragments.cards
 
 import android.Manifest
 import android.content.Context

@@ -20,21 +20,21 @@
 
     <fragment
         android:id="@+id/activity_transition_card_fragment"
-        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.ActivityTransitionCardFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.cards.ActivityTransitionCardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <fragment
         android:id="@+id/accelerometer_card_fragment"
-        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.AccelerometerCardFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.cards.AccelerometerCardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/activity_transition_card_fragment" />
 
     <fragment
         android:id="@+id/location_card_fragment"
-        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.LocationCardFragment"
+        android:name="de.florianschwanz.bikepathquality.ui.main.fragments.cards.LocationCardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/accelerometer_card_fragment" />
