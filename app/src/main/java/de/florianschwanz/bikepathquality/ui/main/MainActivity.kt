@@ -23,7 +23,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
-import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.EXTRA_ENABLED
+import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.EXTRA_STATUS
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.RESULT_BIKE_ACTIVITY_UID
 import de.florianschwanz.bikepathquality.ui.rationale.ActivityTransitionPermissionRationaleActivity
 import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRationaleActivity
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-                viewModel.trackingServiceEnabled.value = intent.extras?.getBoolean(EXTRA_ENABLED)
+                viewModel.trackingServiceStatus.value = intent.extras?.getString(EXTRA_STATUS)
             }
         }
 
@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceEnabled.observe(this, { trackingServiceEnabled ->
-            updateNotificationBanner(clNotification, trackingServiceEnabled)
+        viewModel.trackingServiceStatus.observe(this, { trackingServiceStatus ->
+            updateNotificationBanner(clNotification, trackingServiceStatus)
         })
 
         updateNotificationBanner(clNotification, TrackingForegroundService.status)
@@ -118,9 +118,9 @@ class MainActivity : AppCompatActivity() {
                     }
             }
         } else if (requestCode == REQUEST_ACTIVITY_TRANSITION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
-            finishAffinity();
+            finishAffinity()
         } else if (requestCode == REQUEST_LOCATION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
-            finishAffinity();
+            finishAffinity()
         }
     }
 
@@ -170,9 +170,19 @@ class MainActivity : AppCompatActivity() {
      */
     private fun updateNotificationBanner(
         clNotification: ConstraintLayout,
-        trackingServiceEnabled: Boolean
+        trackingServiceStatus: String
     ) {
-        clNotification.maxHeight = if (trackingServiceEnabled) 100 else 0
+        when (trackingServiceStatus) {
+            TrackingForegroundService.STATUS_STARTED -> {
+                clNotification.maxHeight = 100
+            }
+            TrackingForegroundService.STATUS_STARTED_MANUALLY -> {
+                clNotification.maxHeight = 0
+            }
+            TrackingForegroundService.STATUS_STOPPED -> {
+                clNotification.maxHeight = 0
+            }
+        }
     }
 
     companion object {

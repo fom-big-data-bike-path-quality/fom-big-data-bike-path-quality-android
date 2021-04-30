@@ -89,8 +89,8 @@ class LogFragment : Fragment() {
         super.onResume()
 
         viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceEnabled.observe(viewLifecycleOwner, { trackingServiceEnabled ->
-            updateMenuItems(toolbar, trackingServiceEnabled)
+        viewModel.trackingServiceStatus.observe(viewLifecycleOwner, { trackingServiceStatus ->
+            updateMenuItems(toolbar, trackingServiceStatus)
         })
 
         updateMenuItems(toolbar, TrackingForegroundService.status)
@@ -103,24 +103,27 @@ class LogFragment : Fragment() {
     /**
      * Updates menu items based on tracking service state
      */
-    private fun updateMenuItems(toolbar: Toolbar, trackingServiceEnabled: Boolean) {
+    private fun updateMenuItems(toolbar: Toolbar, trackingServiceStatus: String) {
         toolbar.menu.removeItem(BikeActivitiesFragment.ACTION_ENABLED_AUTOMATIC_TRACKING)
         toolbar.menu.removeItem(BikeActivitiesFragment.ACTION_DISABLED_AUTOMATIC_TRACKING)
 
-        if (trackingServiceEnabled) {
-            toolbar.menu.add(
-                Menu.NONE,
-                ACTION_DISABLED_AUTOMATIC_TRACKING,
-                Menu.NONE,
-                getString(R.string.action_disable_automatic_tracking)
-            )
-        } else {
-            toolbar.menu.add(
-                Menu.NONE,
-                ACTION_ENABLED_AUTOMATIC_TRACKING,
-                Menu.NONE,
-                getString(R.string.action_enable_automatic_tracking)
-            )
+        when(trackingServiceStatus) {
+            TrackingForegroundService.STATUS_STARTED -> {
+                toolbar.menu.add(
+                    Menu.NONE,
+                    BikeActivitiesFragment.ACTION_DISABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_disable_automatic_tracking)
+                )
+            }
+            TrackingForegroundService.STATUS_STOPPED -> {
+                toolbar.menu.add(
+                    Menu.NONE,
+                    BikeActivitiesFragment.ACTION_ENABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_enable_automatic_tracking)
+                )
+            }
         }
     }
 

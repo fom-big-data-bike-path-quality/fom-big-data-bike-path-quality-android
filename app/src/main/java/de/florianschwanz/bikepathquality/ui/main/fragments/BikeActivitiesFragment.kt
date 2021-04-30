@@ -91,9 +91,11 @@ class BikeActivitiesFragment : Fragment() {
         clStartStop.setOnClickListener {
             if (activeActivity != null) {
                 log("Stop manually")
+                disableAutomaticTracking()
                 bikeActivityViewModel.update(activeActivity!!.copy(endTime = Instant.now()))
             } else {
                 log("Start manually")
+                enableManualTracking()
                 bikeActivityViewModel.insert(BikeActivity())
             }
         }
@@ -127,8 +129,8 @@ class BikeActivitiesFragment : Fragment() {
         super.onResume()
 
         viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceEnabled.observe(viewLifecycleOwner, { trackingServiceEnabled ->
-            updateMenuItems(toolbar, trackingServiceEnabled)
+        viewModel.trackingServiceStatus.observe(viewLifecycleOwner, { trackingServiceStatus ->
+            updateMenuItems(toolbar, trackingServiceStatus)
         })
 
         updateMenuItems(toolbar, TrackingForegroundService.status)
@@ -141,24 +143,27 @@ class BikeActivitiesFragment : Fragment() {
     /**
      * Updates menu items based on tracking service state
      */
-    private fun updateMenuItems(toolbar: Toolbar, trackingServiceEnabled: Boolean) {
+    private fun updateMenuItems(toolbar: Toolbar, trackingServiceStatus: String) {
         toolbar.menu.removeItem(ACTION_ENABLED_AUTOMATIC_TRACKING)
         toolbar.menu.removeItem(ACTION_DISABLED_AUTOMATIC_TRACKING)
 
-        if (trackingServiceEnabled) {
-            toolbar.menu.add(
-                Menu.NONE,
-                ACTION_DISABLED_AUTOMATIC_TRACKING,
-                Menu.NONE,
-                getString(R.string.action_disable_automatic_tracking)
-            )
-        } else {
-            toolbar.menu.add(
-                Menu.NONE,
-                ACTION_ENABLED_AUTOMATIC_TRACKING,
-                Menu.NONE,
-                getString(R.string.action_enable_automatic_tracking)
-            )
+        when (trackingServiceStatus) {
+            TrackingForegroundService.STATUS_STARTED -> {
+                toolbar.menu.add(
+                    Menu.NONE,
+                    ACTION_DISABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_disable_automatic_tracking)
+                )
+            }
+            TrackingForegroundService.STATUS_STOPPED -> {
+                toolbar.menu.add(
+                    Menu.NONE,
+                    ACTION_ENABLED_AUTOMATIC_TRACKING,
+                    Menu.NONE,
+                    getString(R.string.action_enable_automatic_tracking)
+                )
+            }
         }
     }
 
@@ -169,6 +174,16 @@ class BikeActivitiesFragment : Fragment() {
         val trackingForegroundServiceIntent =
             Intent(requireActivity(), TrackingForegroundService::class.java)
         trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START
+        ContextCompat.startForegroundService(requireActivity(), trackingForegroundServiceIntent)
+    }
+
+    /**
+     * Enables manual tracking
+     */
+    private fun enableManualTracking() {
+        val trackingForegroundServiceIntent =
+            Intent(requireActivity(), TrackingForegroundService::class.java)
+        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START_MANUALLY
         ContextCompat.startForegroundService(requireActivity(), trackingForegroundServiceIntent)
     }
 

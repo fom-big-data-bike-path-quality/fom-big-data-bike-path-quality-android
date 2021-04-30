@@ -128,20 +128,40 @@ class TrackingForegroundService : LifecycleService() {
                 handleSensorData()
 
                 val broadCastIntent = Intent(TAG)
-                broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STARTED)
+                broadCastIntent.putExtra(EXTRA_STATUS, STATUS_STARTED)
                 sendBroadcast(broadCastIntent)
                 status = STATUS_STARTED
 
                 log("Start tracking service")
+            }
+            ACTION_START_MANUALLY -> {
+                showNotification(
+                    title = R.string.action_tracking_bike_activity_idle,
+                    text = R.string.action_tracking_bike_activity_idle_description,
+                    icon = R.drawable.ic_baseline_pause_24
+                )
+
+                handleActiveBikeActivity()
+                unhandleActivityTransitions()
+                handleSensorData()
+
+                val broadCastIntent = Intent(TAG)
+                broadCastIntent.putExtra(EXTRA_STATUS, STATUS_STARTED_MANUALLY)
+                sendBroadcast(broadCastIntent)
+                status = STATUS_STARTED_MANUALLY
+
+                log("Start tracking service (manually)")
             }
             ACTION_STOP -> {
                 stopForeground(true)
                 stopSelfResult(startId)
 
                 val broadCastIntent = Intent(TAG)
-                broadCastIntent.putExtra(EXTRA_ENABLED, STATUS_STOPPED)
+                broadCastIntent.putExtra(EXTRA_STATUS, STATUS_STOPPED)
                 sendBroadcast(broadCastIntent)
                 status = STATUS_STOPPED
+
+                log("Stop tracking service")
             }
         }
 
@@ -280,6 +300,13 @@ class TrackingForegroundService : LifecycleService() {
     }
 
     /**
+     * Unregisters from activity transitions
+     */
+    private fun unhandleActivityTransitions() {
+        activityTransitionLiveData = ActivityTransitionLiveData(this)
+    }
+
+    /**
      * Handles sensor data
      */
     private fun handleSensorData() {
@@ -322,15 +349,17 @@ class TrackingForegroundService : LifecycleService() {
         const val TAG = "TrackingForegroundService"
 
         const val ACTION_START = "action.START"
+        const val ACTION_START_MANUALLY = "action.START_MANUALLY"
         const val ACTION_STOP = "action.STOP"
 
         const val CHANNEL_ID = "channel.TRACKING"
         const val CHANNEL_NAME = "channel.TRACKING"
 
-        const val EXTRA_ENABLED = "extra.STATUS"
+        const val EXTRA_STATUS = "extra.STATUS"
 
-        const val STATUS_STARTED = true
-        const val STATUS_STOPPED = false
+        const val STATUS_STARTED = "status.STARTED"
+        const val STATUS_STARTED_MANUALLY = "status.STARTED_MANUALLY"
+        const val STATUS_STOPPED = "status.STOPPED"
         var status = STATUS_STOPPED
 
         /** Delay between samples in millis */

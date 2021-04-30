@@ -13,5 +13,5 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val accelerometerLiveData = AccelerometerLiveData(application)
     val locationLiveData = LocationLiveData(application)
 
-    val trackingServiceEnabled = MutableLiveData<Boolean>()
+    val trackingServiceStatus = MutableLiveData<String>()
 }
