@@ -367,10 +367,10 @@ class TrackingForegroundService : LifecycleService() {
         const val ACTIVITY_SAMPLE_DELAY = 10_000L
 
         /** Delay between measurements in a sample in millis */
-        const val ACTIVITY_DETAIL_DELAY = 100L
+        const val ACTIVITY_DETAIL_DELAY = 50L
 
         /** Number of measurements per sample */
-        const val TRACKING_SAMPLE_SIZE = 5
+        const val TRACKING_SAMPLE_SIZE = 20
 
         /**
          * Converts activity to a string
