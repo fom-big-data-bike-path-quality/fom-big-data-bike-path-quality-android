@@ -213,7 +213,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         sdf.format(Date.from(bikeActivityWithDetails.bikeActivity.startTime))
                     tvStartTime.visibility = View.VISIBLE
 
-                    if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                    if (bikeActivityWithDetails.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                         ivCheck.visibility = View.INVISIBLE
                         tvUploaded.visibility = View.INVISIBLE
                         spSurfaceType.isEnabled = true
@@ -298,7 +298,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         }
 
                     fab.setOnClickListener {
-                        if (bikeActivityWithDetails.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+                        if (bikeActivityWithDetails.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                             val serviceResultReceiver =
                                 FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
                             serviceResultReceiver.receiver = this
@@ -402,7 +402,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 // Update bike activity status
                                 bikeActivityViewModel.update(
                                     bikeActivityWithDetails.bikeActivity.copy(
-                                        status = BikeActivityStatus.UPLOADED
+                                        uploadStatus = BikeActivityStatus.UPLOADED
                                     )
                                 )
                             })

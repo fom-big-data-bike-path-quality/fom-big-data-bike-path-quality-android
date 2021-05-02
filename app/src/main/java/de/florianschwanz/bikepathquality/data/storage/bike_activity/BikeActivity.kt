@@ -6,6 +6,12 @@ import androidx.room.PrimaryKey
 import java.time.Instant
 import java.util.*
 
+enum class BikeActivityTrackingType {
+    NONE,
+    MANUAL,
+    AUTOMATIC,
+}
+
 enum class BikeActivityStatus {
     LOCAL,
     SCHEDUELED_FOR_UPLOAD,
@@ -18,7 +24,8 @@ data class BikeActivity(
     @PrimaryKey val uid: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "start_time") val startTime: Instant = Instant.now(),
     @ColumnInfo(name = "end_time") val endTime: Instant? = null,
-    @ColumnInfo(name = "status") val status: BikeActivityStatus = BikeActivityStatus.LOCAL,
+    @ColumnInfo(name = "tracking_type") val trackingType: BikeActivityTrackingType? = BikeActivityTrackingType.NONE,
+    @ColumnInfo(name = "upload_status") val uploadStatus: BikeActivityStatus = BikeActivityStatus.LOCAL,
     @ColumnInfo(name = "surface_type") val surfaceType: String? = null,
     @ColumnInfo(name = "smoothness_type") val smoothnessType: String? = null
 )

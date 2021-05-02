@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
@@ -96,7 +97,7 @@ class BikeActivitiesFragment : Fragment() {
             } else {
                 log("Start manually")
                 enableManualTracking()
-                bikeActivityViewModel.insert(BikeActivity())
+                bikeActivityViewModel.insert(BikeActivity(trackingType = BikeActivityTrackingType.MANUAL))
             }
         }
 

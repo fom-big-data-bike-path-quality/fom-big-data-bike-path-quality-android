@@ -19,10 +19,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.livedata.AccelerometerLiveData
 import de.florianschwanz.bikepathquality.data.livedata.ActivityTransitionLiveData
 import de.florianschwanz.bikepathquality.data.livedata.LocationLiveData
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDetail
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDetailViewModel
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
@@ -61,14 +58,11 @@ class TrackingForegroundService : LifecycleService() {
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
             try {
-                log("--- new sample for ${activeActivity?.uid}")
-
                 var sampleDetails = 0
                 val activityDetailHandler = Handler(Looper.getMainLooper())
                 val activityDetailTracker: Runnable = object : Runnable {
                     override fun run() {
                         try {
-                            log("------ new detail")
                             trackActivityDetail()
                             sampleDetails++
                         } finally {
@@ -189,7 +183,6 @@ class TrackingForegroundService : LifecycleService() {
         startForeground(1, notification)
     }
 
-
     /**
      * Creates notification
      */
@@ -281,7 +274,7 @@ class TrackingForegroundService : LifecycleService() {
                     && it.activityType == targetActivityType
                     && it.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                 ) {
-                    bikeActivityViewModel.insert(BikeActivity())
+                    bikeActivityViewModel.insert(BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC))
                 } else {
                     activeActivity?.let { bikeActivity ->
                         bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))

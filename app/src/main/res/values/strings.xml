@@ -86,6 +86,10 @@
         <item quantity="other">%d details</item>
     </plurals>
     <string name="default_details">no details</string>
+    <string name="tracking_mode">tracking mode</string>
+    <string name="tracking_mode_manual">manual</string>
+    <string name="tracking_mode_automatic">automatic</string>
+    <string name="default_tracking_mode">tracking mode</string>
 
     <string name="duration">duration</string>
     <string name="details">details</string>

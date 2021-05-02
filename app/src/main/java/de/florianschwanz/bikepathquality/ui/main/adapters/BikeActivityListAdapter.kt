@@ -10,16 +10,15 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_BIKE_ACTIVITY_UID
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_TRACKING_SERVICE_ENABLED
 import de.florianschwanz.bikepathquality.ui.main.MainActivity.Companion.REQUEST_BIKE_ACTIVITY_DETAILS
-import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -27,8 +26,6 @@ import java.util.*
 
 class BikeActivityListAdapter(val activity: Activity) :
     RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
-
-    private lateinit var viewModel: MainActivityViewModel
 
     var data = listOf<BikeActivityWithDetails>()
         set(value) {
@@ -54,6 +51,8 @@ class BikeActivityListAdapter(val activity: Activity) :
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
         private val tvDetails: TextView = itemView.findViewById(R.id.tvDetails)
+        private val tvDelimiter: TextView = itemView.findViewById(R.id.tvDelimiter2)
+        private val tvTrackingMode: TextView = itemView.findViewById(R.id.tvTrackingType)
 
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
@@ -61,7 +60,7 @@ class BikeActivityListAdapter(val activity: Activity) :
         fun bind(item: BikeActivityWithDetails) {
             val resources = itemView.context.resources
 
-            if (item.bikeActivity.status != BikeActivityStatus.UPLOADED) {
+            if (item.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                 ivCheck.visibility = View.INVISIBLE
             } else {
                 ivCheck.visibility = View.VISIBLE
@@ -88,6 +87,21 @@ class BikeActivityListAdapter(val activity: Activity) :
                 animation.repeatMode = Animation.REVERSE
                 ivOngoing.visibility = View.VISIBLE
                 ivOngoing.startAnimation(animation)
+            }
+
+            when (item.bikeActivity.trackingType) {
+                BikeActivityTrackingType.MANUAL -> {
+                    tvDelimiter.visibility = View.VISIBLE
+                    tvTrackingMode.text = resources.getText(R.string.tracking_mode_manual)
+                }
+                BikeActivityTrackingType.AUTOMATIC -> {
+                    tvDelimiter.visibility = View.VISIBLE
+                    tvTrackingMode.text = resources.getText(R.string.tracking_mode_automatic)
+                }
+                else -> {
+                    tvDelimiter.visibility = View.INVISIBLE
+                    tvTrackingMode.text = resources.getText(R.string.empty)
+                }
             }
 
             tvStartTime.text =
