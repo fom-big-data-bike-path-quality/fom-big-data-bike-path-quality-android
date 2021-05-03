@@ -22,6 +22,7 @@ data class BikeActivityDetail(
     @ColumnInfo(name = "timestamp") val timestamp: Instant = Instant.now(),
     @ColumnInfo(name = "lon") val lon: Double,
     @ColumnInfo(name = "lat") val lat: Double,
+    @ColumnInfo(name = "speed") val speed: Float,
     @ColumnInfo(name = "accelerometer_x") val accelerometerX: Float,
     @ColumnInfo(name = "accelerometer_y") val accelerometerY: Float,
     @ColumnInfo(name = "accelerometer_z") val accelerometerZ: Float,

@@ -53,6 +53,7 @@ class BikeActivityDetailListAdapter() :
                 resources.getString(R.string.activity_detail),
                 item.lon,
                 item.lat,
+                item.speed,
                 item.accelerometerX,
                 item.accelerometerY,
                 item.accelerometerZ

@@ -3,4 +3,4 @@ package de.florianschwanz.bikepathquality.data.model
 /**
  * Represents location data
  */
-data class LocationModel(var lon: Double, var lat: Double)
+data class LocationModel(val lon: Double, val lat: Double, val speed: Float)

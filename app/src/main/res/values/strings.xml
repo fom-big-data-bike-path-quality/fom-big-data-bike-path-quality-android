@@ -93,7 +93,7 @@
 
     <string name="duration">duration</string>
     <string name="details">details</string>
-    <string name="activity_detail">%1$.3f/%2$.3f\t\t\t\t%3$.1f, %4$.1f, %5$.1f</string>
+    <string name="activity_detail">%1$.3f/%2$.3f \t\t\t\t %3$.3f \t\t\t\t %4$.1f, %5$.1f, %6$.1f</string>
 
     <string name="notification">notification</string>
     <string name="automatic_tracking_enabled">Automatic tracking enabled</string>

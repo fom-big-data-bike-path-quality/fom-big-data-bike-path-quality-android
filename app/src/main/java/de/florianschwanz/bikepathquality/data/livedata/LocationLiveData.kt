@@ -73,7 +73,8 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
     private fun setLocationData(location: Location) {
         value = LocationModel(
             lon = location.longitude,
-            lat = location.latitude
+            lat = location.latitude,
+            speed = location.speed
         )
     }
 

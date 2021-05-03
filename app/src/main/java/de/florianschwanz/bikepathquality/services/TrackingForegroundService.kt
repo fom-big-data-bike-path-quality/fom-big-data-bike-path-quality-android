@@ -48,6 +48,7 @@ class TrackingForegroundService : LifecycleService() {
     // Current location
     private var currentLon = 0.0
     private var currentLat = 0.0
+    private var currentSpeed = 0.0f
 
     // Current accelerometer values
     private var currentAccelerometerX = 0.0f
@@ -312,6 +313,7 @@ class TrackingForegroundService : LifecycleService() {
         locationLiveData.observe(this, {
             currentLon = it.lon
             currentLat = it.lat
+            currentSpeed = it.speed
         })
     }
 
@@ -325,6 +327,7 @@ class TrackingForegroundService : LifecycleService() {
                 activityUid = it.uid,
                 lon = currentLon,
                 lat = currentLat,
+                speed = currentSpeed,
                 accelerometerX = currentAccelerometerX,
                 accelerometerY = currentAccelerometerY,
                 accelerometerZ = currentAccelerometerZ
