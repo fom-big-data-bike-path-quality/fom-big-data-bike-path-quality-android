@@ -1,8 +1,6 @@
 package de.florianschwanz.bikepathquality.ui.main.fragments.cards
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,8 +41,8 @@ class LocationCardFragment : Fragment() {
         viewModel =
             ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
         viewModel.locationLiveData.observe(viewLifecycleOwner, {
-            tvLon.text = resources.getString(R.string.lon, it.lon)
-            tvLat.text = resources.getString(R.string.lat, it.lat)
+            tvLon.text = String.format(resources.getString(R.string.lon), it.lon)
+            tvLat.text = String.format(resources.getString(R.string.lat), it.lat)
         })
 
         return view
