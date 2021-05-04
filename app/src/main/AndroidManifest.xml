@@ -19,10 +19,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BikePathQuality.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.details.BikeActivityDetailsActivity"
             android:label="@string/title_bike_activity_details"
             android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.surface_type.SurfaceTypeActivity"
+            android:label="@string/title_surface_type"
+            android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
@@ -34,23 +50,12 @@
             android:label="@string/title_location_permission_rationale"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.BikePathQuality.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <service
             android:name=".services.FirestoreService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".services.TrackingForegroundService"
             android:foregroundServiceType="location" />

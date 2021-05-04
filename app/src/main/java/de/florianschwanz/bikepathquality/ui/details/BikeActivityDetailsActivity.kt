@@ -15,8 +15,10 @@ import androidx.activity.viewModels
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -43,6 +45,9 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.services.FirestoreService
 import de.florianschwanz.bikepathquality.services.FirestoreServiceResultReceiver
 import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivityDetailListAdapter
+import de.florianschwanz.bikepathquality.ui.surface_type.SurfaceTypeActivity
+import de.florianschwanz.bikepathquality.ui.surface_type.SurfaceTypeActivity.Companion.EXTRA_SURFACE_TYPE
+import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeListAdapter.SurfaceTypeViewHolder.Companion.RESULT_SURFACE_TYPE
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,6 +59,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
     }
+
+    private lateinit var viewModel: BikeActivityDetailsViewModel
 
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
     private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
@@ -69,6 +76,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(BikeActivityDetailsViewModel::class.java)
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token))
 
@@ -87,7 +96,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
-        val spSurfaceType: Spinner = findViewById(R.id.spSurfaceType)
+        val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val spSmoothnessType: Spinner = findViewById(R.id.spSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvDetails: TextView = findViewById(R.id.tvDetails)
@@ -106,13 +115,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
         ArrayAdapter.createFromResource(
-            this, R.array.surface_array, android.R.layout.simple_spinner_item
-        ).also {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spSurfaceType.adapter = it
-        }
-
-        ArrayAdapter.createFromResource(
             this, R.array.smoothness_array, android.R.layout.simple_spinner_item
         ).also {
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -123,6 +125,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             .observe(this, { bikeActivityWithDetails ->
 
                 bikeActivityWithDetails?.let {
+                    viewModel.bikeActivityWithDetails.value = bikeActivityWithDetails
+
                     toolbar.setOnMenuItemClickListener {
                         when (it.itemId) {
                             R.id.action_delete -> {
@@ -184,10 +188,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 )
                             )
 
-                            if (bikeActivityWithDetails.bikeActivityDetails.filter { it.lon != 0.0 || it.lat != 0.0 }.size > 1) {
+                            val bikeActivityDetails =
+                                bikeActivityWithDetails.bikeActivityDetails.filter { bikeActivityDetail ->
+                                    bikeActivityDetail.lon != 0.0 || bikeActivityDetail.lat != 0.0
+                                }
+
+                            if (bikeActivityDetails.size > 1) {
                                 val latLngBounds = LatLngBounds.Builder()
-                                bikeActivityWithDetails.bikeActivityDetails
-                                    .filter { it.lon != 0.0 || it.lat != 0.0 }
+                                bikeActivityDetails
                                     .forEach { bikeActivityDetail ->
                                         latLngBounds.include(
                                             LatLng(
@@ -216,7 +224,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     if (bikeActivityWithDetails.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                         ivCheck.visibility = View.INVISIBLE
                         tvUploaded.visibility = View.INVISIBLE
-                        spSurfaceType.isEnabled = true
+                        btnSurfaceType.isEnabled = true
                         spSmoothnessType.isEnabled = true
 
                         if (bikeActivityWithDetails.bikeActivity.surfaceType != null && bikeActivityWithDetails.bikeActivity.smoothnessType != null) {
@@ -227,7 +235,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     } else {
                         ivCheck.visibility = View.VISIBLE
                         tvUploaded.visibility = View.VISIBLE
-                        spSurfaceType.isEnabled = false
+                        btnSurfaceType.isEnabled = false
                         spSmoothnessType.isEnabled = false
                         fab.visibility = View.INVISIBLE
                     }
@@ -253,28 +261,26 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         tvStopTime.visibility = View.INVISIBLE
                     }
 
+                    bikeActivityWithDetails.bikeActivity.surfaceType?.let {
+                        btnSurfaceType.text = it
+                    }
+
                     adapter.data = bikeActivityWithDetails.bikeActivityDetails
 
-                    spSurfaceType.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                parent: AdapterView<*>,
-                                view: View,
-                                position: Int,
-                                id: Long
-                            ) {
-                                val selectedItem =
-                                    if (position > 0) parent.getItemAtPosition(position)
-                                        .toString() else null
-
-                                // Update bike activity surface type
-                                bikeActivityViewModel.update(
-                                    bikeActivityWithDetails.bikeActivity.copy(surfaceType = selectedItem)
-                                )
-                            }
-
-                            override fun onNothingSelected(parent: AdapterView<*>) {}
+                    btnSurfaceType.setOnClickListener {
+                        val intent = Intent(
+                            applicationContext,
+                            SurfaceTypeActivity::class.java
+                        ).apply {
+                            putExtra(
+                                EXTRA_SURFACE_TYPE,
+                                bikeActivityWithDetails.bikeActivity.surfaceType
+                            )
                         }
+
+                        @Suppress("DEPRECATION")
+                        startActivityForResult(intent, REQUEST_SURFACE_TYPE)
+                    }
 
                     spSmoothnessType.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
@@ -421,6 +427,25 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         }
     }
 
+    /**
+     * Handles activity result
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_SURFACE_TYPE && resultCode == RESULT_OK) {
+            data?.getStringExtra(RESULT_SURFACE_TYPE)?.let { surfaceType ->
+
+                // Update bike activity
+                viewModel.bikeActivityWithDetails.value?.bikeActivity?.let {
+                    bikeActivityViewModel.update(it.copy(surfaceType = surfaceType))
+                }
+            }
+        }
+    }
+
     //
     // Helpers
     //
@@ -443,6 +468,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     }
 
     companion object {
+        const val REQUEST_SURFACE_TYPE = 1
+
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
         const val EXTRA_TRACKING_SERVICE_ENABLED = "extra.TRACKING_SERVICE_ENABLED"
 
