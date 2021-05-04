@@ -7,7 +7,7 @@
     tools:context=".ui.main.fragments.cards.AccelerometerCardFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvSurfaceType"
+        android:id="@+id/cvSmoothnessType"
         style="Widget.MaterialComponents.CardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                 android:contentDescription="@string/description_photo"
                 android:maxHeight="150dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/surface_type_asphalt"
+                android:src="@drawable/smoothness_type_good"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

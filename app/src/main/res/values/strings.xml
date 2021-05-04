@@ -100,21 +100,10 @@
     <string name="default_comment">comment</string>
     <string name="description_photo">photo</string>
     <string name="default_surface_type">Select surface type</string>
+    <string name="default_smoothness_type">Select smoothness type</string>
 
     <string name="notification">notification</string>
     <string name="automatic_tracking_enabled">Automatic tracking enabled</string>
-
-    <string-array name="smoothness_array">
-        <item>Select smoothness</item>
-        <item>excellent</item>
-        <item>good</item>
-        <item>intermediate</item>
-        <item>bad</item>
-        <item>very_bad</item>
-        <item>horrible</item>
-        <item>very_horrible</item>
-        <item>impassable</item>
-    </string-array>
 
     <string name="mapbox_access_token">pk.eyJ1IjoiYmlrZXBhdGgtcXVhbGl0eSIsImEiOiJja25zbjFjaGwyZWNvMnZwcjloNmd4dXc5In0.qWYKDWYq-cZhT2AGUZZPQA</string>
 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="smoothness_type_values">
+        <item name="">excellent</item>
+        <item name="">good</item>
+        <item name="">intermediate</item>
+        <item name="">bad</item>
+        <item name="">very_bad</item>
+        <item name="">horrible</item>
+        <item name="">very_horrible</item>
+        <item name="">impassable</item>
+    </array>
+
+    <array name="smoothness_type_comments">
+        <item name="excellent">As-new asphalt or concrete, smooth paving stones with seamless
+            connections, etc.
+        </item>
+        <item name="good">Asphalt or concrete showing the first signs of wear, such as narrow (less
+            than 1.5 cm) cracks, wider cracks filled up with tar, shallow dents in which rainwater
+            may collect, etc. that may cause trouble for rollers but not for racing bikes. The best
+            roads paved with bricks, sett, etc. also fall in this category.
+        </item>
+        <item name="intermediate">Asphalt and equivalent that shows signs of maintenance such as
+            patches of repaired pavement, wider cracks (>2 cm), etc. that may cause trouble for
+            racing bikes. The pavement may contain potholes, but these are small, shallow (less than
+            3cm deep) and few so they are easily avoided, or the road shows damage due to subsidence
+            (depressions of a scale >50 cm) or heavy traffic (shallow ruts in asphalt caused by
+            trucks in summer). The quality of the surface starts to affect the speed of most
+            passenger cars, so they will slow down to make the ride more comfortable (but still
+            above 50% of the speed they would drive at if the road was smooth). The best unpaved but
+            compacted roads fall in this category.
+        </item>
+        <item name="bad">Heavily damaged paved roads that badly need maintenance: many potholes,
+            some of them quite deep. The average speed of cars is less than 50% of what it would be
+            on a smooth road. However, it isn’t so rough that ground clearance becomes a problem. A
+            ground clearance of a normal passenger car (>14 cm) is sufficient. Good unpaved roads
+            without risk of damage to normal passenger cars are also included here.
+        </item>
+        <item name="very_bad">Unpaved roads with potholes and ruts, but still passable with an
+            average SUV with a ground clearance of at least 18 cm.*
+        </item>
+        <item name="horrible">Unpaved tracks with ruts, rocks etc that need a ground clearance of at
+            least 21 cm (Toyota Landcruiser, Landrover, Lada Niva, bukhanka, etc.). Skid plate
+            protection is advisable.
+        </item>
+        <item name="very_horrible">Tracks with deep ruts and other obstacles that need a ground
+            clearance of at least 24 cm.
+        </item>
+        <item name="impassable">Ways that used to be passable roads and can still be recognised as
+            such in the landscape (useful for hikers), but have deteriorated so much because of
+            fallen trees, being overgrown, severely eroded, etc. that no 4-wheeled vehicle can pass
+            it. Consider to map narrow parts as path, and the whole way as disused:=* or
+            abandoned:=*
+        </item>
+    </array>
+
+    <integer-array name="smoothness_type_photo_resources">
+        <item name="excellent">@drawable/smoothness_type_excellent</item>
+        <item name="good">@drawable/smoothness_type_good</item>
+        <item name="intermediate">@drawable/smoothness_type_intermediate</item>
+        <item name="bad">@drawable/smoothness_type_bad</item>
+        <item name="very_bad">@drawable/smoothness_type_very_bad</item>
+        <item name="horrible">@drawable/smoothness_type_horrible</item>
+        <item name="very_horrible">@drawable/smoothness_type_very_horrible</item>
+        <item name="impassable">@drawable/smoothness_type_impassable</item>
+    </integer-array>
+
+</resources>

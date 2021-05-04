@@ -142,11 +142,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivBike" />
 
-        <Spinner
-            android:id="@+id/spSmoothnessType"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSmoothnessType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/default_smoothness_type"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintBottom_toBottomOf="@id/btnSurfaceType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@id/btnSurfaceType" />

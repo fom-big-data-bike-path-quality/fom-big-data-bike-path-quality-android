@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.ui.surface_type.adapters
+package de.florianschwanz.bikepathquality.ui.smoothness_type.adapters
 
 import android.app.Activity
 import android.content.Intent
@@ -10,12 +10,12 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.model.SurfaceType
+import de.florianschwanz.bikepathquality.data.model.SmoothnessType
 
-class SurfaceTypeListAdapter(val activity: Activity) :
-    RecyclerView.Adapter<SurfaceTypeListAdapter.SurfaceTypeViewHolder>() {
+class SmoothnessTypeListAdapter(val activity: Activity) :
+    RecyclerView.Adapter<SmoothnessTypeListAdapter.SmoothnessTypeViewHolder>() {
 
-    var data = listOf<SurfaceType>()
+    var data = listOf<SmoothnessType>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -23,24 +23,24 @@ class SurfaceTypeListAdapter(val activity: Activity) :
 
     override fun getItemCount() = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SurfaceTypeViewHolder {
-        return SurfaceTypeViewHolder.create(activity, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmoothnessTypeViewHolder {
+        return SmoothnessTypeViewHolder.create(activity, parent)
     }
 
-    override fun onBindViewHolder(holder: SurfaceTypeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SmoothnessTypeViewHolder, position: Int) {
         val current = data[position]
         holder.bind(current)
     }
 
-    class SurfaceTypeViewHolder(val activity: Activity, itemView: View) :
+    class SmoothnessTypeViewHolder(val activity: Activity, itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
-        private val cvSurfaceType: CardView = itemView.findViewById(R.id.cvSurfaceType)
+        private val cvSmoothnessType: CardView = itemView.findViewById(R.id.cvSmoothnessType)
         private val ivPhoto: ImageView = itemView.findViewById(R.id.ivPhoto)
         private val tvValue: TextView = itemView.findViewById(R.id.tvValue)
         private val tvComment: TextView = itemView.findViewById(R.id.tvComment)
 
-        fun bind(item: SurfaceType) {
+        fun bind(item: SmoothnessType) {
 
             item.photo?.let {
                 ivPhoto.setImageDrawable(it)
@@ -49,10 +49,10 @@ class SurfaceTypeListAdapter(val activity: Activity) :
             tvValue.text = item.value
             tvComment.text = item.comment
 
-            cvSurfaceType.setOnClickListener {
+            cvSmoothnessType.setOnClickListener {
                 val resultIntent = Intent()
                 resultIntent.putExtra(
-                    RESULT_SURFACE_TYPE,
+                    RESULT_SMOOTHNESS_TYPE,
                     tvValue.text
                 )
                 activity.setResult(Activity.RESULT_OK, resultIntent)
@@ -61,12 +61,12 @@ class SurfaceTypeListAdapter(val activity: Activity) :
         }
 
         companion object {
-            const val RESULT_SURFACE_TYPE = "result.SURFACE_TYPE"
+            const val RESULT_SMOOTHNESS_TYPE = "result.SMOOTHNESS_TYPE"
 
-            fun create(activity: Activity, parent: ViewGroup): SurfaceTypeViewHolder {
+            fun create(activity: Activity, parent: ViewGroup): SmoothnessTypeViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.surface_type_item, parent, false)
-                return SurfaceTypeViewHolder(activity, view)
+                    .inflate(R.layout.smoothness_type_item, parent, false)
+                return SmoothnessTypeViewHolder(activity, view)
             }
         }
     }
