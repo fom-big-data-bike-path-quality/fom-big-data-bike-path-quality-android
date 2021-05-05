@@ -69,6 +69,7 @@
     <string name="default_lat">-</string>
 
     <string name="bike_activity">Bike Activity</string>
+    <string name="bike_activity_with_surface_type">Bike Activity on %s</string>
     <string name="default_start_time">10:42</string>
     <string name="default_stop_time">10:42</string>
     <string name="bike">Bike</string>

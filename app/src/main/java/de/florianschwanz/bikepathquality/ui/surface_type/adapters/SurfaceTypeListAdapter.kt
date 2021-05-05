@@ -47,6 +47,8 @@ class SurfaceTypeListAdapter(val activity: Activity) :
             }
 
             tvValue.text = item.value
+                .replace("_", " ")
+                .replace(":", " ")
             tvComment.text = item.comment
 
             cvSurfaceType.setOnClickListener {

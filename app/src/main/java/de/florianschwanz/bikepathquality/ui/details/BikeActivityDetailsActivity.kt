@@ -261,6 +261,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
                     bikeActivityWithDetails.bikeActivity.surfaceType?.let {
                         btnSurfaceType.text = it
+                            .replace("_", " ")
+                            .replace(":", " ")
                     }
                     bikeActivityWithDetails.bikeActivity.smoothnessType?.let {
                         btnSmoothnessType.text = it

@@ -47,6 +47,7 @@ class BikeActivityListAdapter(val activity: Activity) :
     class BikeActivityViewHolder(val activity: Activity, itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
+        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         private val ivCheck: ImageView = itemView.findViewById(R.id.ivCheck)
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
@@ -102,6 +103,15 @@ class BikeActivityListAdapter(val activity: Activity) :
                     tvDelimiter.visibility = View.INVISIBLE
                     tvTrackingMode.text = resources.getText(R.string.empty)
                 }
+            }
+
+            item.bikeActivity.surfaceType?.let {
+                tvTitle.text = String.format(
+                    resources.getString(R.string.bike_activity_with_surface_type),
+                    item.bikeActivity.surfaceType
+                        .replace("_", " ")
+                        .replace(":", " ")
+                )
             }
 
             tvStartTime.text =
