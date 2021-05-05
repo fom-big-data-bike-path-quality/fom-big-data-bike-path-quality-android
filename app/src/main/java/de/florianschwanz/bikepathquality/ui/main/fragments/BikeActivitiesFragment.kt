@@ -57,6 +57,8 @@ class BikeActivitiesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+
         setHasOptionsMenu(true)
 
         val view = inflater.inflate(R.layout.bike_activities_fragment, container, false)
