@@ -74,78 +74,66 @@
         </item>
         <item name="wood">Used for wood surfaced bridges, plank walkways, and garden decking</item>
         <item name="stepping_stones">Stones or plates individually arranged in a row, allowing to
-            walk on, surrounded by an
-            unpaved medium such as grass or water
+            walk on, surrounded by an unpaved medium such as grass or water
         </item>
-        <item name="compacted">A feature that is predominantly unsealed (unpaved); i.e., it has a
-            loose covering
-            ranging from compacted stone chippings to earth. Unpaved roads may, in aerial imagery,
-            show evidence of water along their course; in such circumstances, the waterway should
-            not be tagged as a stream, though it might appear as such. This value gives only a rough
-            description; use a more precise value if possible.
+        <item name="unpaved">A feature that is predominantly unsealed (unpaved); i.e., it has a
+            loose covering ranging from compacted stone chippings to earth. Unpaved roads may, in
+            aerial imagery, show evidence of water along their course; in such circumstances, the
+            waterway should not be tagged as a stream, though it might appear as such. This value
+            gives only a rough description; use a more precise value if possible.
         </item>
         <item name="compacted">A mixture of larger (e.g., gravel) and smaller (e.g., sand) parts,
-            compacted (e.g.,
-            with a roller), so the surface is more stable than loose gravel. Used, for example, for
-            park paths, better tracks, some service ways, … Best sort of ways below paving with
-            asphalt, concrete, paving stones. Sometimes known as water-bound macadam. Mixture and
-            compacting leads to more grip and stability.
+            compacted (e.g., with a roller), so the surface is more stable than loose gravel. Used,
+            for example, for park paths, better tracks, some service ways, … Best sort of ways below
+            paving with asphalt, concrete, paving stones. Sometimes known as water-bound macadam.
+            Mixture and compacting leads to more grip and stability.
         </item>
         <item name="fine_gravel">A multilayer pavement with a stone or gravel basis and a topmost
-            surface of firm,
-            granular grit, basalt or quartz, as invented by the Roman empire. Easy to walk, jog,
-            cycle or ride on. In hilly areas mostly with drainage channels and concave cross-section
-            for proper water shedding. Motorized vehicles will not move stones if the way is
-            maintained properly, and bicycles tires will not leave any imprints at least in dry
-            weather. If the topmost surface is eroded or loose gravel aggravate please use gravel
-            instead.
+            surface of firm, granular grit, basalt or quartz, as invented by the Roman empire. Easy
+            to walk, jog, cycle or ride on. In hilly areas mostly with drainage channels and concave
+            cross-section for proper water shedding. Motorized vehicles will not move stones if the
+            way is maintained properly, and bicycles tires will not leave any imprints at least in
+            dry weather. If the topmost surface is eroded or loose gravel aggravate please use
+            gravel instead.
         </item>
         <item name="gravel">This tag has very large meaning range. Used for cases ranging from huge
-            gravel pieces
-            like track ballast used as surface, through small pieces of gravel to compacted surface.
+            gravel pieces like track ballast used as surface, through small pieces of gravel to
+            compacted surface.
         </item>
         <item name="rock">Exposed rock or big pieces of rock used to improve path quality. Typically
-            in
-            mountainous areas.
+            in mountainous areas.
         </item>
         <item name="pebblestone">Pebbles are stones rounded by waves or river flow. Typical size
             range from 2 to 8 cm.
             Describing a surface in OSM they are loosely arranged. Like gravel pebbles can be used
             as a building part of compacted.
         </item>
-        <item name="ground">Probably very similar to ground. Like all this, it is prone to erosion
-            and therefore
-            often uneven. Gravel is sometimes mistakenly called dirt. Some compacted surfaces are
-            sometimes called "dirt" too, please consider the definition of compacted.
+        <item name="ground">No special surface, the ground itself has marks of human or animal
+            usage. This value gives only a rough description; if possible, use a more precise value
+            such as grass, clay, sand, earth, gravel or pebblestone.
         </item>
-        <item name="dirt">Pebbles are stones rounded by waves or river flow. Typical size range from
-            2 to 8 cm.
-            Describing a surface in OSM they are loosely arranged. Like gravel pebbles can be used
-            as a building part of compacted.
+        <item name="dirt">Probably very similar to ground. Like all this, it is prone to erosion
+            and therefore often uneven. Gravel is sometimes mistakenly called dirt. Some compacted
+            surfaces are sometimes called "dirt" too, please consider the definition of compacted.
         </item>
         <item name="earth">Probably a type of ground. Usually natural, but may also apply to
-            artificial
-            preparations of soil. Duplicate of dirt.
+            artificial preparations of soil. Duplicate of dirt.
         </item>
         <item name="grass">Grass covered ground. Mostly nice to walk. May turn into surface=dirt or
-            become
-            overgrown and disappear.
+            become overgrown and disappear.
         </item>
         <item name="grass_paver">A sort of permeable paving using regular cell structure, where the
-            voids in this
-            structure enable rainwater to drain into the ground and the structure itself increases
-            the load bearing capability. Often used for parking lots or infrequent used ways like
-            for emergency-vehicles.
+            voids in this structure enable rainwater to drain into the ground and the structure
+            itself increases the load bearing capability. Often used for parking lots or infrequent
+            used ways like for emergency-vehicles.
         </item>
         <item name="mud">Similar to ground but most of the year wet which gives a soft ground with
-            low carrying
-            capacity. Mostly found on wetland like swamps or in tidal areas. Sometimes also found on
-            slopes draining onto a way.
+            low carrying capacity. Mostly found on wetland like swamps or in tidal areas. Sometimes
+            also found on slopes draining onto a way.
         </item>
         <item name="sand">Small to very small fractions (less than 2mm) of rock.</item>
         <item name="woodchips">Woodchips as a surface, perhaps for a playground or walking trail.
-            Sometimes written
-            as wood chips.
+            Sometimes written as wood chips.
         </item>
         <item name="snow">Winter roads surfaced with compacted snow.</item>
         <item name="ice">Ice roads, winter roads</item>
