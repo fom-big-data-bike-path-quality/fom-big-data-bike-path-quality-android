@@ -58,14 +58,14 @@ import java.util.*
 
 class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver {
 
+    private lateinit var viewModel: BikeActivityDetailsViewModel
+
     private val logEntryViewModel: LogEntryViewModel by viewModels {
         LogEntryViewModelFactory((this.application as BikePathQualityApplication).logEntryRepository)
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
     }
-
-    private lateinit var viewModel: BikeActivityDetailsViewModel
 
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
     private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)

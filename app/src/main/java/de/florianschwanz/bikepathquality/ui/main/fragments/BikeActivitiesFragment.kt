@@ -43,9 +43,6 @@ class BikeActivitiesFragment : Fragment() {
         BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivitiesRepository)
     }
 
-    // Currently performed biking activity
-    private var activeActivity: BikeActivity? = null
-
     //
     // Lifecycle phases
     //
@@ -92,10 +89,13 @@ class BikeActivitiesFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         clStartStop.setOnClickListener {
-            if (activeActivity != null) {
+
+            val bikeActivity = viewModel.activeBikeActivity.value
+
+            if (bikeActivity != null) {
                 log("Stop manually")
                 disableAutomaticTracking()
-                bikeActivityViewModel.update(activeActivity!!.copy(endTime = Instant.now()))
+                bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
             } else {
                 log("Start manually")
                 enableManualTracking()
@@ -110,10 +110,11 @@ class BikeActivitiesFragment : Fragment() {
             }
         })
 
-        bikeActivityViewModel.activeBikeActivity.observe(viewLifecycleOwner, {
-            activeActivity = it
+        bikeActivityViewModel.activeBikeActivity.observe(viewLifecycleOwner, { bikeActivity ->
 
-            if (activeActivity != null) {
+            viewModel.activeBikeActivity.value = bikeActivity
+
+            if (bikeActivity != null) {
                 ivStartStop.setImageResource(R.drawable.ic_baseline_stop_48)
                 tvStartStop.text = resources.getString(R.string.action_stop_activity)
             } else {
