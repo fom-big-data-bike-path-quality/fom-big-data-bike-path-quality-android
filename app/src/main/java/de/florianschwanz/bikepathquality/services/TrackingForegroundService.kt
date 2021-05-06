@@ -3,6 +3,7 @@ package de.florianschwanz.bikepathquality.services
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -112,11 +113,16 @@ class TrackingForegroundService : LifecycleService() {
 
         when (intent?.action) {
             ACTION_START -> {
-                showNotification(
-                    title = R.string.action_tracking_bike_activity_idle,
-                    text = R.string.action_tracking_bike_activity_idle_description,
-                    icon = R.drawable.ic_baseline_pause_24
-                )
+
+                NotificationCompat.Builder(this, createNotificationChannel())
+                    .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
+                    .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
+                    .setSmallIcon(R.drawable.ic_baseline_pause_24)
+                    .setContentIntent(buildPendingIntent())
+                    .setPriority(IMPORTANCE_HIGH)
+                    .setWhen(0)
+                    .build()
+                    .startForeground()
 
                 handleActiveBikeActivity()
                 handleActivityTransitions()
@@ -130,11 +136,16 @@ class TrackingForegroundService : LifecycleService() {
                 log("Start tracking service")
             }
             ACTION_START_MANUALLY -> {
-                showNotification(
-                    title = R.string.action_tracking_bike_activity_idle,
-                    text = R.string.action_tracking_bike_activity_idle_description,
-                    icon = R.drawable.ic_baseline_pause_24
-                )
+
+                NotificationCompat.Builder(this, createNotificationChannel())
+                    .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
+                    .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
+                    .setSmallIcon(R.drawable.ic_baseline_pause_24)
+                    .setContentIntent(buildPendingIntent())
+                    .setPriority(IMPORTANCE_HIGH)
+                    .setWhen(0)
+                    .build()
+                    .startForeground()
 
                 handleActiveBikeActivity()
                 unhandleActivityTransitions()
@@ -169,42 +180,6 @@ class TrackingForegroundService : LifecycleService() {
     //
 
     /**
-     * Shows a notification
-     */
-    private fun showNotification(
-        title: Int,
-        text: Int,
-        icon: Int
-    ) {
-        val notification = createNotification(
-            title = title,
-            text = text,
-            icon = icon
-        )
-        startForeground(1, notification)
-    }
-
-    /**
-     * Creates notification
-     */
-    private fun createNotification(
-        notificationChannelId: String = createNotificationChannel(),
-        title: Int,
-        text: Int,
-        icon: Int
-    ): Notification {
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-        return NotificationCompat.Builder(this, notificationChannelId)
-            .setContentTitle(getString(title))
-            .setContentText(getString(text))
-            .setSmallIcon(icon)
-            .setContentIntent(pendingIntent)
-            .build()
-    }
-
-    /**
      * Creates notification channel with a given id and name
      *
      * @param channelId channel ID
@@ -226,6 +201,16 @@ class TrackingForegroundService : LifecycleService() {
     }
 
     /**
+     * Builds pending intent
+     */
+    private fun buildPendingIntent(): PendingIntent? = PendingIntent.getActivity(
+        this,
+        8,
+        Intent(this, MainActivity::class.java),
+        0
+    )
+
+    /**
      * Retrieves most recent unfinished bike activity from the database
      */
     private fun handleActiveBikeActivity() {
@@ -236,27 +221,37 @@ class TrackingForegroundService : LifecycleService() {
 
                 log("Start bike activity")
 
-                showNotification(
-                    title = R.string.action_tracking_bike_activity,
-                    text = R.string.action_tracking_bike_activity_description,
-                    icon = R.drawable.ic_baseline_pedal_bike_24
-                )
+                NotificationCompat.Builder(this, createNotificationChannel())
+                    .setContentTitle(getString(R.string.action_tracking_bike_activity))
+                    .setContentText(getString(R.string.action_tracking_bike_activity_description))
+                    .setSmallIcon(R.drawable.ic_baseline_pedal_bike_24)
+                    .setContentIntent(buildPendingIntent())
+                    .setPriority(IMPORTANCE_HIGH)
+                    .setWhen(0)
+                    .build()
+                    .startForeground()
 
                 activitySampleTracker.run()
             } else {
 
                 log("Stop bike activity")
 
-                showNotification(
-                    title = R.string.action_tracking_bike_activity_idle,
-                    text = R.string.action_tracking_bike_activity_idle_description,
-                    icon = R.drawable.ic_baseline_pause_24
-                )
+                NotificationCompat.Builder(this, createNotificationChannel())
+                    .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
+                    .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
+                    .setSmallIcon(R.drawable.ic_baseline_pause_24)
+                    .setContentIntent(buildPendingIntent())
+                    .setPriority(IMPORTANCE_HIGH)
+                    .setWhen(0)
+                    .build()
+                    .startForeground()
 
                 activitySampleHandler.removeCallbacks(activitySampleTracker)
             }
         })
     }
+
+    private fun Notification.startForeground(id: Int = 1) = startForeground(id, this)
 
     /**
      * Listens to activity transitions related to bicycle and if necessary
@@ -280,11 +275,16 @@ class TrackingForegroundService : LifecycleService() {
                     activeActivity?.let { bikeActivity ->
                         bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
 
-                        showNotification(
-                            title = R.string.action_tracking_bike_activity_idle,
-                            text = R.string.action_tracking_bike_activity_idle_description,
-                            icon = R.drawable.ic_baseline_pause_24
-                        )
+                        NotificationCompat.Builder(this, createNotificationChannel())
+                            .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
+                            .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
+                            .setSmallIcon(R.drawable.ic_baseline_pause_24)
+                            .setContentIntent(buildPendingIntent())
+                            .setPriority(IMPORTANCE_HIGH)
+                            .setWhen(0)
+                            .build()
+                            .startForeground()
+
                     }
                 }
             }
@@ -348,6 +348,8 @@ class TrackingForegroundService : LifecycleService() {
         const val ACTION_START = "action.START"
         const val ACTION_START_MANUALLY = "action.START_MANUALLY"
         const val ACTION_STOP = "action.STOP"
+
+        const val ACTION_BROADCAST_STATUS = "action.BROADCAST_STATUS"
 
         const val CHANNEL_ID = "channel.TRACKING"
         const val CHANNEL_NAME = "channel.TRACKING"
