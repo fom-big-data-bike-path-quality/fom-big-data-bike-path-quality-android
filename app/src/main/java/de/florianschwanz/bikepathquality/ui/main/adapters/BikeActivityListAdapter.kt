@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithMeasurements
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_BIKE_ACTIVITY_UID
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_TRACKING_SERVICE_ENABLED
@@ -27,7 +27,7 @@ import java.util.*
 class BikeActivityListAdapter(val activity: Activity) :
     RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
 
-    var data = listOf<BikeActivityWithDetails>()
+    var data = listOf<BikeActivityWithMeasurements>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -58,7 +58,7 @@ class BikeActivityListAdapter(val activity: Activity) :
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivityWithDetails) {
+        fun bind(item: BikeActivityWithMeasurements) {
             val resources = itemView.context.resources
 
             if (item.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
@@ -77,8 +77,8 @@ class BikeActivityListAdapter(val activity: Activity) :
                     resources.getQuantityString(R.plurals.duration, duration, duration)
                 tvDetails.text = resources.getQuantityString(
                     R.plurals.details,
-                    item.bikeActivityDetails.size,
-                    item.bikeActivityDetails.size
+                    item.bikeActivityMeasurements.size,
+                    item.bikeActivityMeasurements.size
                 )
             } else {
                 val animation: Animation = AlphaAnimation(1f, 0f)

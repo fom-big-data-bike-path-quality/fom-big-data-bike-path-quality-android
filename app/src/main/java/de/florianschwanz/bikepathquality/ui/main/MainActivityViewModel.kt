@@ -7,7 +7,6 @@ import de.florianschwanz.bikepathquality.data.livedata.AccelerometerLiveData
 import de.florianschwanz.bikepathquality.data.livedata.ActivityTransitionLiveData
 import de.florianschwanz.bikepathquality.data.livedata.LocationLiveData
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithDetails
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 

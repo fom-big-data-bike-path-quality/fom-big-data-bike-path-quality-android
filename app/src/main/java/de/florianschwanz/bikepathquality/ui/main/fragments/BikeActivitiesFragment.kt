@@ -103,7 +103,7 @@ class BikeActivitiesFragment : Fragment() {
             }
         }
 
-        bikeActivityViewModel.allBikeActivitiesWithDetails.observe(viewLifecycleOwner, {
+        bikeActivityViewModel.allBikeActivitiesWithMeasurements.observe(viewLifecycleOwner, {
             adapter.data = it
             if (adapter.data.isNotEmpty()) {
                 recyclerView.smoothScrollToPosition(adapter.data.size - 1)

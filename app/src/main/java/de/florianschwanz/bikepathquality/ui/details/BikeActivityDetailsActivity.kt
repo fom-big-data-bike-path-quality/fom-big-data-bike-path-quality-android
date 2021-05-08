@@ -153,7 +153,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         }
 
                     val mapRouteCoordinates: List<Point> =
-                        bikeActivityWithDetails.bikeActivityDetails
+                        bikeActivityWithDetails.bikeActivityMeasurements
                             .filter { it.lon != 0.0 || it.lat != 0.0 }
                             .map {
                                 Point.fromLngLat(
@@ -187,7 +187,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             )
 
                             val bikeActivityDetails =
-                                bikeActivityWithDetails.bikeActivityDetails.filter { bikeActivityDetail ->
+                                bikeActivityWithDetails.bikeActivityMeasurements.filter { bikeActivityDetail ->
                                     bikeActivityDetail.lon != 0.0 || bikeActivityDetail.lat != 0.0
                                 }
 
@@ -251,8 +251,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             resources.getQuantityString(R.plurals.duration, duration, duration)
                         tvDetails.text = resources.getQuantityString(
                             R.plurals.details,
-                            bikeActivityWithDetails.bikeActivityDetails.size,
-                            bikeActivityWithDetails.bikeActivityDetails.size
+                            bikeActivityWithDetails.bikeActivityMeasurements.size,
+                            bikeActivityWithDetails.bikeActivityMeasurements.size
                         )
                     } else {
                         tvDelimiter.visibility = View.INVISIBLE
@@ -268,7 +268,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         btnSmoothnessType.text = it
                     }
 
-                    adapter.data = bikeActivityWithDetails.bikeActivityDetails
+                    adapter.data = bikeActivityWithDetails.bikeActivityMeasurements
 
                     btnSurfaceType.setOnClickListener {
                         val intent = Intent(

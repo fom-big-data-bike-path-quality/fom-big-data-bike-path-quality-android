@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import de.florianschwanz.bikepathquality.data.storage.AppDatabase
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDetailRepository
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurementRepository
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityRepository
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryRepository
@@ -19,7 +19,7 @@ class BikePathQualityApplication : Application() {
     val database by lazy { AppDatabase.getDatabase(this) }
     val logEntryRepository by lazy { LogEntryRepository(database.logEntryDao()) }
     val bikeActivitiesRepository by lazy { BikeActivityRepository(database.bikeActivityDao()) }
-    val bikeActivityDetailsRepository by lazy { BikeActivityDetailRepository(database.bikeActivityDetailDao()) }
+    val bikeActivityDetailsRepository by lazy { BikeActivityMeasurementRepository(database.bikeActivityDetailDao()) }
 
 
     //

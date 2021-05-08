@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDetail
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurement
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -15,7 +15,7 @@ import java.util.*
 class BikeActivityDetailListAdapter() :
     RecyclerView.Adapter<BikeActivityDetailListAdapter.BikeActivityDetailViewHolder>() {
 
-    var data = listOf<BikeActivityDetail>()
+    var data = listOf<BikeActivityMeasurement>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -42,7 +42,7 @@ class BikeActivityDetailListAdapter() :
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivityDetail) {
+        fun bind(item: BikeActivityMeasurement) {
             val resources = itemView.context.resources
 
             tvTimestamp.text =

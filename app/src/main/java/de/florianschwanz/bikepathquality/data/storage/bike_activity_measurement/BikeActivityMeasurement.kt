@@ -15,7 +15,7 @@ import java.util.*
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class BikeActivityDetail(
+data class BikeActivityMeasurement(
 
     @PrimaryKey val uid: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "activity_uid") val activityUid: UUID = UUID.randomUUID(),

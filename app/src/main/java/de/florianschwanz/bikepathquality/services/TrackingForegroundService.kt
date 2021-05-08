@@ -33,7 +33,7 @@ class TrackingForegroundService : LifecycleService() {
 
     private lateinit var logEntryViewModel: LogEntryViewModel
     private lateinit var bikeActivityViewModel: BikeActivityViewModel
-    private lateinit var bikeActivityDetailViewModel: BikeActivityDetailViewModel
+    private lateinit var bikeActivityMeasurementViewModel: BikeActivityMeasurementViewModel
 
     private lateinit var activityTransitionLiveData: ActivityTransitionLiveData
     private lateinit var accelerometerLiveData: AccelerometerLiveData
@@ -98,7 +98,7 @@ class TrackingForegroundService : LifecycleService() {
 
         logEntryViewModel = LogEntryViewModel(app.logEntryRepository)
         bikeActivityViewModel = BikeActivityViewModel(app.bikeActivitiesRepository)
-        bikeActivityDetailViewModel = BikeActivityDetailViewModel(app.bikeActivityDetailsRepository)
+        bikeActivityMeasurementViewModel = BikeActivityMeasurementViewModel(app.bikeActivityDetailsRepository)
 
         activityTransitionLiveData = ActivityTransitionLiveData(this)
         accelerometerLiveData = AccelerometerLiveData(this)
@@ -322,8 +322,8 @@ class TrackingForegroundService : LifecycleService() {
      */
     private fun trackActivityDetail() = activeActivity?.let {
 
-        bikeActivityDetailViewModel.insert(
-            BikeActivityDetail(
+        bikeActivityMeasurementViewModel.insert(
+            BikeActivityMeasurement(
                 activityUid = it.uid,
                 lon = currentLon,
                 lat = currentLat,
