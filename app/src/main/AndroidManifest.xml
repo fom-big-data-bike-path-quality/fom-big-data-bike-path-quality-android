@@ -13,13 +13,12 @@
 
     <application
         android:name=".BikePathQualityApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
-        <activity android:name=".ui.smoothness_type.SmoothnessTypeActivity"></activity>
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
@@ -39,6 +38,11 @@
         <activity
             android:name=".ui.surface_type.SurfaceTypeActivity"
             android:label="@string/title_surface_type"
+            android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".ui.smoothness_type.SmoothnessTypeActivity"
+            android:label="@string/title_smoothness_type"
             android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
             android:screenOrientation="fullSensor" />
         <activity

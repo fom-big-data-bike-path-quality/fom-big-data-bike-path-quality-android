@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 class BikeActivityMeasurementViewModel(private val repository: BikeActivityMeasurementRepository) :
     ViewModel() {
 
-    val allBikeActivityDetails: LiveData<List<BikeActivityMeasurement>> =
-        repository.bikeActivities.asLiveData()
+    val allBikeActivityMeasurements: LiveData<List<BikeActivityMeasurement>> =
+        repository.bikeActivityMeasurements.asLiveData()
 
     fun insert(bikeActivityMeasurement: BikeActivityMeasurement) = viewModelScope.launch {
         repository.insert(bikeActivityMeasurement)

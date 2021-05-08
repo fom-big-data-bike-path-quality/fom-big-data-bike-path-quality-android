@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BikeActivityMeasurementDao {
 
-    @Query("SELECT * FROM bikeactivitydetail")
+    @Query("SELECT * FROM bikeactivitymeasurement")
     fun getAll(): Flow<List<BikeActivityMeasurement>>
 
     @Insert
@@ -18,6 +18,6 @@ interface BikeActivityMeasurementDao {
     @Delete
     suspend fun delete(bikeActivityMeasurement: BikeActivityMeasurement)
 
-    @Query("DELETE FROM bikeactivitydetail")
+    @Query("DELETE FROM bikeactivitymeasurement")
     suspend fun deleteAll()
 }

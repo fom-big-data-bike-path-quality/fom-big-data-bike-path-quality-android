@@ -40,7 +40,7 @@ class BikeActivitiesFragment : Fragment() {
         LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
-        BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivitiesRepository)
+        BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivityRepository)
     }
 
     //
@@ -103,7 +103,7 @@ class BikeActivitiesFragment : Fragment() {
             }
         }
 
-        bikeActivityViewModel.allBikeActivitiesWithMeasurements.observe(viewLifecycleOwner, {
+        bikeActivityViewModel.allBikeActivitiesWithSamples.observe(viewLifecycleOwner, {
             adapter.data = it
             if (adapter.data.isNotEmpty()) {
                 recyclerView.smoothScrollToPosition(adapter.data.size - 1)

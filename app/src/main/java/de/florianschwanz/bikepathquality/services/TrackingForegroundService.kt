@@ -21,6 +21,8 @@ import de.florianschwanz.bikepathquality.data.livedata.AccelerometerLiveData
 import de.florianschwanz.bikepathquality.data.livedata.ActivityTransitionLiveData
 import de.florianschwanz.bikepathquality.data.livedata.LocationLiveData
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
@@ -33,6 +35,7 @@ class TrackingForegroundService : LifecycleService() {
 
     private lateinit var logEntryViewModel: LogEntryViewModel
     private lateinit var bikeActivityViewModel: BikeActivityViewModel
+    private lateinit var bikeActivitySampleViewModel: BikeActivitySampleViewModel
     private lateinit var bikeActivityMeasurementViewModel: BikeActivityMeasurementViewModel
 
     private lateinit var activityTransitionLiveData: ActivityTransitionLiveData
@@ -41,8 +44,8 @@ class TrackingForegroundService : LifecycleService() {
 
     private val targetActivityType = DetectedActivity.ON_BICYCLE
 
-    // Currently performed biking activity
-    private var activeActivity: BikeActivity? = null
+    // Currently performed bike activity
+    private var activeBikeActivity: BikeActivity? = null
     private var activeActivityType = -1
     private var activeTransitionType = -1
 
@@ -60,15 +63,19 @@ class TrackingForegroundService : LifecycleService() {
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
             try {
-                var sampleDetails = 0
+                // Track bike activity sample
+                val bikeActivitySample = trackBikeActivitySample(activeBikeActivity)
+
+                var measurements = 0
                 val activityDetailHandler = Handler(Looper.getMainLooper())
                 val activityDetailTracker: Runnable = object : Runnable {
                     override fun run() {
                         try {
-                            trackActivityDetail()
-                            sampleDetails++
+                            // Track bike activity measurement
+                            trackBikeActivityMeasurement(bikeActivitySample)
+                            measurements++
                         } finally {
-                            if (sampleDetails < TRACKING_SAMPLE_SIZE) {
+                            if (measurements < TRACKING_SAMPLE_SIZE) {
                                 activityDetailHandler.postDelayed(this, ACTIVITY_DETAIL_DELAY)
                             } else {
                                 activityDetailHandler.removeCallbacks(this)
@@ -97,8 +104,10 @@ class TrackingForegroundService : LifecycleService() {
         val app = application as BikePathQualityApplication
 
         logEntryViewModel = LogEntryViewModel(app.logEntryRepository)
-        bikeActivityViewModel = BikeActivityViewModel(app.bikeActivitiesRepository)
-        bikeActivityMeasurementViewModel = BikeActivityMeasurementViewModel(app.bikeActivityDetailsRepository)
+        bikeActivityViewModel = BikeActivityViewModel(app.bikeActivityRepository)
+        bikeActivitySampleViewModel = BikeActivitySampleViewModel(app.bikeActivitySampleRepository)
+        bikeActivityMeasurementViewModel =
+            BikeActivityMeasurementViewModel(app.bikeActivityMeasurementRepository)
 
         activityTransitionLiveData = ActivityTransitionLiveData(this)
         accelerometerLiveData = AccelerometerLiveData(this)
@@ -215,9 +224,9 @@ class TrackingForegroundService : LifecycleService() {
      */
     private fun handleActiveBikeActivity() {
         bikeActivityViewModel.activeBikeActivity.observe(this, {
-            activeActivity = it
+            activeBikeActivity = it
 
-            if (activeActivity != null) {
+            if (activeBikeActivity != null) {
 
                 log("Start bike activity")
 
@@ -266,13 +275,13 @@ class TrackingForegroundService : LifecycleService() {
 
             if (it.activityType != activeActivityType || it.transitionType != activeTransitionType) {
 
-                if (activeActivity == null
+                if (activeBikeActivity == null
                     && it.activityType == targetActivityType
                     && it.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                 ) {
                     bikeActivityViewModel.insert(BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC))
                 } else {
-                    activeActivity?.let { bikeActivity ->
+                    activeBikeActivity?.let { bikeActivity ->
                         bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
 
                         NotificationCompat.Builder(this, createNotificationChannel())
@@ -318,22 +327,39 @@ class TrackingForegroundService : LifecycleService() {
     }
 
     /**
-     * Tracks an activity detail and persists it
+     * Tracks an activity sample and persists it
      */
-    private fun trackActivityDetail() = activeActivity?.let {
+    private fun trackBikeActivitySample(bikeActivity: BikeActivity?): BikeActivitySample? =
+        bikeActivity?.let {
 
-        bikeActivityMeasurementViewModel.insert(
+            BikeActivitySample(
+                bikeActivityUid = bikeActivity.uid,
+                lon = currentLon,
+                lat = currentLat,
+                speed = currentSpeed
+            ).also {
+                bikeActivitySampleViewModel.insert(it)
+            }
+        }
+
+    /**
+     * Tracks an activity measurement and persists it
+     */
+    private fun trackBikeActivityMeasurement(bikeActivitySample: BikeActivitySample?): BikeActivityMeasurement? =
+        bikeActivitySample?.let {
+
             BikeActivityMeasurement(
-                activityUid = it.uid,
+                activitySampleUid = bikeActivitySample.uid,
                 lon = currentLon,
                 lat = currentLat,
                 speed = currentSpeed,
                 accelerometerX = currentAccelerometerX,
                 accelerometerY = currentAccelerometerY,
                 accelerometerZ = currentAccelerometerZ
-            )
-        )
-    }
+            ).also {
+                bikeActivityMeasurementViewModel.insert(it)
+            }
+        }
 
     /**
      * Logs message
@@ -348,8 +374,6 @@ class TrackingForegroundService : LifecycleService() {
         const val ACTION_START = "action.START"
         const val ACTION_START_MANUALLY = "action.START_MANUALLY"
         const val ACTION_STOP = "action.STOP"
-
-        const val ACTION_BROADCAST_STATUS = "action.BROADCAST_STATUS"
 
         const val CHANNEL_ID = "channel.TRACKING"
         const val CHANNEL_NAME = "channel.TRACKING"

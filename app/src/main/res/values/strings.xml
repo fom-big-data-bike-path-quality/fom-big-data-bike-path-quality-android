@@ -40,6 +40,7 @@
     <string name="title_log">Log</string>
     <string name="title_bike_activity_details">Bike Activity Details</string>
     <string name="title_surface_type">Surface Type</string>
+    <string name="title_smoothness_type">Smoothness Type</string>
 
     <string name="measurements">Measurements</string>
 
@@ -82,12 +83,12 @@
     <string name="ongoing">ongoing</string>
     <string name="delimiter">·</string>
     <string name="delimiter_dash">-</string>
-    <plurals name="details">
-        <item quantity="zero">no details</item>
-        <item quantity="one">%d detail</item>
-        <item quantity="other">%d details</item>
+    <plurals name="samples">
+        <item quantity="zero">no samples</item>
+        <item quantity="one">%d samples</item>
+        <item quantity="other">%d samples</item>
     </plurals>
-    <string name="default_details">no details</string>
+    <string name="default_samples">no samples</string>
     <string name="tracking_mode">tracking mode</string>
     <string name="tracking_mode_manual">manual</string>
     <string name="tracking_mode_automatic">automatic</string>

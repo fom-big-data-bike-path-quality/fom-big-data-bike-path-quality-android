@@ -35,7 +35,7 @@ import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRational
 class MainActivity : AppCompatActivity() {
 
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
-        BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
+        BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivityRepository)
     }
 
     private lateinit var viewModel: MainActivityViewModel

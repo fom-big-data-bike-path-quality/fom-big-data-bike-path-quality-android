@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import de.florianschwanz.bikepathquality.data.storage.AppDatabase
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurementRepository
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityRepository
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleRepository
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryRepository
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
@@ -18,9 +19,9 @@ class BikePathQualityApplication : Application() {
 
     val database by lazy { AppDatabase.getDatabase(this) }
     val logEntryRepository by lazy { LogEntryRepository(database.logEntryDao()) }
-    val bikeActivitiesRepository by lazy { BikeActivityRepository(database.bikeActivityDao()) }
-    val bikeActivityDetailsRepository by lazy { BikeActivityMeasurementRepository(database.bikeActivityDetailDao()) }
-
+    val bikeActivityRepository by lazy { BikeActivityRepository(database.bikeActivityDao()) }
+    val bikeActivitySampleRepository by lazy { BikeActivitySampleRepository(database.bikeActivitySampleDao()) }
+    val bikeActivityMeasurementRepository by lazy { BikeActivityMeasurementRepository(database.bikeActivityMeasurementDao()) }
 
     //
     // Lifecycle phases

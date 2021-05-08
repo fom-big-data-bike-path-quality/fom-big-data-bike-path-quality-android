@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 class BikeActivityMeasurementRepository(private val bikeActivityMeasurementDao: BikeActivityMeasurementDao) {
 
-    val bikeActivities: Flow<List<BikeActivityMeasurement>> = bikeActivityMeasurementDao.getAll()
+    val bikeActivityMeasurements: Flow<List<BikeActivityMeasurement>> = bikeActivityMeasurementDao.getAll()
 
     @WorkerThread
     suspend fun insert(bikeActivityMeasurement: BikeActivityMeasurement) {

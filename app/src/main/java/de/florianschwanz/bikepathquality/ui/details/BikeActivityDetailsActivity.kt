@@ -64,7 +64,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         LogEntryViewModelFactory((this.application as BikePathQualityApplication).logEntryRepository)
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
-        BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivitiesRepository)
+        BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivityRepository)
     }
 
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
@@ -104,7 +104,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
-        val tvDetails: TextView = findViewById(R.id.tvDetails)
+        val tvSamples: TextView = findViewById(R.id.tvDetails)
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
@@ -120,10 +120,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
         bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!)
-            .observe(this, { bikeActivityWithDetails ->
+            .observe(this, { bikeActivityWithSamples ->
 
-                bikeActivityWithDetails?.let {
-                    viewModel.bikeActivityWithDetails.value = bikeActivityWithDetails
+                bikeActivityWithSamples?.let {
+                    viewModel.bikeActivityWithDetails.value = bikeActivityWithSamples
 
                     toolbar.setOnMenuItemClickListener {
                         when (it.itemId) {
@@ -131,7 +131,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 val resultIntent = Intent()
                                 resultIntent.putExtra(
                                     RESULT_BIKE_ACTIVITY_UID,
-                                    bikeActivityWithDetails.bikeActivity.uid.toString()
+                                    bikeActivityWithSamples.bikeActivity.uid.toString()
                                 )
                                 setResult(Activity.RESULT_OK, resultIntent)
                                 finish()
@@ -153,7 +153,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         }
 
                     val mapRouteCoordinates: List<Point> =
-                        bikeActivityWithDetails.bikeActivityMeasurements
+                        bikeActivityWithSamples.bikeActivitySamples
                             .filter { it.lon != 0.0 || it.lat != 0.0 }
                             .map {
                                 Point.fromLngLat(
@@ -186,14 +186,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 )
                             )
 
-                            val bikeActivityDetails =
-                                bikeActivityWithDetails.bikeActivityMeasurements.filter { bikeActivityDetail ->
-                                    bikeActivityDetail.lon != 0.0 || bikeActivityDetail.lat != 0.0
+                            val bikeActivitySamples =
+                                bikeActivityWithSamples.bikeActivitySamples.filter { bikeActivitySample ->
+                                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
                                 }
 
-                            if (bikeActivityDetails.size > 1) {
+                            if (bikeActivitySamples.size > 1) {
                                 val latLngBounds = LatLngBounds.Builder()
-                                bikeActivityDetails
+                                bikeActivitySamples
                                     .forEach { bikeActivityDetail ->
                                         latLngBounds.include(
                                             LatLng(
@@ -216,16 +216,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     }
 
                     tvStartTime.text =
-                        sdf.format(Date.from(bikeActivityWithDetails.bikeActivity.startTime))
+                        sdf.format(Date.from(bikeActivityWithSamples.bikeActivity.startTime))
                     tvStartTime.visibility = View.VISIBLE
 
-                    if (bikeActivityWithDetails.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
+                    if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                         ivCheck.visibility = View.INVISIBLE
                         tvUploaded.visibility = View.INVISIBLE
                         btnSurfaceType.isEnabled = true
                         btnSmoothnessType.isEnabled = true
 
-                        if (bikeActivityWithDetails.bikeActivity.surfaceType != null && bikeActivityWithDetails.bikeActivity.smoothnessType != null) {
+                        if (bikeActivityWithSamples.bikeActivity.surfaceType != null && bikeActivityWithSamples.bikeActivity.smoothnessType != null) {
                             fab.visibility = View.VISIBLE
                         } else {
                             fab.visibility = View.INVISIBLE
@@ -238,37 +238,38 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         fab.visibility = View.INVISIBLE
                     }
 
-                    if (bikeActivityWithDetails.bikeActivity.endTime != null) {
+                    if (bikeActivityWithSamples.bikeActivity.endTime != null) {
                         tvStopTime.text =
-                            sdfShort.format(Date.from(bikeActivityWithDetails.bikeActivity.endTime))
+                            sdfShort.format(Date.from(bikeActivityWithSamples.bikeActivity.endTime))
                         tvDelimiter.visibility = View.VISIBLE
                         tvStopTime.visibility = View.VISIBLE
 
                         val diff =
-                            bikeActivityWithDetails.bikeActivity.endTime.toEpochMilli() - bikeActivityWithDetails.bikeActivity.startTime.toEpochMilli()
+                            bikeActivityWithSamples.bikeActivity.endTime.toEpochMilli() - bikeActivityWithSamples.bikeActivity.startTime.toEpochMilli()
                         val duration = (diff / 1000 / 60).toInt()
                         tvDuration.text =
                             resources.getQuantityString(R.plurals.duration, duration, duration)
-                        tvDetails.text = resources.getQuantityString(
-                            R.plurals.details,
-                            bikeActivityWithDetails.bikeActivityMeasurements.size,
-                            bikeActivityWithDetails.bikeActivityMeasurements.size
+                        tvSamples.text = resources.getQuantityString(
+                            R.plurals.samples,
+                            bikeActivityWithSamples.bikeActivitySamples.size,
+                            bikeActivityWithSamples.bikeActivitySamples.size
                         )
                     } else {
                         tvDelimiter.visibility = View.INVISIBLE
                         tvStopTime.visibility = View.INVISIBLE
                     }
 
-                    bikeActivityWithDetails.bikeActivity.surfaceType?.let {
+                    bikeActivityWithSamples.bikeActivity.surfaceType?.let {
                         btnSurfaceType.text = it
                             .replace("_", " ")
                             .replace(":", " ")
                     }
-                    bikeActivityWithDetails.bikeActivity.smoothnessType?.let {
+                    bikeActivityWithSamples.bikeActivity.smoothnessType?.let {
                         btnSmoothnessType.text = it
                     }
 
-                    adapter.data = bikeActivityWithDetails.bikeActivityMeasurements
+                    // TODO Enable after adapter is implemented
+                    // adapter.data = bikeActivityWithSamples.bikeActivityMeasurements
 
                     btnSurfaceType.setOnClickListener {
                         val intent = Intent(
@@ -277,7 +278,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         ).apply {
                             putExtra(
                                 EXTRA_SURFACE_TYPE,
-                                bikeActivityWithDetails.bikeActivity.surfaceType
+                                bikeActivityWithSamples.bikeActivity.surfaceType
                             )
                         }
 
@@ -292,7 +293,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         ).apply {
                             putExtra(
                                 EXTRA_SMOOTHNESS_TYPE,
-                                bikeActivityWithDetails.bikeActivity.smoothnessType
+                                bikeActivityWithSamples.bikeActivity.smoothnessType
                             )
                         }
 
@@ -301,13 +302,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     }
 
                     fab.setOnClickListener {
-                        if (bikeActivityWithDetails.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
+                        if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                             val serviceResultReceiver =
                                 FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
                             serviceResultReceiver.receiver = this
                             FirestoreService.enqueueWork(
                                 this,
-                                bikeActivityWithDetails,
+                                bikeActivityWithSamples,
                                 serviceResultReceiver
                             )
                         } else {
