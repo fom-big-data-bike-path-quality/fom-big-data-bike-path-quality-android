@@ -17,6 +17,7 @@ import androidx.activity.viewModels
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.style.layers.CircleLayer
 import com.mapbox.mapboxsdk.style.layers.LineLayer
@@ -42,6 +44,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
@@ -97,6 +100,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         mapView?.onCreate(savedInstanceState)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        val clDescription: ConstraintLayout = findViewById(R.id.clDescription)
         val ivCheck: ImageView = findViewById(R.id.ivCheck)
         val tvUploaded: TextView = findViewById(R.id.tvUploaded)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
@@ -143,7 +147,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
                         false
                     }
-
 
                     val mapStyle =
                         when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -209,32 +212,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 )
                             )
 
-                            val bikeActivitySamples =
-                                bikeActivityWithSamples.bikeActivitySamples.filter { bikeActivitySample ->
-                                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
-                                }
-
-                            if (bikeActivitySamples.size > 1) {
-                                val latLngBounds = LatLngBounds.Builder()
-                                bikeActivitySamples
-                                    .forEach { bikeActivityDetail ->
-                                        latLngBounds.include(
-                                            LatLng(
-                                                bikeActivityDetail.lat,
-                                                bikeActivityDetail.lon
-                                            )
-                                        )
-                                    }
-
-                                mapboxMap.easeCamera(
-                                    CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
-                                    1
-                                )
-                            }
-
-                            mapboxMap.uiSettings.isZoomGesturesEnabled = false
-                            mapboxMap.uiSettings.isScrollGesturesEnabled = false
                             mapboxMap.uiSettings.isRotateGesturesEnabled = false
+
+                            centerMap(mapboxMap, bikeActivityWithSamples)
+                        }
+
+                        clDescription.setOnClickListener {
+                            centerMap(mapboxMap, bikeActivityWithSamples, duration = 500)
                         }
                     }
 
@@ -401,6 +385,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         onNavigateUp()
     }
 
+    /**
+     * Handles option menu creation
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_bike_activity_details_activity, menu)
         return super.onCreateOptionsMenu(menu)
@@ -478,6 +465,34 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     //
     // Helpers
     //
+
+    /**
+     * Centers map to include all samples
+     */
+    private fun centerMap(mapboxMap: MapboxMap, bikeActivityWithSamples: BikeActivityWithSamples, duration: Int = 1) {
+        val bikeActivitySamples =
+            bikeActivityWithSamples.bikeActivitySamples.filter { bikeActivitySample ->
+                bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+            }
+
+        if (bikeActivitySamples.size > 1) {
+            val latLngBounds = LatLngBounds.Builder()
+            bikeActivitySamples
+                .forEach { bikeActivityDetail ->
+                    latLngBounds.include(
+                        LatLng(
+                            bikeActivityDetail.lat,
+                            bikeActivityDetail.lon
+                        )
+                    )
+                }
+
+            mapboxMap.easeCamera(
+                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
+                duration
+            )
+        }
+    }
 
     /**
      * Logs message
