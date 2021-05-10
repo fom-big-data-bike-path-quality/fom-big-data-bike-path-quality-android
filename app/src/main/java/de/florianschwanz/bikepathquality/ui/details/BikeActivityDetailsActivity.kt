@@ -32,6 +32,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.CircleLayer
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory
@@ -176,6 +177,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                     )
                                 )
                             )
+                            it.addSource(
+                                GeoJsonSource(
+                                    "circle-source",
+                                    FeatureCollection.fromFeatures(
+                                        mapRouteCoordinates.map {
+                                            Feature.fromGeometry(it)
+                                        }.toTypedArray()
+                                    )
+                                )
+                            )
                             it.addLayer(
                                 LineLayer("linelayer", "line-source").withProperties(
                                     PropertyFactory.lineDasharray(arrayOf(0.01f, 2f)),
@@ -183,6 +194,18 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                     PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
                                     PropertyFactory.lineWidth(5f),
                                     PropertyFactory.lineColor(Color.parseColor(getThemeColorInHex(R.attr.colorPrimary)))
+                                )
+                            )
+                            it.addLayer(
+                                CircleLayer("circleLayer", "circle-source").withProperties(
+                                    PropertyFactory.circleRadius(7f),
+                                    PropertyFactory.circleColor(
+                                        Color.parseColor(
+                                            getThemeColorInHex(
+                                                R.attr.colorPrimaryVariant
+                                            )
+                                        )
+                                    )
                                 )
                             )
 
