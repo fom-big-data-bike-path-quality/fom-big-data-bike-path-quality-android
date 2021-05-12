@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:contentDescription="@string/notification"
+            android:contentDescription="@string/description_notification"
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/ic_baseline_track_changes_24"

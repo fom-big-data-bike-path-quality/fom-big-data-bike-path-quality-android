@@ -56,7 +56,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/still"
+                    android:contentDescription="@string/description_still"
                     android:src="@drawable/ic_baseline_emoji_people_24"
                     app:tint="@color/grey_500" />
 
@@ -65,7 +65,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/walking"
+                    android:contentDescription="@string/description_walking"
                     android:src="@drawable/ic_baseline_directions_walk_24"
                     app:tint="@color/grey_500" />
 
@@ -74,7 +74,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/running"
+                    android:contentDescription="@string/description_running"
                     android:src="@drawable/ic_baseline_directions_run_24"
                     app:tint="@color/grey_500" />
 
@@ -83,7 +83,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/on_bicycle"
+                    android:contentDescription="@string/description_on_bicycle"
                     android:src="@drawable/ic_baseline_pedal_bike_24"
                     app:tint="@color/grey_500" />
 
@@ -92,7 +92,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/in_vehicle"
+                    android:contentDescription="@string/description_in_vehicle"
                     android:src="@drawable/ic_baseline_directions_car_24"
                     app:tint="@color/grey_500" />
 
@@ -101,7 +101,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:contentDescription="@string/unknown"
+                    android:contentDescription="@string/description_unknown"
                     android:src="@drawable/ic_baseline_help_outline_24"
                     app:tint="@color/grey_500" />
 

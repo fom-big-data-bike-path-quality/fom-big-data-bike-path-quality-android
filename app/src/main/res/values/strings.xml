@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Ahuacamolli</string>
 
+    <!-- Activity Titles -->
+
+    <string name="title_activity_permission_rationale">Permission Rationale Activity</string>
+    <string name="title_location_permission_rationale">Permission Rationale Location</string>
+
+    <string name="title_activities">Activities</string>
+    <string name="title_sensors">Sensors</string>
+    <string name="title_log">Log</string>
+    <string name="title_bike_activity_details">Bike Activity Details</string>
+    <string name="title_surface_type">Surface Type</string>
+    <string name="title_smoothness_type">Smoothness Type</string>
+
+    <!-- Actions -->
+
     <string name="action_settings">Settings</string>
     <string name="action_clear_activities">Clear activities</string>
     <string name="action_clear_log">Clear log</string>
@@ -23,11 +37,11 @@
     <string name="action_enable_automatic_tracking">Enable automatic tracking</string>
     <string name="action_disable_automatic_tracking">Disable automatic tracking</string>
 
-    <string name="title_activity_permission_rationale">PermissionRationaleActivity</string>
+    <!-- Rationales -->
+
     <string name="main_message_activity_permission_rationale">Track activity changes by letting us read your phone\'s activity transitions.</string>
     <string name="details_message_activity_permission_rationale">This app\'s experience requires access to your phone\'s activity transitions to display changes from walking to standing still.</string>
 
-    <string name="title_location_permission_rationale">PermissionRationaleLocation</string>
     <string name="main_message_location_permission_rationale">Track location by letting us read your phone\'s position.</string>
     <string name="details_message_location_permission_rationale">This app\'s experience requires access to your phone\'s position to connect collected data to a geolocation.</string>
 
@@ -35,22 +49,11 @@
     <string name="continue_activity_permission_rationale">Continue</string>
     <string name="enable_disable_button_activity_recognition">Enable/Disable Activity Recognition</string>
 
-    <string name="title_activities">Activities</string>
-    <string name="title_sensors">Sensors</string>
-    <string name="title_log">Log</string>
-    <string name="title_bike_activity_details">Bike Activity Details</string>
-    <string name="title_surface_type">Surface Type</string>
-    <string name="title_smoothness_type">Smoothness Type</string>
+    <!-- Main Activity : Sensors -->
 
     <string name="measurements">Measurements</string>
 
     <string name="activity_transition">Activity Transition</string>
-    <string name="still">still</string>
-    <string name="walking">walking</string>
-    <string name="running">running</string>
-    <string name="on_bicycle">on bicycle</string>
-    <string name="in_vehicle">in vehicle</string>
-    <string name="unknown">unknown</string>
 
     <string name="accelerometer">Accelerometer</string>
     <string name="label_accelerometer_x">x: </string>
@@ -66,21 +69,18 @@
     <string name="label_lat">lat:</string>
     <string name="lon">%1$.3f</string>
     <string name="lat">%1$.3f</string>
+
     <string name="default_lon">-</string>
     <string name="default_lat">-</string>
 
+    <!-- Main Activity : Activities -->
+
     <string name="bike_activity">Bike Activity</string>
     <string name="bike_activity_with_surface_type">Bike Activity on %s</string>
-    <string name="default_start_time">10:42</string>
-    <string name="default_stop_time">10:42</string>
-    <string name="bike">Bike</string>
-    <string name="check">Check</string>
     <plurals name="duration">
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>
     </plurals>
-    <string name="default_duration">not yet completed</string>
-    <string name="ongoing">ongoing</string>
     <string name="delimiter">·</string>
     <string name="delimiter_dash">-</string>
     <plurals name="samples">
@@ -88,24 +88,53 @@
         <item quantity="one">%d samples</item>
         <item quantity="other">%d samples</item>
     </plurals>
-    <string name="default_samples">no samples</string>
     <string name="tracking_mode">tracking mode</string>
     <string name="tracking_mode_manual">manual</string>
     <string name="tracking_mode_automatic">automatic</string>
+
+    <string name="automatic_tracking_enabled">Automatic tracking enabled</string>
+
+    <string name="default_start_time">10:42</string>
+    <string name="default_stop_time">10:42</string>
+    <string name="default_duration">not yet completed</string>
+    <string name="default_samples">no samples</string>
     <string name="default_tracking_mode">tracking mode</string>
 
-    <string name="duration">duration</string>
-    <string name="details">details</string>
+    <!-- Bike Activity Details -->
+
+    <string name="bike_activity_sample">Bike Activity Sample</string>
     <string name="activity_detail">%1$.3f/%2$.3f \t\t\t\t %3$.3f \t\t\t\t %4$.1f, %5$.1f, %6$.1f</string>
+    <string name="default_start_time_with_seconds">10:42:00</string>
+
+    <!-- Surface / Smoothness Type -->
 
     <string name="default_value">value</string>
     <string name="default_comment">comment</string>
-    <string name="description_photo">photo</string>
     <string name="default_surface_type">Select surface type</string>
     <string name="default_smoothness_type">Select smoothness type</string>
 
-    <string name="notification">notification</string>
-    <string name="automatic_tracking_enabled">Automatic tracking enabled</string>
+    <!-- Descriptions -->
+
+    <string name="description_ongoing">Ongoing</string>
+
+    <string name="description_still">Still</string>
+    <string name="description_walking">Walking</string>
+    <string name="description_running">Running</string>
+    <string name="description_on_bicycle">On bicycle</string>
+    <string name="description_in_vehicle">In vehicle</string>
+    <string name="description_unknown">Unknown</string>
+
+    <string name="description_bike">Bike</string>
+    <string name="description_details">Details</string>
+    <string name="description_check">Check</string>
+    <string name="description_recording">Recording</string>
+    <string name="description_duration">Duration</string>
+
+    <string name="description_photo">Photo</string>
+    <string name="description_upload">Upload</string>
+    <string name="description_notification">Notification</string>
+
+    <!-- Other -->
 
     <string name="mapbox_access_token">pk.eyJ1IjoiYmlrZXBhdGgtcXVhbGl0eSIsImEiOiJja25zbjFjaGwyZWNvMnZwcjloNmd4dXc5In0.qWYKDWYq-cZhT2AGUZZPQA</string>
 
