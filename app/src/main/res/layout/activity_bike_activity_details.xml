@@ -228,7 +228,7 @@
             app:layout_constraintTop_toTopOf="@id/ivList" />
 
         <TextView
-            android:id="@+id/tvDetails"
+            android:id="@+id/tvSamples"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_samples"

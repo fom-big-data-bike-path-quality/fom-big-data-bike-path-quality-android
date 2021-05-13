@@ -9,7 +9,7 @@ data class BikeActivitySampleWithMeasurements(
     @Embedded val bikeActivitySample: BikeActivitySample,
     @Relation(
         parentColumn = "uid",
-        entityColumn = "activity_sample_uid"
+        entityColumn = "bike_activity_sample_uid"
     )
     val bikeActivityMeasurements: List<BikeActivityMeasurement>
 )

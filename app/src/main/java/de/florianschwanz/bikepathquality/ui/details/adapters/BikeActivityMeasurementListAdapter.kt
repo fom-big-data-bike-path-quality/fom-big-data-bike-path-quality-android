@@ -12,8 +12,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BikeActivityDetailListAdapter() :
-    RecyclerView.Adapter<BikeActivityDetailListAdapter.BikeActivityDetailViewHolder>() {
+class BikeActivityMeasurementListAdapter() :
+    RecyclerView.Adapter<BikeActivityMeasurementListAdapter.BikeActivityDetailViewHolder>() {
 
     var data = listOf<BikeActivityMeasurement>()
         set(value) {

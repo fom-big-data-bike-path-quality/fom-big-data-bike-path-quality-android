@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_BIKE_ACTIVITY_DETAILS && resultCode == RESULT_OK) {
             data?.getStringExtra(RESULT_BIKE_ACTIVITY_UID)?.let { bikeActivityUid ->
-                bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid)
+                bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid)
                     .observe(this) { bikeActivityWithDetails ->
                         bikeActivityWithDetails?.let {
                             bikeActivityViewModel.delete(it.bikeActivity)

@@ -103,8 +103,20 @@
     <!-- Bike Activity Details -->
 
     <string name="bike_activity_sample">Bike Activity Sample</string>
+    <plurals name="measurements">
+        <item quantity="zero">no measurements</item>
+        <item quantity="one">%d measurement</item>
+        <item quantity="other">%d measurements</item>
+    </plurals>
+    <string name="bike_activity_sample_speed">%1$.1f km/h</string>
+    <string name="bike_activity_sample_accelerometer">%1$.1f</string>
+
     <string name="activity_detail">%1$.3f/%2$.3f \t\t\t\t %3$.3f \t\t\t\t %4$.1f, %5$.1f, %6$.1f</string>
+
     <string name="default_start_time_with_seconds">10:42:00</string>
+    <string name="default_measurements">no measurements</string>
+    <string name="default_speed">22 km/h</string>
+    <string name="default_accelerometer">4.2</string>
 
     <!-- Surface / Smoothness Type -->
 

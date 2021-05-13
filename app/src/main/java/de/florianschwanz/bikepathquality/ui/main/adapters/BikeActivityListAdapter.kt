@@ -51,7 +51,7 @@ class BikeActivityListAdapter(val activity: Activity) :
         private val ivCheck: ImageView = itemView.findViewById(R.id.ivCheck)
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
-        private val tvSamples: TextView = itemView.findViewById(R.id.tvDetails)
+        private val tvSamples: TextView = itemView.findViewById(R.id.tvSamples)
         private val tvDelimiter: TextView = itemView.findViewById(R.id.tvDelimiter2)
         private val tvTrackingMode: TextView = itemView.findViewById(R.id.tvTrackingType)
 

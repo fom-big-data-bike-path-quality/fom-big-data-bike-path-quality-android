@@ -45,12 +45,14 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
 import de.florianschwanz.bikepathquality.services.FirestoreService
 import de.florianschwanz.bikepathquality.services.FirestoreServiceResultReceiver
-import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivityDetailListAdapter
+import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity.Companion.EXTRA_SMOOTHNESS_TYPE
 import de.florianschwanz.bikepathquality.ui.smoothness_type.adapters.SmoothnessTypeListAdapter.SmoothnessTypeViewHolder.Companion.RESULT_SMOOTHNESS_TYPE
@@ -69,6 +71,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivityRepository)
+    }
+    private val bikeActivitySampleViewModel: BikeActivitySampleViewModel by viewModels {
+        BikeActivitySampleViewModelFactory((this.application as BikePathQualityApplication).bikeActivitySampleRepository)
     }
 
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
@@ -109,11 +114,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
-        val tvSamples: TextView = findViewById(R.id.tvDetails)
+        val tvSamples: TextView = findViewById(R.id.tvSamples)
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
-        val adapter = BikeActivityDetailListAdapter()
+        val adapter = BikeActivitySampleListAdapter()
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -124,7 +129,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
-        bikeActivityViewModel.singleBikeActivityWithDetails(bikeActivityUid!!)
+        bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid!!)
             .observe(this, { bikeActivityWithSamples ->
 
                 bikeActivityWithSamples?.let {
@@ -275,9 +280,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         btnSmoothnessType.text = it
                     }
 
-                    // TODO Enable after adapter is implemented
-                    // adapter.data = bikeActivityWithSamples.bikeActivityMeasurements
-
                     btnSurfaceType.setOnClickListener {
                         val intent = Intent(
                             applicationContext,
@@ -328,6 +330,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     }
                 }
             })
+
+        bikeActivitySampleViewModel.allBikeActivitySamplesWithMeasurements.observe(this, {
+            adapter.data = it
+        })
     }
 
     /**
@@ -410,7 +416,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     ?.getString(FirestoreService.EXTRA_BIKE_ACTIVITY_UID)
                     ?.let {
                         bikeActivityViewModel
-                            .singleBikeActivityWithDetails(it)
+                            .singleBikeActivityWithSamples(it)
                             .observe(this, { bikeActivityWithDetails ->
 
                                 // Update bike activity status
@@ -469,7 +475,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     /**
      * Centers map to include all samples
      */
-    private fun centerMap(mapboxMap: MapboxMap, bikeActivityWithSamples: BikeActivityWithSamples, duration: Int = 1) {
+    private fun centerMap(
+        mapboxMap: MapboxMap,
+        bikeActivityWithSamples: BikeActivityWithSamples,
+        duration: Int = 1
+    ) {
         val bikeActivitySamples =
             bikeActivityWithSamples.bikeActivitySamples.filter { bikeActivitySample ->
                 bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0

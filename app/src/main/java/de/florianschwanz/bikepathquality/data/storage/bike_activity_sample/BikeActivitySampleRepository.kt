@@ -7,6 +7,13 @@ class BikeActivitySampleRepository(private val bikeActivitySampleDao: BikeActivi
 
     val bikeActivitySamples: Flow<List<BikeActivitySample>> = bikeActivitySampleDao.getAll()
 
+    val bikeActivitySamplesWithMeasurements: Flow<List<BikeActivitySampleWithMeasurements>> =
+        bikeActivitySampleDao.getAllWithMeasurements()
+
+    fun singleBikeActivitySampleWithMeasurements(uid: String): Flow<BikeActivitySampleWithMeasurements> {
+        return bikeActivitySampleDao.getSingleWithMeasurements(uid)
+    }
+
     @WorkerThread
     suspend fun insert(bikeActivitySample: BikeActivitySample) {
         bikeActivitySampleDao.insert(bikeActivitySample)
