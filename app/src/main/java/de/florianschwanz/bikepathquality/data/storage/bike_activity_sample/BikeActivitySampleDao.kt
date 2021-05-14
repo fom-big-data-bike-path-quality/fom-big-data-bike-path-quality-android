@@ -12,6 +12,9 @@ interface BikeActivitySampleDao {
     @Query("SELECT * FROM bikeactivitysample")
     fun getAllWithMeasurements(): Flow<List<BikeActivitySampleWithMeasurements>>
 
+    @Query("SELECT * FROM bikeactivitysample where bike_activity_uid=:bikeActivityUid")
+    fun getWithMeasurements(bikeActivityUid: String): Flow<List<BikeActivitySampleWithMeasurements>>
+
     @Query("SELECT * FROM bikeactivitysample WHERE uid=:uid")
     fun getSingleWithMeasurements(uid: String): Flow<BikeActivitySampleWithMeasurements>
 

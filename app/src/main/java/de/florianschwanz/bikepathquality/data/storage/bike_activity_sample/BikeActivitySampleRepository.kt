@@ -10,6 +10,10 @@ class BikeActivitySampleRepository(private val bikeActivitySampleDao: BikeActivi
     val bikeActivitySamplesWithMeasurements: Flow<List<BikeActivitySampleWithMeasurements>> =
         bikeActivitySampleDao.getAllWithMeasurements()
 
+    fun bikeActivitySamplesWithMeasurements(bikeActivityUid: String): Flow<List<BikeActivitySampleWithMeasurements>> {
+        return bikeActivitySampleDao.getWithMeasurements(bikeActivityUid)
+    }
+
     fun singleBikeActivitySampleWithMeasurements(uid: String): Flow<BikeActivitySampleWithMeasurements> {
         return bikeActivitySampleDao.getSingleWithMeasurements(uid)
     }

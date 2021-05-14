@@ -232,7 +232,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             centerMap(
                                 mapboxMap,
                                 bikeActivityWithSamples.bikeActivitySamples,
-                                duration = 500
+                                duration = 1_000
                             )
                         }
                     }
@@ -341,9 +341,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
             })
 
-        bikeActivitySampleViewModel.allBikeActivitySamplesWithMeasurements.observe(this, {
-            adapter.data = it
-        })
+        bikeActivitySampleViewModel.bikeActivitySamplesWithMeasurements(bikeActivityUid)
+            .observe(this, {
+                adapter.data = it
+            })
     }
 
     /**
@@ -485,7 +486,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 bikeActivitySampleWithMeasurements.bikeActivitySample,
                 bikeActivitySampleWithMeasurements.bikeActivitySample
             ),
-            padding = 2_500
+            duration = 1_000
         )
     }
 
@@ -520,7 +521,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
             mapboxMap.easeCamera(
                 CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), padding),
-                duration
+                duration,
+                true
             )
         }
     }

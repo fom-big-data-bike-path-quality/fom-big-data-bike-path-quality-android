@@ -15,7 +15,11 @@ class BikeActivitySampleViewModel(private val repository: BikeActivitySampleRepo
     val allBikeActivitySamplesWithMeasurements: LiveData<List<BikeActivitySampleWithMeasurements>> =
         repository.bikeActivitySamplesWithMeasurements.asLiveData()
 
-    fun singleBikeActivitySampleWithMeasurements(uid: String) = repository.singleBikeActivitySampleWithMeasurements(uid)
+    fun bikeActivitySamplesWithMeasurements(bikeActivityUid: String): LiveData<List<BikeActivitySampleWithMeasurements>> =
+        repository.bikeActivitySamplesWithMeasurements(bikeActivityUid).asLiveData()
+
+    fun singleBikeActivitySampleWithMeasurements(uid: String) =
+        repository.singleBikeActivitySampleWithMeasurements(uid)
 
     fun insert(bikeActivitySample: BikeActivitySample) = viewModelScope.launch {
         repository.insert(bikeActivitySample)
