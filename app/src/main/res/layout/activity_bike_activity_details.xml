@@ -50,7 +50,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:padding="12dp"
             app:layout_constraintBottom_toTopOf="@id/btnSurfaceType"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivStop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -139,6 +139,25 @@
                 app:layout_constraintTop_toTopOf="@id/ivBike" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/ivStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/description_bike"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:src="@drawable/ic_baseline_stop_48"
+            app:layout_constraintBottom_toBottomOf="@id/clDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/clDescription"
+            app:layout_constraintTop_toTopOf="@id/clDescription"
+            app:tint="?attr/colorOnSurface" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSurfaceType"

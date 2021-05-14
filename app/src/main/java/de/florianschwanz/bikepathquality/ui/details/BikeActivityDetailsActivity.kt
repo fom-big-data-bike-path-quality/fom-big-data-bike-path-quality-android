@@ -41,9 +41,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
@@ -61,6 +59,7 @@ import de.florianschwanz.bikepathquality.ui.surface_type.SurfaceTypeActivity
 import de.florianschwanz.bikepathquality.ui.surface_type.SurfaceTypeActivity.Companion.EXTRA_SURFACE_TYPE
 import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeListAdapter.SurfaceTypeViewHolder.Companion.RESULT_SURFACE_TYPE
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 
 class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver,
@@ -114,6 +113,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
+        val ivStop: ImageView = findViewById(R.id.ivStop)
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
@@ -276,9 +276,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             bikeActivityWithSamples.bikeActivitySamples.size,
                             bikeActivityWithSamples.bikeActivitySamples.size
                         )
+                        ivStop.visibility = View.INVISIBLE
                     } else {
                         tvDelimiter.visibility = View.INVISIBLE
                         tvStopTime.visibility = View.INVISIBLE
+                        ivStop.visibility = View.VISIBLE
+                    }
+
+                    ivStop.setOnClickListener {
+
+                        // Update bike activity
+                        viewModel.bikeActivityWithDetails.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(it.copy(endTime = Instant.now()))
+                        }
                     }
 
                     bikeActivityWithSamples.bikeActivity.surfaceType?.let {
