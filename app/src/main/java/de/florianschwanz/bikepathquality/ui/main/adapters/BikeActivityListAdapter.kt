@@ -69,11 +69,6 @@ class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener
                 val duration = (diff / 1000 / 60).toInt()
                 tvDuration.text =
                     resources.getQuantityString(R.plurals.duration, duration, duration)
-                tvSamples.text = resources.getQuantityString(
-                    R.plurals.samples,
-                    item.bikeActivitySamples.size,
-                    item.bikeActivitySamples.size
-                )
             } else {
                 val animation: Animation = AlphaAnimation(1f, 0f)
                 animation.duration = 1000
@@ -83,6 +78,12 @@ class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener
                 ivOngoing.visibility = View.VISIBLE
                 ivOngoing.startAnimation(animation)
             }
+
+            tvSamples.text = resources.getQuantityString(
+                R.plurals.samples,
+                item.bikeActivitySamples.size,
+                item.bikeActivitySamples.size
+            )
 
             when (item.bikeActivity.trackingType) {
                 BikeActivityTrackingType.MANUAL -> {

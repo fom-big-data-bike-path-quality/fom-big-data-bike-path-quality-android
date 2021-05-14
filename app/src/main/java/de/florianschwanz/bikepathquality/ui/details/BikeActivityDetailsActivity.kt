@@ -271,11 +271,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         val duration = (diff / 1000 / 60).toInt()
                         tvDuration.text =
                             resources.getQuantityString(R.plurals.duration, duration, duration)
-                        tvSamples.text = resources.getQuantityString(
-                            R.plurals.samples,
-                            bikeActivityWithSamples.bikeActivitySamples.size,
-                            bikeActivityWithSamples.bikeActivitySamples.size
-                        )
+
                         ivStop.visibility = View.INVISIBLE
                     } else {
                         tvDelimiter.visibility = View.INVISIBLE
@@ -283,6 +279,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         ivStop.visibility = View.VISIBLE
                     }
 
+                    tvSamples.text = resources.getQuantityString(
+                        R.plurals.samples,
+                        bikeActivityWithSamples.bikeActivitySamples.size,
+                        bikeActivityWithSamples.bikeActivitySamples.size
+                    )
                     ivStop.setOnClickListener {
 
                         // Update bike activity
