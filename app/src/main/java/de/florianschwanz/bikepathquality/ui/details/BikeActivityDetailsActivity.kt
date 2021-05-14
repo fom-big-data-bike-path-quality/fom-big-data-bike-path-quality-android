@@ -44,7 +44,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
@@ -82,6 +82,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
     private var mapView: MapView? = null
+    private lateinit var mapboxMap: MapboxMap
 
     //
     // Lifecycle phases
@@ -173,7 +174,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 )
                             }
 
-                    mapView?.getMapAsync { mapboxMap ->
+                    mapView?.getMapAsync {
+                        mapboxMap = it
+
+
                         mapboxMap.setStyle(mapStyle) {
                             it.addSource(
                                 GeoJsonSource(
@@ -221,11 +225,15 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
                             mapboxMap.uiSettings.isRotateGesturesEnabled = false
 
-                            centerMap(mapboxMap, bikeActivityWithSamples)
+                            centerMap(mapboxMap, bikeActivityWithSamples.bikeActivitySamples)
                         }
 
                         clDescription.setOnClickListener {
-                            centerMap(mapboxMap, bikeActivityWithSamples, duration = 500)
+                            centerMap(
+                                mapboxMap,
+                                bikeActivityWithSamples.bikeActivitySamples,
+                                duration = 500
+                            )
                         }
                     }
 
@@ -471,7 +479,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     }
 
     override fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) {
-        TODO("Not yet implemented")
+        centerMap(
+            mapboxMap,
+            listOf(
+                bikeActivitySampleWithMeasurements.bikeActivitySample,
+                bikeActivitySampleWithMeasurements.bikeActivitySample
+            ),
+            padding = 2_500
+        )
     }
 
     //
@@ -483,28 +498,28 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
      */
     private fun centerMap(
         mapboxMap: MapboxMap,
-        bikeActivityWithSamples: BikeActivityWithSamples,
+        bikeActivitySamples: List<BikeActivitySample>,
+        padding: Int = 250,
         duration: Int = 1
     ) {
-        val bikeActivitySamples =
-            bikeActivityWithSamples.bikeActivitySamples.filter { bikeActivitySample ->
+        if (bikeActivitySamples.filter { bikeActivitySample ->
                 bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+            }.size > 1) {
+            val latLngBounds = LatLngBounds.Builder()
+
+            bikeActivitySamples.filter { bikeActivitySample ->
+                bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+            }.forEach { bikeActivityDetail ->
+                latLngBounds.include(
+                    LatLng(
+                        bikeActivityDetail.lat,
+                        bikeActivityDetail.lon
+                    )
+                )
             }
 
-        if (bikeActivitySamples.size > 1) {
-            val latLngBounds = LatLngBounds.Builder()
-            bikeActivitySamples
-                .forEach { bikeActivityDetail ->
-                    latLngBounds.include(
-                        LatLng(
-                            bikeActivityDetail.lat,
-                            bikeActivityDetail.lon
-                        )
-                    )
-                }
-
             mapboxMap.easeCamera(
-                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), 250),
+                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), padding),
                 duration
             )
         }
