@@ -355,6 +355,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         bikeActivitySampleViewModel.bikeActivitySamplesWithMeasurements(bikeActivityUid)
             .observe(this, {
                 adapter.data = it
+                if (adapter.data.isNotEmpty()) {
+                    recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+                }
             })
     }
 
