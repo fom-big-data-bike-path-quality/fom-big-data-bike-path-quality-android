@@ -18,19 +18,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
+import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
+import de.florianschwanz.bikepathquality.ui.main.MainActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.main.adapters.BikeActivityListAdapter
 import java.time.Instant
 
-class BikeActivitiesFragment : Fragment() {
+class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -65,7 +64,7 @@ class BikeActivitiesFragment : Fragment() {
         val ivStartStop = view.findViewById<ImageView>(R.id.ivStartStop)
         val tvStartStop = view.findViewById<TextView>(R.id.tvStartStop)
 
-        val adapter = BikeActivityListAdapter(requireActivity())
+        val adapter = BikeActivityListAdapter(this)
 
         toolbar = view.findViewById(R.id.toolbar)
         toolbar.inflateMenu(R.menu.menu_activities_fragment)
@@ -138,6 +137,25 @@ class BikeActivitiesFragment : Fragment() {
         })
 
         updateMenuItems(toolbar, TrackingForegroundService.status)
+    }
+
+    override fun onBikeActivityItemClicked(bikeActivityWithSamples: BikeActivityWithSamples) {
+        val intent = Intent(
+            requireActivity().applicationContext,
+            BikeActivityDetailsActivity::class.java
+        ).apply {
+            putExtra(
+                BikeActivityDetailsActivity.EXTRA_BIKE_ACTIVITY_UID,
+                bikeActivityWithSamples.bikeActivity.uid.toString()
+            )
+            putExtra(
+                BikeActivityDetailsActivity.EXTRA_TRACKING_SERVICE_ENABLED,
+                bikeActivityWithSamples.bikeActivity.uid.toString()
+            )
+        }
+
+        @Suppress("DEPRECATION")
+        requireActivity().startActivityForResult(intent, MainActivity.REQUEST_BIKE_ACTIVITY_DETAILS)
     }
 
     //

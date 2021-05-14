@@ -1,7 +1,5 @@
 package de.florianschwanz.bikepathquality.ui.main.adapters
 
-import android.app.Activity
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +13,12 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
-import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
-import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_BIKE_ACTIVITY_UID
-import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.EXTRA_TRACKING_SERVICE_ENABLED
-import de.florianschwanz.bikepathquality.ui.main.MainActivity.Companion.REQUEST_BIKE_ACTIVITY_DETAILS
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BikeActivityListAdapter(val activity: Activity) :
+class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
 
     var data = listOf<BikeActivityWithSamples>()
@@ -36,15 +30,15 @@ class BikeActivityListAdapter(val activity: Activity) :
     override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BikeActivityViewHolder {
-        return BikeActivityViewHolder.create(activity, parent)
+        return BikeActivityViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: BikeActivityViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current)
+        holder.bind(current, itemClickListener)
     }
 
-    class BikeActivityViewHolder(val activity: Activity, itemView: View) :
+    class BikeActivityViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
@@ -58,7 +52,7 @@ class BikeActivityListAdapter(val activity: Activity) :
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivityWithSamples) {
+        fun bind(item: BikeActivityWithSamples, itemClickListener: OnItemClickListener) {
             val resources = itemView.context.resources
 
             if (item.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
@@ -120,15 +114,7 @@ class BikeActivityListAdapter(val activity: Activity) :
                 )
 
             itemView.setOnClickListener {
-                val intent = Intent(
-                    activity.applicationContext,
-                    BikeActivityDetailsActivity::class.java
-                ).apply {
-                    putExtra(EXTRA_BIKE_ACTIVITY_UID, item.bikeActivity.uid.toString())
-                    putExtra(EXTRA_TRACKING_SERVICE_ENABLED, item.bikeActivity.uid.toString())
-                }
-
-                activity.startActivityForResult(intent, REQUEST_BIKE_ACTIVITY_DETAILS)
+                itemClickListener.onBikeActivityItemClicked(item)
             }
         }
 
@@ -136,11 +122,15 @@ class BikeActivityListAdapter(val activity: Activity) :
             this.truncatedTo(ChronoUnit.DAYS).equals(Instant.now().truncatedTo(ChronoUnit.DAYS))
 
         companion object {
-            fun create(activity: Activity, parent: ViewGroup): BikeActivityViewHolder {
+            fun create(parent: ViewGroup): BikeActivityViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.bike_activities_item, parent, false)
-                return BikeActivityViewHolder(activity, view)
+                return BikeActivityViewHolder(view)
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onBikeActivityItemClicked(bikeActivityWithSamples: BikeActivityWithSamples)
     }
 }

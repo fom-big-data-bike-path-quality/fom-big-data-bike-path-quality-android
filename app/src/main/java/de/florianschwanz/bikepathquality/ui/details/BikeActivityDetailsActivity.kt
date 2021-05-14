@@ -47,6 +47,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
@@ -62,7 +63,8 @@ import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeLis
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver {
+class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver,
+    BikeActivitySampleListAdapter.OnItemClickListener {
 
     private lateinit var viewModel: BikeActivityDetailsViewModel
 
@@ -118,7 +120,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
-        val adapter = BikeActivitySampleListAdapter()
+        val adapter = BikeActivitySampleListAdapter(this)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -466,6 +468,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
             }
         }
+    }
+
+    override fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) {
+        TODO("Not yet implemented")
     }
 
     //

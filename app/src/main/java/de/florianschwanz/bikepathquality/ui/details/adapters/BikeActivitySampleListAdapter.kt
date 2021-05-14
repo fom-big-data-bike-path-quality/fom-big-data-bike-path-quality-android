@@ -10,7 +10,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BikeActivitySampleListAdapter :
+class BikeActivitySampleListAdapter(private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<BikeActivitySampleListAdapter.BikeActivitySampleViewHolder>() {
 
     var data = listOf<BikeActivitySampleWithMeasurements>()
@@ -30,7 +30,7 @@ class BikeActivitySampleListAdapter :
 
     override fun onBindViewHolder(holder: BikeActivitySampleViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current)
+        holder.bind(current, itemClickListener)
     }
 
     class BikeActivitySampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,7 +41,11 @@ class BikeActivitySampleListAdapter :
 
         private var sdf: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivitySampleWithMeasurements) {
+        fun bind(item: BikeActivitySampleWithMeasurements, itemClickListener: OnItemClickListener) {
+            itemView.setOnClickListener {
+                itemClickListener.onBikeActivitySampleItemClicked(item)
+            }
+
             val resources = itemView.context.resources
 
             tvStartTime.text = sdf.format(Date.from(item.bikeActivitySample.timestamp))
@@ -66,5 +70,9 @@ class BikeActivitySampleListAdapter :
                 return BikeActivitySampleViewHolder(view)
             }
         }
+    }
+
+    interface OnItemClickListener{
+        fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements)
     }
 }
