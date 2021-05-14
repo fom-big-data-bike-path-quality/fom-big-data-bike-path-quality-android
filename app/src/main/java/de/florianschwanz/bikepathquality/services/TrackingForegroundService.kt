@@ -63,6 +63,8 @@ class TrackingForegroundService : LifecycleService() {
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
             try {
+                activitySampleTrackerRunning = true
+
                 // Track bike activity sample
                 val bikeActivitySample = trackBikeActivitySample(activeBikeActivity)
 
@@ -90,6 +92,7 @@ class TrackingForegroundService : LifecycleService() {
             }
         }
     }
+    private var activitySampleTrackerRunning = false
 
     //
     // Lifecycle phases
@@ -170,6 +173,8 @@ class TrackingForegroundService : LifecycleService() {
             ACTION_STOP -> {
                 stopForeground(true)
                 stopSelfResult(startId)
+
+                activitySampleTrackerRunning = false
                 activitySampleHandler.removeCallbacks(activitySampleTracker)
 
                 val broadCastIntent = Intent(TAG)
@@ -240,7 +245,9 @@ class TrackingForegroundService : LifecycleService() {
                     .build()
                     .startForeground()
 
-                activitySampleTracker.run()
+                if (!activitySampleTrackerRunning) {
+                    activitySampleTracker.run()
+                }
             } else {
 
                 log("Stop bike activity")
@@ -255,6 +262,7 @@ class TrackingForegroundService : LifecycleService() {
                     .build()
                     .startForeground()
 
+                activitySampleTrackerRunning = false
                 activitySampleHandler.removeCallbacks(activitySampleTracker)
             }
         })
