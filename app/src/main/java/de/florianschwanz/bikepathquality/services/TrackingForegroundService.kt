@@ -315,7 +315,7 @@ class TrackingForegroundService : LifecycleService() {
      * Unregisters from activity transitions
      */
     private fun unhandleActivityTransitions() {
-        activityTransitionLiveData = ActivityTransitionLiveData(this)
+        activityTransitionLiveData.removeObservers(this)
     }
 
     /**
