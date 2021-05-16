@@ -69,8 +69,8 @@ class TrackingForegroundService : LifecycleService() {
                 val bikeActivitySample = trackBikeActivitySample(activeBikeActivity)
 
                 var measurements = 0
-                val activityDetailHandler = Handler(Looper.getMainLooper())
-                val activityDetailTracker: Runnable = object : Runnable {
+                val activityMeasurementHandler = Handler(Looper.getMainLooper())
+                val activityMeasurementTracker: Runnable = object : Runnable {
                     override fun run() {
                         try {
                             // Track bike activity measurement
@@ -78,15 +78,15 @@ class TrackingForegroundService : LifecycleService() {
                             measurements++
                         } finally {
                             if (measurements < TRACKING_SAMPLE_SIZE) {
-                                activityDetailHandler.postDelayed(this, ACTIVITY_DETAIL_DELAY)
+                                activityMeasurementHandler.postDelayed(this, ACTIVITY_DETAIL_DELAY)
                             } else {
-                                activityDetailHandler.removeCallbacks(this)
+                                activityMeasurementHandler.removeCallbacks(this)
                             }
                         }
                     }
                 }
 
-                activityDetailTracker.run()
+                activityMeasurementTracker.run()
             } finally {
                 activitySampleHandler.postDelayed(this, ACTIVITY_SAMPLE_DELAY)
             }
