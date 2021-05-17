@@ -22,6 +22,7 @@ enum class BikeActivityStatus {
 data class BikeActivity(
 
     @PrimaryKey val uid: UUID = UUID.randomUUID(),
+    @ColumnInfo(name = "user_data_uid") val userDataUid: String,
     @ColumnInfo(name = "start_time") val startTime: Instant = Instant.now(),
     @ColumnInfo(name = "end_time") val endTime: Instant? = null,
     @ColumnInfo(name = "tracking_type") val trackingType: BikeActivityTrackingType? = BikeActivityTrackingType.NONE,
