@@ -1,6 +1,6 @@
-# Ahuacamolli
+# Bike Path Quality (Ahuacamolli)
 
-tbd
+[![Build](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml/badge.svg?branch=main)](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml)
 
 ### Attribution
 
