@@ -357,7 +357,7 @@ class TrackingForegroundService : LifecycleService() {
         bikeActivitySample?.let {
 
             BikeActivityMeasurement(
-                activitySampleUid = bikeActivitySample.uid,
+                bikeActivitySampleUid = bikeActivitySample.uid,
                 lon = currentLon,
                 lat = currentLat,
                 speed = currentSpeed,
