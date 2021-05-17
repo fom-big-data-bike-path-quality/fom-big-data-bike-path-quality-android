@@ -24,6 +24,12 @@ jobs:
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
           arguments: assembleRelease
+      - name: Debug 1
+        run: |
+          echo "secrets.RELEASE_KEYALIAS ${{secrets.RELEASE_KEYALIAS}}"
+          echo "secrets.RELEASE_KEYSTORE ${{secrets.RELEASE_KEYSTORE}}"
+          echo "secrets.RELEASE_KEYSTORE_PASSWORD ${{secrets.RELEASE_KEYSTORE_PASSWORD}}"
+          echo "secrets.RELEASE_KEY_PASSWORD ${{secrets.RELEASE_KEY_PASSWORD}}"
       - name: Sign artifact
         id: sign-artifact
         uses: r0adkll/sign-android-release@v1.0.1
@@ -33,12 +39,18 @@ jobs:
           signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE }}
           keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.3"
+      - name: Debug 2
+        run: ls app/build/outputs/apk/release
+      - name: Debug 3
+        run: echo "signedReleaseFile ${{steps.sign-artifact.outputs.signedReleaseFile}}"
       - name: Upload apk file
         id: upload-apk-file
         uses: actions/upload-artifact@v2.2.0
         with:
           name: Upload artifact
-          path: app/build/outputs/apk/release/*.apk
+          path: ${{steps.sign-artifact.outputs.signedReleaseFile}}
       - name: Create Release
         id: create-release
         uses: actions/create-release@v1
