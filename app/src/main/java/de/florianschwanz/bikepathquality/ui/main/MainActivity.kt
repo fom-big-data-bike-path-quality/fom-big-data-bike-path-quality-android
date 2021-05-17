@@ -74,6 +74,8 @@ class MainActivity : AppCompatActivity() {
 
         requestActivityTransitionPermission()
         requestLocationPermission()
+
+        initializeUserData()
     }
 
     /**
@@ -170,6 +172,15 @@ class MainActivity : AppCompatActivity() {
      */
     private fun isGranted(permission: String) =
         ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+
+    private fun initializeUserData() {
+        userDataViewModel.exists().observe(this, { exists ->
+            if (!exists) {
+                userDataViewModel.insert(UserData())
+            }
+        })
+    }
+
 
     /**
      * Updates notification banner based on tracking service state
