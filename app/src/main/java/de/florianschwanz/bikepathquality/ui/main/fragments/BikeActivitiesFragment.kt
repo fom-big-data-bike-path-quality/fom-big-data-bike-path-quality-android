@@ -22,6 +22,8 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
@@ -40,6 +42,9 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
     }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivityRepository)
+    }
+    private val userDataViewModel: UserDataViewModel by viewModels {
+        UserDataViewModelFactory((requireActivity().application as BikePathQualityApplication).userDataRepository)
     }
 
     //
@@ -90,15 +95,23 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
         clStartStop.setOnClickListener {
 
             val bikeActivity = viewModel.activeBikeActivity.value
+            val userData = viewModel.userData.value
 
-            if (bikeActivity != null) {
-                log("Stop manually")
-                disableAutomaticTracking()
-                bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
-            } else {
-                log("Start manually")
-                enableManualTracking()
-                bikeActivityViewModel.insert(BikeActivity(trackingType = BikeActivityTrackingType.MANUAL))
+            if (userData != null) {
+                if (bikeActivity != null) {
+                    log("Stop manually")
+                    disableAutomaticTracking()
+                    bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
+                } else {
+                    log("Start manually")
+                    enableManualTracking()
+                    bikeActivityViewModel.insert(
+                        BikeActivity(
+                            userDataUid = userData.uid.toString(),
+                            trackingType = BikeActivityTrackingType.MANUAL
+                        )
+                    )
+                }
             }
         }
 
@@ -120,6 +133,10 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
                 ivStartStop.setImageResource(R.drawable.ic_baseline_play_arrow_48)
                 tvStartStop.text = resources.getString(R.string.action_start_activity)
             }
+        })
+
+        userDataViewModel.singleUserData().observe(viewLifecycleOwner, { userData ->
+            viewModel.userData.value = userData
         })
 
         return view
