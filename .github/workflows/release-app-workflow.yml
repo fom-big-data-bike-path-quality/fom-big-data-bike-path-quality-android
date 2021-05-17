@@ -18,8 +18,6 @@ jobs:
         run: echo $RELEASE_KEYSTORE | base64 --decode > release.keystore.jks
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-      - name: Debug
-        run: ls .
       - name: Build artifact
         id: build-artifact
         env:
@@ -55,7 +53,6 @@ jobs:
         run: |
           ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
-          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
       - name: Upload release asset
