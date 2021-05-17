@@ -34,3 +34,8 @@ jobs:
           signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE }}
           keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      - name: Upload apk file
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: Upload artifact
+          path: app/build/outputs/apk/release/app-release-*.apk
