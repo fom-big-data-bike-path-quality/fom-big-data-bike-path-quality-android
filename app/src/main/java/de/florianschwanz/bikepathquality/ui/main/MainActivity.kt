@@ -22,6 +22,9 @@ import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.EXTRA_STATUS
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.Companion.RESULT_BIKE_ACTIVITY_UID
@@ -36,6 +39,9 @@ class MainActivity : AppCompatActivity() {
 
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((this.application as BikePathQualityApplication).bikeActivityRepository)
+    }
+    private val userDataViewModel: UserDataViewModel by viewModels {
+        UserDataViewModelFactory((this.application as BikePathQualityApplication).userDataRepository)
     }
 
     private lateinit var viewModel: MainActivityViewModel

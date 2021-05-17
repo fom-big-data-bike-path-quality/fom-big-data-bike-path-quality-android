@@ -10,6 +10,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryRepository
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataRepository
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService.Companion.ACTION_START
 
@@ -22,6 +23,7 @@ class BikePathQualityApplication : Application() {
     val bikeActivityRepository by lazy { BikeActivityRepository(database.bikeActivityDao()) }
     val bikeActivitySampleRepository by lazy { BikeActivitySampleRepository(database.bikeActivitySampleDao()) }
     val bikeActivityMeasurementRepository by lazy { BikeActivityMeasurementRepository(database.bikeActivityMeasurementDao()) }
+    val userDataRepository by lazy { UserDataRepository(database.userDataDao()) }
 
     //
     // Lifecycle phases

@@ -13,9 +13,11 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleDao
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryDao
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataDao
 
 @Database(
-    entities = [LogEntry::class, BikeActivity::class, BikeActivitySample::class, BikeActivityMeasurement::class],
+    entities = [LogEntry::class, BikeActivity::class, BikeActivitySample::class, BikeActivityMeasurement::class, UserData::class],
     version = 1
 )
 @TypeConverters(Converters::class)
@@ -25,6 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun bikeActivityDao(): BikeActivityDao
     abstract fun bikeActivitySampleDao(): BikeActivitySampleDao
     abstract fun bikeActivityMeasurementDao(): BikeActivityMeasurementDao
+    abstract fun userDataDao(): UserDataDao
 
     companion object {
 
