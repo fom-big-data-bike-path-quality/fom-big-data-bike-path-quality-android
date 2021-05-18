@@ -24,20 +24,20 @@ class FirestoreService : JobIntentService() {
      */
     override fun onHandleWork(intent: Intent) {
 
-        val bikeActivity = gson.fromJson(
-            intent.getStringExtra(EXTRA_BIKE_ACTIVITY),
-            BikeActivityWithSamples::class.java
+        val uploadEnvelope = gson.fromJson(
+            intent.getStringExtra(EXTRA_UPLOAD_ENVELOPE),
+            UploadEnvelope::class.java
         )
 
         when (intent.action) {
             ACTION_UPLOAD_BIKE_ACTIVITY -> {
                 val resultReceiver = intent.getParcelableExtra<ResultReceiver>(EXTRA_RECEIVER)
                 val bundle = Bundle()
-                val uid = bikeActivity.bikeActivity.uid.toString()
+                val uid = uploadEnvelope.bikeActivityWithSamples.bikeActivity.uid.toString()
                 val database = FirebaseFirestore.getInstance()
 
                 database.collection("BikeActivities")
-                    .document(uid).set(bikeActivity)
+                    .document(uid).set(uploadEnvelope)
                     .addOnSuccessListener {
                         bundle.putString(EXTRA_BIKE_ACTIVITY_UID, uid)
                         resultReceiver?.send(RESULT_SUCCESS, bundle)
@@ -54,7 +54,7 @@ class FirestoreService : JobIntentService() {
     companion object {
 
         const val EXTRA_RECEIVER = "extra.RECEIVER"
-        const val EXTRA_BIKE_ACTIVITY = "extra.BIKE_ACTIVITY"
+        const val EXTRA_UPLOAD_ENVELOPE = "extra.UPLOAD_ENVELOPE"
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
         const val EXTRA_ERROR_MESSAGE = "extra.ERROR_MESSAGE"
         const val RESULT_SUCCESS = 0
@@ -80,7 +80,7 @@ class FirestoreService : JobIntentService() {
             intent.putExtra(EXTRA_RECEIVER, firestoreServiceResultReceiver)
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
             intent.putExtra(
-                EXTRA_BIKE_ACTIVITY,
+                EXTRA_UPLOAD_ENVELOPE,
                 gson.toJson(UploadEnvelope(bikeActivityWithSamples, userData))
             )
 
@@ -90,8 +90,8 @@ class FirestoreService : JobIntentService() {
 }
 
 data class UploadEnvelope(
-    private val bikeActivityWithSamples: BikeActivityWithSamples,
-    private val userData: UserData
+    val bikeActivityWithSamples: BikeActivityWithSamples,
+    val userData: UserData
 )
 
 class FirestoreServiceResultReceiver(handler: Handler?) : ResultReceiver(handler) {
