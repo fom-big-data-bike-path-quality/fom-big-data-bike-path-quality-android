@@ -10,6 +10,7 @@ import androidx.core.app.JobIntentService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.GsonBuilder
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.utils.InstantTypeConverter
 import java.time.Instant
 
@@ -72,17 +73,26 @@ class FirestoreService : JobIntentService() {
         fun enqueueWork(
             context: Context,
             bikeActivityWithSamples: BikeActivityWithSamples,
+            userData: UserData,
             firestoreServiceResultReceiver: FirestoreServiceResultReceiver?
         ) {
             val intent = Intent(context, JobService::class.java)
             intent.putExtra(EXTRA_RECEIVER, firestoreServiceResultReceiver)
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
-            intent.putExtra(EXTRA_BIKE_ACTIVITY, gson.toJson(bikeActivityWithSamples))
+            intent.putExtra(
+                EXTRA_BIKE_ACTIVITY,
+                gson.toJson(UploadEnvelope(bikeActivityWithSamples, userData))
+            )
 
             enqueueWork(context, FirestoreService::class.java, UPLOAD_JOB_ID, intent)
         }
     }
 }
+
+data class UploadEnvelope(
+    private val bikeActivityWithSamples: BikeActivityWithSamples,
+    private val userData: UserData
+)
 
 class FirestoreServiceResultReceiver(handler: Handler?) : ResultReceiver(handler) {
 

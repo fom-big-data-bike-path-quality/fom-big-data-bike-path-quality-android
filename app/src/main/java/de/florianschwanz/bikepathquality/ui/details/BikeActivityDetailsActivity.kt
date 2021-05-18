@@ -49,6 +49,9 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.FirestoreService
 import de.florianschwanz.bikepathquality.services.FirestoreServiceResultReceiver
 import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
@@ -76,6 +79,12 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     private val bikeActivitySampleViewModel: BikeActivitySampleViewModel by viewModels {
         BikeActivitySampleViewModelFactory((this.application as BikePathQualityApplication).bikeActivitySampleRepository)
     }
+    private val userDataViewModel: UserDataViewModel by viewModels {
+        UserDataViewModelFactory((this.application as BikePathQualityApplication).userDataRepository)
+    }
+
+    private lateinit var bikeActivityWithSamples: BikeActivityWithSamples
+    private lateinit var userData: UserData
 
     private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
     private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
@@ -133,9 +142,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
 
         bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid!!)
-            .observe(this, { bikeActivityWithSamples ->
+            .observe(this, {
+                    bikeActivityWithSamples = it
 
-                bikeActivityWithSamples?.let {
+                bikeActivityWithSamples.let {
                     viewModel.bikeActivityWithDetails.value = bikeActivityWithSamples
 
                     toolbar.setOnMenuItemClickListener {
@@ -267,7 +277,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         tvStopTime.visibility = View.VISIBLE
 
                         val diff =
-                            bikeActivityWithSamples.bikeActivity.endTime.toEpochMilli() - bikeActivityWithSamples.bikeActivity.startTime.toEpochMilli()
+                            bikeActivityWithSamples.bikeActivity.endTime!!.toEpochMilli() - bikeActivityWithSamples.bikeActivity.startTime.toEpochMilli()
                         val duration = (diff / 1000 / 60).toInt()
                         tvDuration.text =
                             resources.getQuantityString(R.plurals.duration, duration, duration)
@@ -339,6 +349,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                             FirestoreService.enqueueWork(
                                 this,
                                 bikeActivityWithSamples,
+                                userData,
                                 serviceResultReceiver
                             )
                         } else {
@@ -359,6 +370,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     recyclerView.smoothScrollToPosition(adapter.data.size - 1)
                 }
             })
+
+        userDataViewModel.singleUserData().observe(this, {
+            userData = it
+        })
     }
 
     /**

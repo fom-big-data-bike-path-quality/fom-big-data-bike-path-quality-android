@@ -25,6 +25,8 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
 import java.time.Instant
 
@@ -37,12 +39,15 @@ class TrackingForegroundService : LifecycleService() {
     private lateinit var bikeActivityViewModel: BikeActivityViewModel
     private lateinit var bikeActivitySampleViewModel: BikeActivitySampleViewModel
     private lateinit var bikeActivityMeasurementViewModel: BikeActivityMeasurementViewModel
+    private lateinit var userDataViewModel: UserDataViewModel
 
     private lateinit var activityTransitionLiveData: ActivityTransitionLiveData
     private lateinit var accelerometerLiveData: AccelerometerLiveData
     private lateinit var locationLiveData: LocationLiveData
 
     private val targetActivityType = DetectedActivity.ON_BICYCLE
+
+    private var userData: UserData? = null
 
     // Currently performed bike activity
     private var activeBikeActivity: BikeActivity? = null
@@ -111,6 +116,7 @@ class TrackingForegroundService : LifecycleService() {
         bikeActivitySampleViewModel = BikeActivitySampleViewModel(app.bikeActivitySampleRepository)
         bikeActivityMeasurementViewModel =
             BikeActivityMeasurementViewModel(app.bikeActivityMeasurementRepository)
+        userDataViewModel = UserDataViewModel(app.userDataRepository)
 
         activityTransitionLiveData = ActivityTransitionLiveData(this)
         accelerometerLiveData = AccelerometerLiveData(this)
@@ -135,6 +141,8 @@ class TrackingForegroundService : LifecycleService() {
                     .setWhen(0)
                     .build()
                     .startForeground()
+
+                handleUserData()
 
                 handleActiveBikeActivity()
                 handleActivityTransitions()
@@ -225,6 +233,15 @@ class TrackingForegroundService : LifecycleService() {
     )
 
     /**
+     * Retrieves user data from the database
+     */
+    private fun handleUserData() {
+        userDataViewModel.singleUserData().observe(this, {
+            userData = it
+        })
+    }
+
+    /**
      * Retrieves most recent unfinished bike activity from the database
      */
     private fun handleActiveBikeActivity() {
@@ -281,13 +298,15 @@ class TrackingForegroundService : LifecycleService() {
 
             log(toTransitionType(it.transitionType) + " " + toActivityString(it.activityType))
 
-            if (it.activityType != activeActivityType || it.transitionType != activeTransitionType) {
+            if (userData != null && (it.activityType != activeActivityType || it.transitionType != activeTransitionType)) {
 
                 if (activeBikeActivity == null
                     && it.activityType == targetActivityType
                     && it.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                 ) {
-                    bikeActivityViewModel.insert(BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC))
+                    bikeActivityViewModel.insert(
+                        BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC)
+                    )
                 } else {
                     activeBikeActivity?.let { bikeActivity ->
                         bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
