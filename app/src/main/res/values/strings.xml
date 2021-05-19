@@ -85,7 +85,7 @@
     <string name="delimiter_dash">-</string>
     <plurals name="samples">
         <item quantity="zero">no samples</item>
-        <item quantity="one">%d samples</item>
+        <item quantity="one">%d sample</item>
         <item quantity="other">%d samples</item>
     </plurals>
     <string name="tracking_mode">tracking mode</string>
