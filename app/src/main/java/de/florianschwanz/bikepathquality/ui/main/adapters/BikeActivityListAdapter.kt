@@ -1,5 +1,9 @@
 package de.florianschwanz.bikepathquality.ui.main.adapters
 
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +12,9 @@ import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
@@ -18,8 +25,10 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener) :
-    RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
+class BikeActivityListAdapter(
+    private val context: Context,
+    private val itemClickListener: OnItemClickListener
+) : RecyclerView.Adapter<BikeActivityListAdapter.BikeActivityViewHolder>() {
 
     var data = listOf<BikeActivityWithSamples>()
         set(value) {
@@ -35,11 +44,11 @@ class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener
 
     override fun onBindViewHolder(holder: BikeActivityViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current, itemClickListener)
+        holder.bind(current, position, context, itemClickListener)
     }
 
-    class BikeActivityViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
+    class BikeActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val clBikeActivity: ConstraintLayout = itemView.findViewById(R.id.clBikeActivity)
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         private val ivCheck: ImageView = itemView.findViewById(R.id.ivCheck)
@@ -52,8 +61,25 @@ class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
 
-        fun bind(item: BikeActivityWithSamples, itemClickListener: OnItemClickListener) {
+        fun bind(
+            item: BikeActivityWithSamples,
+            position: Int,
+            context: Context,
+            itemClickListener: OnItemClickListener
+        ) {
             val resources = itemView.context.resources
+
+            clBikeActivity.setBackgroundColor(
+                if (position % 2 == 1) {
+                    when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                        Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(context, R.color.transparent_light)
+                        Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(context, R.color.transparent_dark)
+                        else -> ContextCompat.getColor(context, R.color.transparent)
+                    }
+                } else {
+                    ContextCompat.getColor(context, R.color.transparent)
+                }
+            )
 
             if (item.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                 ivCheck.visibility = View.INVISIBLE
@@ -121,6 +147,16 @@ class BikeActivityListAdapter(private val itemClickListener: OnItemClickListener
 
         private fun Instant.isToday() =
             this.truncatedTo(ChronoUnit.DAYS).equals(Instant.now().truncatedTo(ChronoUnit.DAYS))
+
+        /**
+         * Retrieves theme color
+         */
+        private fun getThemeColorInHex(context: Context, @AttrRes attribute: Int): String {
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(attribute, outValue, true)
+
+            return String.format("#%06X", 0xFFFFFF and outValue.data)
+        }
 
         companion object {
             fun create(parent: ViewGroup): BikeActivityViewHolder {

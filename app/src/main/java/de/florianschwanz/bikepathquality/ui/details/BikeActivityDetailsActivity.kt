@@ -41,7 +41,10 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
@@ -130,7 +133,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
-        val adapter = BikeActivitySampleListAdapter(this)
+        val adapter = BikeActivitySampleListAdapter(this, this)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -143,7 +146,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid!!)
             .observe(this, {
-                    bikeActivityWithSamples = it
+                bikeActivityWithSamples = it
 
                 bikeActivityWithSamples.let {
                     viewModel.bikeActivityWithDetails.value = bikeActivityWithSamples
