@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var broadcastReceiver: BroadcastReceiver
 
-    private lateinit var clNotification: ConstraintLayout
-
     //
     // Lifecycle phases
     //
@@ -62,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        clNotification = findViewById(R.id.clNotification)
+        val clNotification: ConstraintLayout = findViewById(R.id.clNotification)
 
         navView.setupWithNavController(navController)
 
@@ -72,10 +70,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel.trackingServiceStatus.observe(this, { trackingServiceStatus ->
+            updateNotificationBanner(clNotification, trackingServiceStatus)
+        })
+
         requestActivityTransitionPermission()
         requestLocationPermission()
 
-        initializeUserData()
+        updateNotificationBanner(clNotification, TrackingForegroundService.status)
+
+        initializeData()
     }
 
     /**
@@ -86,13 +91,6 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(
             broadcastReceiver, IntentFilter(TrackingForegroundService.TAG)
         )
-
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceStatus.observe(this, { trackingServiceStatus ->
-            updateNotificationBanner(clNotification, trackingServiceStatus)
-        })
-
-        updateNotificationBanner(clNotification, TrackingForegroundService.status)
     }
 
     /**
@@ -130,6 +128,21 @@ class MainActivity : AppCompatActivity() {
         } else if (requestCode == REQUEST_LOCATION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
             finishAffinity()
         }
+    }
+
+    //
+    // Initialization
+    //
+
+    /**
+     * Initializes data
+     */
+    private fun initializeData() {
+        userDataViewModel.exists().observe(this, { exists ->
+            if (!exists) {
+                userDataViewModel.insert(UserData())
+            }
+        })
     }
 
     //
@@ -172,15 +185,6 @@ class MainActivity : AppCompatActivity() {
      */
     private fun isGranted(permission: String) =
         ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-
-    private fun initializeUserData() {
-        userDataViewModel.exists().observe(this, { exists ->
-            if (!exists) {
-                userDataViewModel.insert(UserData())
-            }
-        })
-    }
-
 
     /**
      * Updates notification banner based on tracking service state
