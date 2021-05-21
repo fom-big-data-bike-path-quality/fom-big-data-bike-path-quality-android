@@ -62,7 +62,7 @@ class BikeActivitySampleListAdapter(
             val resources = itemView.context.resources
 
             itemView.setOnClickListener {
-                itemClickListener.onBikeActivitySampleItemClicked(item)
+                itemClickListener.onBikeActivitySampleItemClicked(item, position)
             }
 
             clBikeActivitySample.setBackgroundColor(
@@ -118,6 +118,6 @@ class BikeActivitySampleListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements)
+        fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements, position: Int)
     }
 }

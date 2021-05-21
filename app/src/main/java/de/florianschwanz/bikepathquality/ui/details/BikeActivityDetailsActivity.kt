@@ -153,78 +153,24 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 false
             }
 
-            val mapStyle =
-                when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                    Configuration.UI_MODE_NIGHT_YES -> Style.DARK
-                    Configuration.UI_MODE_NIGHT_NO -> Style.LIGHT
-                    Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.LIGHT
-                    else -> Style.LIGHT
-                }
-
-            val mapRouteCoordinates: List<Point> =
-                bikeActivityWithSamples.bikeActivitySamples
-                    .filter { it.lon != 0.0 || it.lat != 0.0 }
-                    .map {
-                        Point.fromLngLat(
-                            it.lon,
-                            it.lat
-                        )
-                    }
-
             mapView?.getMapAsync { mapAsync ->
 
                 mapboxMap = mapAsync
-                mapboxMap.setStyle(mapStyle) {
-                    it.addSource(
-                        GeoJsonSource(
-                            "line-source",
-                            FeatureCollection.fromFeatures(
-                                arrayOf<Feature>(
-                                    Feature.fromGeometry(
-                                        LineString.fromLngLats(mapRouteCoordinates)
-                                    )
-                                )
-                            )
-                        )
-                    )
-                    it.addSource(
-                        GeoJsonSource(
-                            "circle-source",
-                            FeatureCollection.fromFeatures(
-                                mapRouteCoordinates.map { point ->
-                                    Feature.fromGeometry(point)
-                                }.toTypedArray()
-                            )
-                        )
-                    )
-                    it.addLayer(
-                        LineLayer("linelayer", "line-source").withProperties(
-                            PropertyFactory.lineDasharray(arrayOf(0.01f, 2f)),
-                            PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
-                            PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
-                            PropertyFactory.lineWidth(5f),
-                            PropertyFactory.lineColor(Color.parseColor(getThemeColorInHex(R.attr.colorPrimary)))
-                        )
-                    )
-                    it.addLayer(
-                        CircleLayer("circleLayer", "circle-source").withProperties(
-                            PropertyFactory.circleRadius(7f),
-                            PropertyFactory.circleColor(
-                                Color.parseColor(
-                                    getThemeColorInHex(
-                                        R.attr.colorPrimaryVariant
-                                    )
-                                )
-                            )
-                        )
-                    )
-
-                    mapboxMap.uiSettings.isRotateGesturesEnabled = false
-
-                    centerMap(mapboxMap, bikeActivityWithSamples.bikeActivitySamples)
-                }
+                setMapStyle(
+                    mapboxMap,
+                    buildMapStyle(),
+                    buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
+                    null
+                )
+                centerMap(mapboxMap, bikeActivityWithSamples.bikeActivitySamples)
 
                 clDescription.setOnClickListener {
+                    setMapStyle(
+                        mapboxMap,
+                        buildMapStyle(),
+                        buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
+                        null
+                    )
                     centerMap(
                         mapboxMap,
                         bikeActivityWithSamples.bikeActivitySamples,
@@ -495,15 +441,27 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     /**
      * Handles click on activity sample item
      */
-    override fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) {
-        centerMap(
-            mapboxMap,
-            listOf(
-                bikeActivitySampleWithMeasurements.bikeActivitySample,
-                bikeActivitySampleWithMeasurements.bikeActivitySample
-            ),
-            duration = 1_000
-        )
+    override fun onBikeActivitySampleItemClicked(
+        bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
+        position: Int
+    ) {
+
+        viewModel.bikeActivityWithSamples.value?.let { bikeActivityWithSamples ->
+            val bikeActivitySamples =
+                listOfNotNull(
+                    if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
+                    bikeActivityWithSamples.bikeActivitySamples[position],
+                    if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
+                )
+
+            setMapStyle(
+                mapboxMap,
+                buildMapStyle(),
+                buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
+                buildMapCoordinate(bikeActivitySampleWithMeasurements.bikeActivitySample)
+            )
+            centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
+        }
     }
 
     //
@@ -533,15 +491,126 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     //
 
     /**
-     * Centers map to include all samples
+     * Builds map style based on night mode
      */
-    private fun centerMap(
+    private fun buildMapStyle() =
+        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> Style.DARK
+            Configuration.UI_MODE_NIGHT_NO -> Style.LIGHT
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.LIGHT
+            else -> Style.LIGHT
+        }
+
+    /**
+     * Builds map coordinates based on bike activity samples
+     */
+    private fun buildMapCoordinates(bikeActivitySamples: List<BikeActivitySample>) =
+        bikeActivitySamples
+            .filter { it.lon != 0.0 || it.lat != 0.0 }
+            .map(this::buildMapCoordinate)
+
+    /**
+     * Builds map coordinate based on bike activity sample
+     */
+    private fun buildMapCoordinate(bikeActivitySample: BikeActivitySample) = Point.fromLngLat(
+        bikeActivitySample.lon,
+        bikeActivitySample.lat
+    )
+
+    /**
+     * Sets map style
+     */
+    private fun setMapStyle(
         mapboxMap: MapboxMap,
-        bikeActivitySamples: List<BikeActivitySample>,
-        padding: Int = 250,
-        duration: Int = 1
+        mapStyle: String,
+        mapRouteCoordinates: List<Point>,
+        mapFocusCoordinate: Point?
     ) {
-        if (bikeActivitySamples.filter { bikeActivitySample ->
+        val line: Pair<String, String> = Pair("line-source", "line-layer")
+        val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
+        val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
+
+        mapboxMap.setStyle(mapStyle) { style ->
+
+            style.addLineSource(line.first, mapRouteCoordinates)
+            style.addPointSource(samples.first, mapRouteCoordinates)
+            mapFocusCoordinate?.let { style.addPointSource(highlight.first, listOf(it)) }
+
+            style.addLineLayer(
+                line.second,
+                line.first,
+                floatArrayOf(0.01f, 2f),
+                Property.LINE_CAP_ROUND,
+                Property.LINE_JOIN_ROUND,
+                3f,
+                Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
+            )
+            style.addCircleLayer(samples.second, samples.first, 5f, R.attr.colorPrimary)
+            style.addCircleLayer(highlight.second, highlight.first, 10f, R.attr.colorPrimaryVariant)
+
+            mapboxMap.uiSettings.isRotateGesturesEnabled = false
+        }
+    }
+
+    private fun Style.addLineSource(name: String, points: List<Point>) = this.addSource(
+        GeoJsonSource(
+            name,
+            FeatureCollection.fromFeatures(
+                arrayOf<Feature>(
+                    Feature.fromGeometry(
+                        LineString.fromLngLats(points)
+                    )
+                )
+            )
+        )
+    )
+
+    private fun Style.addPointSource(name: String, points: List<Point>) = this.addSource(
+        GeoJsonSource(
+            name,
+            FeatureCollection.fromFeatures(
+                points.map { point ->
+                    Feature.fromGeometry(point)
+                }.toTypedArray()
+            )
+        )
+    )
+
+    private fun Style.addLineLayer(
+        layerName: String,
+        sourceName: String,
+        lineDasharray: FloatArray,
+        lineCap: String,
+        lineJoin: String,
+        lineWidth: Float,
+        lineColor: Int
+    ) = this.addLayer(
+        LineLayer(layerName, sourceName).withProperties(
+            PropertyFactory.lineDasharray(lineDasharray.toTypedArray()),
+            PropertyFactory.lineCap(lineCap),
+            PropertyFactory.lineJoin(lineJoin),
+            PropertyFactory.lineWidth(lineWidth),
+            PropertyFactory.lineColor(lineColor)
+        )
+    )
+
+    private fun Style.addCircleLayer(
+        layerName: String,
+        sourceName: String,
+        circleRadius: Float,
+        circleColor: Int
+    ) = this.addLayer(
+        CircleLayer(layerName, sourceName).withProperties(
+            PropertyFactory.circleRadius(circleRadius),
+            PropertyFactory.circleColor(Color.parseColor(getThemeColorInHex(circleColor)))
+        )
+    )
+
+    /**
+     * Creates bounds around bike activity samples
+     */
+    private fun buildBounds(bikeActivitySamples: List<BikeActivitySample>): LatLngBounds? {
+        return if (bikeActivitySamples.filter { bikeActivitySample ->
                 bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
             }.size > 1) {
             val latLngBounds = LatLngBounds.Builder()
@@ -557,8 +626,22 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 )
             }
 
+            latLngBounds.build()
+        } else null
+    }
+
+    /**
+     * Centers map to include all samples
+     */
+    private fun centerMap(
+        mapboxMap: MapboxMap,
+        bikeActivitySamples: List<BikeActivitySample>,
+        padding: Int = 250,
+        duration: Int = 1
+    ) {
+        buildBounds(bikeActivitySamples)?.let { bounds ->
             mapboxMap.easeCamera(
-                CameraUpdateFactory.newLatLngBounds(latLngBounds.build(), padding),
+                CameraUpdateFactory.newLatLngBounds(bounds, padding),
                 duration,
                 true
             )
