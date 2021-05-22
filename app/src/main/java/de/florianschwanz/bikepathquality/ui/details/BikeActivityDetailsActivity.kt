@@ -176,6 +176,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         bikeActivityWithSamples.bikeActivitySamples,
                         duration = 1_000
                     )
+
+                    viewModel.bikeActivitySampleInFocus.value = null
                 }
             }
 
@@ -301,6 +303,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             if (adapter.data.isNotEmpty()) {
                 recyclerView.smoothScrollToPosition(adapter.data.size - 1)
             }
+        })
+        viewModel.bikeActivitySampleInFocus.observe(this, {
+            adapter.focus = it
         })
 
         intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)?.let { initializeData(it) }
@@ -462,6 +467,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             )
             centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
         }
+
+        viewModel.bikeActivitySampleInFocus.value = bikeActivitySampleWithMeasurements
     }
 
     //
@@ -546,7 +553,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
             style.addCircleLayer(samples.second, samples.first, 5f, R.attr.colorPrimary)
-            style.addCircleLayer(highlight.second, highlight.first, 10f, R.attr.colorPrimaryVariant)
+            style.addCircleLayer(highlight.second, highlight.first, 10f, R.attr.colorSecondaryVariant)
 
             mapboxMap.uiSettings.isRotateGesturesEnabled = false
         }

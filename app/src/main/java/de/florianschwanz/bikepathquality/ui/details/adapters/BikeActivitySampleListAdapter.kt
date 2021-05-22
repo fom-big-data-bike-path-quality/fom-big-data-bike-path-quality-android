@@ -27,6 +27,11 @@ class BikeActivitySampleListAdapter(
             field = value
             notifyDataSetChanged()
         }
+    var focus: BikeActivitySampleWithMeasurements? = null
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount() = data.size
 
@@ -39,7 +44,7 @@ class BikeActivitySampleListAdapter(
 
     override fun onBindViewHolder(holder: BikeActivitySampleViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current, position, context, itemClickListener)
+        holder.bind(current, position, focus, context, itemClickListener)
     }
 
     class BikeActivitySampleViewHolder(itemView: View) :
@@ -56,6 +61,7 @@ class BikeActivitySampleListAdapter(
         fun bind(
             item: BikeActivitySampleWithMeasurements,
             position: Int,
+            focus: BikeActivitySampleWithMeasurements?,
             context: Context,
             itemClickListener: OnItemClickListener
         ) {
@@ -66,10 +72,19 @@ class BikeActivitySampleListAdapter(
             }
 
             clBikeActivitySample.setBackgroundColor(
-                if (position % 2 == 1) {
+
+                if (item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) {
+                    Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondaryVariant))
+                } else if (position % 2 == 1) {
                     when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                        Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(context, R.color.transparent_light)
-                        Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(context, R.color.transparent_dark)
+                        Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
+                            context,
+                            R.color.transparent_light
+                        )
+                        Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(
+                            context,
+                            R.color.transparent_dark
+                        )
                         else -> ContextCompat.getColor(context, R.color.transparent)
                     }
                 } else {
@@ -118,6 +133,9 @@ class BikeActivitySampleListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onBikeActivitySampleItemClicked(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements, position: Int)
+        fun onBikeActivitySampleItemClicked(
+            bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
+            position: Int
+        )
     }
 }
