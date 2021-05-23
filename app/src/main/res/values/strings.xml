@@ -122,8 +122,8 @@
 
     <string name="default_value">value</string>
     <string name="default_comment">comment</string>
-    <string name="default_surface_type">Select surface type</string>
-    <string name="default_smoothness_type">Select smoothness type</string>
+    <string name="default_surface_type">Surface type</string>
+    <string name="default_smoothness_type">Smoothness type</string>
 
     <!-- Descriptions -->
 
@@ -141,6 +141,8 @@
     <string name="description_check">Check</string>
     <string name="description_recording">Recording</string>
     <string name="description_duration">Duration</string>
+
+    <string name="description_surface_type">Surface Type</string>
 
     <string name="description_photo">Photo</string>
     <string name="description_upload">Upload</string>
