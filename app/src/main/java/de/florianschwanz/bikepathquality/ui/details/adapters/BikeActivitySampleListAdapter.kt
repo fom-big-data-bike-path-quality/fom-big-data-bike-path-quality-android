@@ -12,6 +12,7 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import java.text.SimpleDateFormat
@@ -54,6 +55,7 @@ class BikeActivitySampleListAdapter(
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val tvMeasurements: TextView = itemView.findViewById(R.id.tvMeasurements)
         private val tvSpeed: TextView = itemView.findViewById(R.id.tvSpeed)
+        private val btnSurfaceType: MaterialButton = itemView.findViewById(R.id.btnSurfaceType)
         private val tvAccelerometer: TextView = itemView.findViewById(R.id.tvAccelerometer)
 
         private var sdf: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
@@ -102,6 +104,15 @@ class BikeActivitySampleListAdapter(
                 resources.getString(R.string.bike_activity_sample_speed),
                 item.bikeActivitySample.speed.times(3.6)
             )
+            btnSurfaceType.setOnClickListener {
+                itemClickListener.onBikeActivitySampleSurfaceTypeClicked(item, position)
+            }
+            btnSurfaceType.visibility =
+                if (item.bikeActivitySample.surfaceType != null || item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) View.VISIBLE else View.INVISIBLE
+            btnSurfaceType.text =
+                if (item.bikeActivitySample.surfaceType != null) item.bikeActivitySample.surfaceType else resources.getString(
+                    R.string.empty
+                )
             tvAccelerometer.text = String.format(
                 resources.getString(R.string.bike_activity_sample_accelerometer),
                 item.bikeActivityMeasurements.map {
@@ -134,6 +145,11 @@ class BikeActivitySampleListAdapter(
 
     interface OnItemClickListener {
         fun onBikeActivitySampleItemClicked(
+            bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
+            position: Int
+        )
+
+        fun onBikeActivitySampleSurfaceTypeClicked(
             bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
             position: Int
         )

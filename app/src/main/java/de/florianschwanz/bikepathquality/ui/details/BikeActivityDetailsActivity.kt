@@ -440,6 +440,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     bikeActivityViewModel.update(it.copy(smoothnessType = smoothnessType))
                 }
             }
+        } else if (requestCode == REQUEST_SURFACE_TYPE_FOR_SAMPLE && resultCode == RESULT_OK) {
+            data?.getStringExtra(RESULT_SURFACE_TYPE)?.let { surfaceType ->
+
+                // Update bike activity sample
+                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                    bikeActivitySampleViewModel.update(it.copy(surfaceType = surfaceType))
+                }
+            }
         }
     }
 
@@ -469,6 +477,24 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         }
 
         viewModel.bikeActivitySampleInFocus.value = bikeActivitySampleWithMeasurements
+    }
+
+    override fun onBikeActivitySampleSurfaceTypeClicked(
+        bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
+        position: Int
+    ) {
+        val intent = Intent(
+            applicationContext,
+            SurfaceTypeActivity::class.java
+        ).apply {
+            putExtra(
+                EXTRA_SURFACE_TYPE,
+                bikeActivitySampleWithMeasurements.bikeActivitySample.surfaceType
+            )
+        }
+
+        @Suppress("DEPRECATION")
+        startActivityForResult(intent, REQUEST_SURFACE_TYPE_FOR_SAMPLE)
     }
 
     //
@@ -675,6 +701,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     companion object {
         const val REQUEST_SURFACE_TYPE = 1
         const val REQUEST_SMOOTHNESS_TYPE = 2
+        const val REQUEST_SURFACE_TYPE_FOR_SAMPLE = 3
 
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
         const val EXTRA_TRACKING_SERVICE_ENABLED = "extra.TRACKING_SERVICE_ENABLED"
