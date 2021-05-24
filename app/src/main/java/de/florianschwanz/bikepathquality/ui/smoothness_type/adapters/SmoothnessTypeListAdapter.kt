@@ -47,6 +47,8 @@ class SmoothnessTypeListAdapter(val activity: Activity) :
             }
 
             tvValue.text = item.value
+                .replace("_", " ")
+                .replace(":", " ")
             tvComment.text = item.comment
 
             cvSmoothnessType.setOnClickListener {
