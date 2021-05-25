@@ -17,6 +17,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.sqrt
 
 class BikeActivitySampleListAdapter(
     private val context: Context,
@@ -75,22 +76,26 @@ class BikeActivitySampleListAdapter(
 
             clBikeActivitySample.setBackgroundColor(
 
-                if (item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) {
-                    Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondaryVariant))
-                } else if (position % 2 == 1) {
-                    when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                        Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
-                            context,
-                            R.color.transparent_light
-                        )
-                        Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(
-                            context,
-                            R.color.transparent_dark
-                        )
-                        else -> ContextCompat.getColor(context, R.color.transparent)
+                when {
+                    item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
+                        Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondaryVariant))
                     }
-                } else {
-                    ContextCompat.getColor(context, R.color.transparent)
+                    position % 2 == 1 -> {
+                        when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                            Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
+                                context,
+                                R.color.transparent_light
+                            )
+                            Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(
+                                context,
+                                R.color.transparent_dark
+                            )
+                            else -> ContextCompat.getColor(context, R.color.transparent)
+                        }
+                    }
+                    else -> {
+                        ContextCompat.getColor(context, R.color.transparent)
+                    }
                 }
             )
 
@@ -110,9 +115,10 @@ class BikeActivitySampleListAdapter(
             btnSurfaceType.visibility =
                 if (item.bikeActivitySample.surfaceType != null || item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) View.VISIBLE else View.INVISIBLE
             btnSurfaceType.text =
-                if (item.bikeActivitySample.surfaceType != null) item.bikeActivitySample.surfaceType else resources.getString(
-                    R.string.empty
-                )
+                item.bikeActivitySample.surfaceType
+                    ?: resources.getString(
+                        R.string.empty
+                    )
             tvAccelerometer.text = String.format(
                 resources.getString(R.string.bike_activity_sample_accelerometer),
                 item.bikeActivityMeasurements.map {
@@ -121,8 +127,8 @@ class BikeActivitySampleListAdapter(
             )
         }
 
-        fun Float.square(): Float = this * this
-        fun Float.squareRoot(): Float = Math.sqrt(this.toDouble()).toFloat()
+        private fun Float.square(): Float = this * this
+        private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
 
         /**
          * Retrieves theme color

@@ -1,7 +1,6 @@
 package de.florianschwanz.bikepathquality.ui.main
 
 import android.Manifest
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -109,24 +108,32 @@ class MainActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_BIKE_ACTIVITY_DETAILS && resultCode == RESULT_OK) {
-            data?.getStringExtra(RESULT_BIKE_ACTIVITY_UID)?.let { bikeActivityUid ->
-                bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid)
-                    .observe(this) { bikeActivityWithDetails ->
-                        bikeActivityWithDetails?.let {
-                            bikeActivityViewModel.delete(it.bikeActivity)
-                            Toast.makeText(
-                                applicationContext,
-                                R.string.action_activity_deleted,
-                                Toast.LENGTH_SHORT
-                            ).show()
+        when(resultCode) {
+            RESULT_OK -> {
+                when(requestCode) {
+                    REQUEST_BIKE_ACTIVITY_DETAILS -> {
+                        data?.getStringExtra(RESULT_BIKE_ACTIVITY_UID)?.let { bikeActivityUid ->
+                            bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid)
+                                .observe(this) { bikeActivityWithDetails ->
+                                    bikeActivityWithDetails?.let {
+                                        bikeActivityViewModel.delete(it.bikeActivity)
+                                        Toast.makeText(
+                                            applicationContext,
+                                            R.string.action_activity_deleted,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                         }
                     }
+                }
             }
-        } else if (requestCode == REQUEST_ACTIVITY_TRANSITION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
-            finishAffinity()
-        } else if (requestCode == REQUEST_LOCATION_PERMISSION && resultCode == Activity.RESULT_CANCELED) {
-            finishAffinity()
+            RESULT_CANCELED -> {
+                when(requestCode) {
+                    REQUEST_ACTIVITY_TRANSITION_PERMISSION -> finishAffinity()
+                    REQUEST_LOCATION_PERMISSION -> finishAffinity()
+                }
+            }
         }
     }
 

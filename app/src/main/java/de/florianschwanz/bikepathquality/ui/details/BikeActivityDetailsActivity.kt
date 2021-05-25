@@ -324,10 +324,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         viewModel.bikeActivitySamplesWithMeasurements.observe(this, {
             adapter.data = it
             if (adapter.data.isNotEmpty()) {
-                val bikeActivitySampleInFocusPosition =
-                    viewModel.bikeActivitySampleInFocusPosition.value
 
-                recyclerView.smoothScrollToPosition(if (bikeActivitySampleInFocusPosition != null) bikeActivitySampleInFocusPosition else adapter.data.size - 1)
+                recyclerView.smoothScrollToPosition(
+                    viewModel.bikeActivitySampleInFocusPosition.value ?: adapter.data.size - 1
+                )
             }
         })
         viewModel.bikeActivitySampleInFocus.observe(this, { bikeActivitySampleInFocus ->
@@ -438,8 +438,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         bikeActivityViewModel
                             .singleBikeActivityWithSamples(it)
                             .observe(this, { bikeActivityWithDetails ->
-
-                                // Update bike activity status
                                 bikeActivityViewModel.update(
                                     bikeActivityWithDetails.bikeActivity.copy(
                                         uploadStatus = BikeActivityStatus.UPLOADED
@@ -469,26 +467,43 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_SURFACE_TYPE && resultCode == RESULT_OK) {
-            val surfaceType = data?.getStringExtra(RESULT_SURFACE_TYPE)
-
-            // Update bike activity
-            viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
-                bikeActivityViewModel.update(it.copy(surfaceType = surfaceType))
-            }
-        } else if (requestCode == REQUEST_SMOOTHNESS_TYPE && resultCode == RESULT_OK) {
-            val smoothnessType = data?.getStringExtra(RESULT_SMOOTHNESS_TYPE)
-
-            // Update bike activity
-            viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
-                bikeActivityViewModel.update(it.copy(smoothnessType = smoothnessType))
-            }
-        } else if (requestCode == REQUEST_SURFACE_TYPE_FOR_SAMPLE && resultCode == RESULT_OK) {
-            val surfaceType = data?.getStringExtra(RESULT_SURFACE_TYPE)
-
-            // Update bike activity sample
-            viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                bikeActivitySampleViewModel.update(it.copy(surfaceType = surfaceType))
+        when (resultCode) {
+            RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_SURFACE_TYPE -> {
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(
+                                it.copy(
+                                    surfaceType = data?.getStringExtra(
+                                        RESULT_SURFACE_TYPE
+                                    )
+                                )
+                            )
+                        }
+                    }
+                    REQUEST_SMOOTHNESS_TYPE -> {
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(
+                                it.copy(
+                                    smoothnessType = data?.getStringExtra(
+                                        RESULT_SMOOTHNESS_TYPE
+                                    )
+                                )
+                            )
+                        }
+                    }
+                    REQUEST_SURFACE_TYPE_FOR_SAMPLE -> {
+                        viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                            bikeActivitySampleViewModel.update(
+                                it.copy(
+                                    surfaceType = data?.getStringExtra(
+                                        RESULT_SURFACE_TYPE
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
 
