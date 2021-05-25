@@ -2,18 +2,17 @@ package de.florianschwanz.bikepathquality.ui.smoothness_type
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.model.SmoothnessType
 import de.florianschwanz.bikepathquality.ui.smoothness_type.adapters.SmoothnessTypeListAdapter
-import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeListAdapter
 
-class SmoothnessTypeActivity  : AppCompatActivity() {
+class SmoothnessTypeActivity : AppCompatActivity(), SmoothnessTypeListAdapter.OnItemClickListener {
 
     //
     // Lifecycle phases
@@ -31,21 +30,13 @@ class SmoothnessTypeActivity  : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val recyclerView = findViewById<RecyclerView>(R.id.rvSmoothnessTypes)
-        val adapter = SmoothnessTypeListAdapter(this)
+        val adapter = SmoothnessTypeListAdapter(this, this)
 
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_reset -> {
-                    val resultIntent = Intent()
                     val empty: String? = null
-                    resultIntent.putExtra(
-                        SmoothnessTypeListAdapter.SmoothnessTypeViewHolder.RESULT_SMOOTHNESS_TYPE,
-                        empty
-                    )
-                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
-                }
-                else -> {
+                    selectSmoothnessType(empty)
                 }
             }
 
@@ -83,6 +74,26 @@ class SmoothnessTypeActivity  : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_surface_type_activity, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    /**
+     * Handles click on smoothness type item
+     */
+    override fun onSmoothnessTypeClicked(smoothnessType: String) =
+        selectSmoothnessType(smoothnessType)
+
+    //
+    // Helpers
+    //
+
+    private fun selectSmoothnessType(smoothnessType: String?) {
+        val resultIntent = Intent()
+        resultIntent.putExtra(
+            SmoothnessTypeListAdapter.SmoothnessTypeViewHolder.RESULT_SMOOTHNESS_TYPE,
+            smoothnessType
+        )
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
     }
 
     companion object {

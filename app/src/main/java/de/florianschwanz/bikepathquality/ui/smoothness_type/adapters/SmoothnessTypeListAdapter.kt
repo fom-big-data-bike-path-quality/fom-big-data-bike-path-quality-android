@@ -1,6 +1,7 @@
 package de.florianschwanz.bikepathquality.ui.smoothness_type.adapters
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,12 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.model.SmoothnessType
+import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
 
-class SmoothnessTypeListAdapter(val activity: Activity) :
+class SmoothnessTypeListAdapter(
+    private val context: Context,
+    private val itemClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<SmoothnessTypeListAdapter.SmoothnessTypeViewHolder>() {
 
     var data = listOf<SmoothnessType>()
@@ -24,15 +29,15 @@ class SmoothnessTypeListAdapter(val activity: Activity) :
     override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmoothnessTypeViewHolder {
-        return SmoothnessTypeViewHolder.create(activity, parent)
+        return SmoothnessTypeViewHolder.create(context, parent)
     }
 
     override fun onBindViewHolder(holder: SmoothnessTypeViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current)
+        holder.bind(current, context, itemClickListener)
     }
 
-    class SmoothnessTypeViewHolder(val activity: Activity, itemView: View) :
+    class SmoothnessTypeViewHolder(val context: Context, itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
         private val cvSmoothnessType: CardView = itemView.findViewById(R.id.cvSmoothnessType)
@@ -40,7 +45,10 @@ class SmoothnessTypeListAdapter(val activity: Activity) :
         private val tvValue: TextView = itemView.findViewById(R.id.tvValue)
         private val tvComment: TextView = itemView.findViewById(R.id.tvComment)
 
-        fun bind(item: SmoothnessType) {
+        fun bind(item: SmoothnessType,
+                 context: Context,
+                 itemClickListener: OnItemClickListener
+        ) {
 
             item.photo?.let {
                 ivPhoto.setImageDrawable(it)
@@ -52,24 +60,22 @@ class SmoothnessTypeListAdapter(val activity: Activity) :
             tvComment.text = item.comment
 
             cvSmoothnessType.setOnClickListener {
-                val resultIntent = Intent()
-                resultIntent.putExtra(
-                    RESULT_SMOOTHNESS_TYPE,
-                    tvValue.text
-                )
-                activity.setResult(Activity.RESULT_OK, resultIntent)
-                activity.finish()
+                itemClickListener.onSmoothnessTypeClicked(tvValue.text as String)
             }
         }
 
         companion object {
             const val RESULT_SMOOTHNESS_TYPE = "result.SMOOTHNESS_TYPE"
 
-            fun create(activity: Activity, parent: ViewGroup): SmoothnessTypeViewHolder {
+            fun create(context: Context, parent: ViewGroup): SmoothnessTypeViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                     .inflate(R.layout.smoothness_type_item, parent, false)
-                return SmoothnessTypeViewHolder(activity, view)
+                return SmoothnessTypeViewHolder(context, view)
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onSmoothnessTypeClicked(smoothnessType: String)
     }
 }

@@ -12,7 +12,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.model.SurfaceType
 import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeListAdapter
 
-class SurfaceTypeActivity : AppCompatActivity() {
+class SurfaceTypeActivity : AppCompatActivity(), SurfaceTypeListAdapter.OnItemClickListener {
 
     //
     // Lifecycle phases
@@ -30,21 +30,13 @@ class SurfaceTypeActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val recyclerView = findViewById<RecyclerView>(R.id.rvSurfaceTypes)
-        val adapter = SurfaceTypeListAdapter(this)
+        val adapter = SurfaceTypeListAdapter(this, this)
 
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_reset -> {
-                    val resultIntent = Intent()
                     val empty: String? = null
-                    resultIntent.putExtra(
-                        SurfaceTypeListAdapter.SurfaceTypeViewHolder.RESULT_SURFACE_TYPE,
-                        empty
-                    )
-                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
-                }
-                else -> {
+                    selectSurfaceType(empty)
                 }
             }
 
@@ -82,6 +74,25 @@ class SurfaceTypeActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_surface_type_activity, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    /**
+     * Handles click on surface type item
+     */
+    override fun onSurfaceTypeClicked(surfaceType: String) = selectSurfaceType(surfaceType)
+
+    //
+    // Helpers
+    //
+
+    private fun selectSurfaceType(surfaceType: String?) {
+        val resultIntent = Intent()
+        resultIntent.putExtra(
+            SurfaceTypeListAdapter.SurfaceTypeViewHolder.RESULT_SURFACE_TYPE,
+            surfaceType
+        )
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
     }
 
     companion object {
