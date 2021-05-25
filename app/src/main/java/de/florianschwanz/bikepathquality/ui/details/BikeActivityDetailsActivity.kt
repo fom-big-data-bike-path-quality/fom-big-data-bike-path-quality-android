@@ -121,13 +121,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvSamples: TextView = findViewById(R.id.tvSamples)
-        val recyclerView = findViewById<RecyclerView>(R.id.rvActivityDetails)
+        val rvBikeActivitySamples: RecyclerView = findViewById(R.id.rvBikeActivitySamples)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
         val adapter = BikeActivitySampleListAdapter(this, this)
 
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        rvBikeActivitySamples.adapter = adapter
+        rvBikeActivitySamples.layoutManager = LinearLayoutManager(this)
 
         if (!intent.hasExtra(EXTRA_BIKE_ACTIVITY_UID)) {
             finish()
@@ -174,9 +174,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     buildMapStyle(),
                     buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
                     viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                        buildMapCoordinate(
-                            it
-                        )
+                        buildMapCoordinate(it)
                     }
                 )
 
@@ -325,7 +323,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             adapter.data = it
             if (adapter.data.isNotEmpty()) {
 
-                recyclerView.smoothScrollToPosition(
+                rvBikeActivitySamples.smoothScrollToPosition(
                     viewModel.bikeActivitySampleInFocusPosition.value ?: adapter.data.size - 1
                 )
             }
