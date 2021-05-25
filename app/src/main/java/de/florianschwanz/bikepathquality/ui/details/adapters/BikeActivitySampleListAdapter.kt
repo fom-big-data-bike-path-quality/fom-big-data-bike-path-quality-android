@@ -105,6 +105,7 @@ class BikeActivitySampleListAdapter(
                 item.bikeActivitySample.speed.times(3.6)
             )
             btnSurfaceType.setOnClickListener {
+                itemClickListener.onBikeActivitySampleItemClicked(item, position)
                 itemClickListener.onBikeActivitySampleSurfaceTypeClicked(item, position)
             }
             btnSurfaceType.visibility =
