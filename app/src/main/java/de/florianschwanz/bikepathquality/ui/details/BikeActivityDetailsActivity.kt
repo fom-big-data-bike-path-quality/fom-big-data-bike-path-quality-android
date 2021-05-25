@@ -262,6 +262,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             }
             bikeActivityWithSamples.bikeActivity.smoothnessType?.let {
                 btnSmoothnessType.text = it
+                    .replace("_", " ")
+                    .replace(":", " ")
+            } ?: run {
+                btnSmoothnessType.text = resources.getString(R.string.default_smoothness_type)
             }
 
             btnSurfaceType.setOnClickListener {
@@ -473,12 +477,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 bikeActivityViewModel.update(it.copy(surfaceType = surfaceType))
             }
         } else if (requestCode == REQUEST_SMOOTHNESS_TYPE && resultCode == RESULT_OK) {
-            data?.getStringExtra(RESULT_SMOOTHNESS_TYPE)?.let { smoothnessType ->
+            val smoothnessType = data?.getStringExtra(RESULT_SMOOTHNESS_TYPE)
 
-                // Update bike activity
-                viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
-                    bikeActivityViewModel.update(it.copy(smoothnessType = smoothnessType))
-                }
+            // Update bike activity
+            viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                bikeActivityViewModel.update(it.copy(smoothnessType = smoothnessType))
             }
         } else if (requestCode == REQUEST_SURFACE_TYPE_FOR_SAMPLE && resultCode == RESULT_OK) {
             val surfaceType = data?.getStringExtra(RESULT_SURFACE_TYPE)
