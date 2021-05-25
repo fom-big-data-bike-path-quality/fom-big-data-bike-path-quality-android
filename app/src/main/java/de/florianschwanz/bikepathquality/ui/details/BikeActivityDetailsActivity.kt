@@ -301,11 +301,33 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         viewModel.bikeActivitySamplesWithMeasurements.observe(this, {
             adapter.data = it
             if (adapter.data.isNotEmpty()) {
-                recyclerView.smoothScrollToPosition(adapter.data.size - 1)
+                val bikeActivitySampleInFocusPosition =
+                    viewModel.bikeActivitySampleInFocusPosition.value
+
+                recyclerView.smoothScrollToPosition(if (bikeActivitySampleInFocusPosition != null) bikeActivitySampleInFocusPosition else adapter.data.size - 1)
             }
         })
-        viewModel.bikeActivitySampleInFocus.observe(this, {
-            adapter.focus = it
+        viewModel.bikeActivitySampleInFocus.observe(this, { bikeActivitySampleInFocus ->
+            adapter.focus = bikeActivitySampleInFocus
+
+            viewModel.bikeActivityWithSamples.value?.let { bikeActivityWithSamples ->
+                viewModel.bikeActivitySampleInFocusPosition.value?.let { position ->
+                    val bikeActivitySamples =
+                        listOfNotNull(
+                            if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
+                            bikeActivityWithSamples.bikeActivitySamples[position],
+                            if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
+                        )
+
+                    setMapStyle(
+                        mapboxMap,
+                        buildMapStyle(),
+                        buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
+                        bikeActivitySampleInFocus?.bikeActivitySample?.let { buildMapCoordinate(it) }
+                    )
+                    centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
+                }
+            }
         })
 
         intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)?.let { initializeData(it) }
@@ -449,6 +471,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
             }
         }
+
+        viewModel.bikeActivitySampleInFocus.postValue(viewModel.bikeActivitySampleInFocus.value)
     }
 
     /**
@@ -458,24 +482,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
         position: Int
     ) {
-
-        viewModel.bikeActivityWithSamples.value?.let { bikeActivityWithSamples ->
-            val bikeActivitySamples =
-                listOfNotNull(
-                    if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
-                    bikeActivityWithSamples.bikeActivitySamples[position],
-                    if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
-                )
-
-            setMapStyle(
-                mapboxMap,
-                buildMapStyle(),
-                buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
-                buildMapCoordinate(bikeActivitySampleWithMeasurements.bikeActivitySample)
-            )
-            centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
-        }
-
+        viewModel.bikeActivitySampleInFocusPosition.value = position
         viewModel.bikeActivitySampleInFocus.value = bikeActivitySampleWithMeasurements
     }
 
@@ -483,6 +490,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
         position: Int
     ) {
+        viewModel.bikeActivitySampleInFocusPosition.value = position
+        viewModel.bikeActivitySampleInFocus.value = bikeActivitySampleWithMeasurements
+
         val intent = Intent(
             applicationContext,
             SurfaceTypeActivity::class.java
@@ -579,7 +589,12 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
             style.addCircleLayer(samples.second, samples.first, 5f, R.attr.colorPrimary)
-            style.addCircleLayer(highlight.second, highlight.first, 10f, R.attr.colorSecondaryVariant)
+            style.addCircleLayer(
+                highlight.second,
+                highlight.first,
+                10f,
+                R.attr.colorSecondaryVariant
+            )
 
             mapboxMap.uiSettings.isRotateGesturesEnabled = false
         }

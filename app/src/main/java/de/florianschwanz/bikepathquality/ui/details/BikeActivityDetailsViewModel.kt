@@ -12,6 +12,7 @@ class BikeActivityDetailsViewModel(application: Application) : AndroidViewModel(
     val bikeActivityWithSamples = MutableLiveData<BikeActivityWithSamples>()
     val bikeActivitySamplesWithMeasurements =
         MutableLiveData<List<BikeActivitySampleWithMeasurements>>()
-    val bikeActivitySampleInFocus = MutableLiveData<BikeActivitySampleWithMeasurements>()
+    val bikeActivitySampleInFocus = MutableLiveData<BikeActivitySampleWithMeasurements?>()
+    val bikeActivitySampleInFocusPosition = MutableLiveData<Int>()
     val userData = MutableLiveData<UserData>()
 }
