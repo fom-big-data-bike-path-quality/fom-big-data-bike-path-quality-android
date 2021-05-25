@@ -257,6 +257,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 btnSurfaceType.text = it
                     .replace("_", " ")
                     .replace(":", " ")
+            } ?: run {
+                btnSurfaceType.text = resources.getString(R.string.default_surface_type)
             }
             bikeActivityWithSamples.bikeActivity.smoothnessType?.let {
                 btnSmoothnessType.text = it
@@ -464,12 +466,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_SURFACE_TYPE && resultCode == RESULT_OK) {
-            data?.getStringExtra(RESULT_SURFACE_TYPE)?.let { surfaceType ->
+            val surfaceType = data?.getStringExtra(RESULT_SURFACE_TYPE)
 
-                // Update bike activity
-                viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
-                    bikeActivityViewModel.update(it.copy(surfaceType = surfaceType))
-                }
+            // Update bike activity
+            viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                bikeActivityViewModel.update(it.copy(surfaceType = surfaceType))
             }
         } else if (requestCode == REQUEST_SMOOTHNESS_TYPE && resultCode == RESULT_OK) {
             data?.getStringExtra(RESULT_SMOOTHNESS_TYPE)?.let { smoothnessType ->
@@ -480,12 +481,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
             }
         } else if (requestCode == REQUEST_SURFACE_TYPE_FOR_SAMPLE && resultCode == RESULT_OK) {
-            data?.getStringExtra(RESULT_SURFACE_TYPE)?.let { surfaceType ->
+            val surfaceType = data?.getStringExtra(RESULT_SURFACE_TYPE)
 
-                // Update bike activity sample
-                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                    bikeActivitySampleViewModel.update(it.copy(surfaceType = surfaceType))
-                }
+            // Update bike activity sample
+            viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                bikeActivitySampleViewModel.update(it.copy(surfaceType = surfaceType))
             }
         }
 

@@ -37,6 +37,8 @@
     <string name="action_enable_automatic_tracking">Enable automatic tracking</string>
     <string name="action_disable_automatic_tracking">Disable automatic tracking</string>
 
+    <string name="action_reset">Reset</string>
+
     <!-- Rationales -->
 
     <string name="main_message_activity_permission_rationale">Track activity changes by letting us read your phone\'s activity transitions.</string>
