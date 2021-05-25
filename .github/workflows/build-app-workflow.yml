@@ -10,10 +10,18 @@ jobs:
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 1.8
+      - name: Prepare keystore
+        id: prepare-keystore
+        run: echo $RELEASE_KEYSTORE | base64 --decode > release.keystore.jks
+        env:
+          RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
       - name: Build artifact
-        id: build
+        id: build-artifact
         env:
           MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_KEYALIAS: ${{ secrets.RELEASE_KEYALIAS }}
         uses: eskatos/gradle-command-action@v1.3.3
         with:
           gradle-version: current
