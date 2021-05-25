@@ -156,13 +156,29 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             mapView?.getMapAsync { mapAsync ->
 
                 mapboxMap = mapAsync
+
+                val bikeActivitySamplesFocus: List<BikeActivitySample> =
+                    viewModel.bikeActivitySampleInFocusPosition.value?.let { position ->
+                        listOfNotNull(
+                            if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
+                            bikeActivityWithSamples.bikeActivitySamples[position],
+                            if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
+                        )
+                    } ?: run {
+                        bikeActivityWithSamples.bikeActivitySamples
+                    }
+
+                centerMap(mapboxMap, bikeActivitySamplesFocus, duration = 1_000)
                 setMapStyle(
                     mapboxMap,
                     buildMapStyle(),
                     buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
-                    null
+                    viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                        buildMapCoordinate(
+                            it
+                        )
+                    }
                 )
-                centerMap(mapboxMap, bikeActivityWithSamples.bikeActivitySamples)
 
                 clDescription.setOnClickListener {
                     setMapStyle(
@@ -177,6 +193,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         duration = 1_000
                     )
 
+                    viewModel.bikeActivitySampleInFocusPosition.value = null
                     viewModel.bikeActivitySampleInFocus.value = null
                 }
             }
@@ -472,6 +489,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             }
         }
 
+        viewModel.bikeActivitySampleInFocusPosition.postValue(viewModel.bikeActivitySampleInFocusPosition.value)
         viewModel.bikeActivitySampleInFocus.postValue(viewModel.bikeActivitySampleInFocus.value)
     }
 
