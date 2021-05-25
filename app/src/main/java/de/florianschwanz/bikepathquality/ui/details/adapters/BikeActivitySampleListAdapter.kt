@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurement
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,6 +38,11 @@ class BikeActivitySampleListAdapter(
             field = value
             notifyDataSetChanged()
         }
+    var uploadStatus: BikeActivityStatus? = null
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount() = data.size
 
@@ -49,7 +55,7 @@ class BikeActivitySampleListAdapter(
 
     override fun onBindViewHolder(holder: BikeActivitySampleViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current, position, focus, context, itemClickListener, this)
+        holder.bind(current, position, focus, uploadStatus, context, itemClickListener, this)
     }
 
     override fun onBikeActivityMeasurementItemClicked(
@@ -80,6 +86,7 @@ class BikeActivitySampleListAdapter(
             item: BikeActivitySampleWithMeasurements,
             position: Int,
             focus: BikeActivitySampleWithMeasurements?,
+            uploadStatus: BikeActivityStatus?,
             context: Context,
             itemClickListener: OnItemClickListener,
             bikeActivityMeasurementItemClickListener: BikeActivityMeasurementArrayAdapter.OnItemClickListener
@@ -124,6 +131,7 @@ class BikeActivitySampleListAdapter(
                 resources.getString(R.string.bike_activity_sample_speed),
                 item.bikeActivitySample.speed.times(3.6)
             )
+            btnSurfaceType.isEnabled = uploadStatus != BikeActivityStatus.UPLOADED
             btnSurfaceType.setOnClickListener {
                 itemClickListener.onBikeActivitySampleSurfaceTypeClicked(item, position)
             }

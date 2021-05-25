@@ -135,6 +135,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
         viewModel = ViewModelProvider(this).get(BikeActivityDetailsViewModel::class.java)
         viewModel.bikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
+
+            adapter.uploadStatus = bikeActivityWithSamples.bikeActivity.uploadStatus
+
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_delete -> {
