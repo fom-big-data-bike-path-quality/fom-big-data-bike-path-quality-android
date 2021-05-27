@@ -141,6 +141,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_delete -> {
+                        viewModel.bikeActivityWithSamples.removeObservers(this)
+
                         val resultIntent = Intent()
                         resultIntent.putExtra(
                             RESULT_BIKE_ACTIVITY_UID,
