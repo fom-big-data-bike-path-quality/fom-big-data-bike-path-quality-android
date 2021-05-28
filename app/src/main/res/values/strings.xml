@@ -6,6 +6,7 @@
     <string name="title_activity_permission_rationale">Permission Rationale Activity</string>
     <string name="title_location_permission_rationale">Permission Rationale Location</string>
 
+    <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activities">Activities</string>
     <string name="title_sensors">Sensors</string>
     <string name="title_log">Log</string>
@@ -102,6 +103,18 @@
     <string name="default_samples">no samples</string>
     <string name="default_tracking_mode">tracking mode</string>
 
+    <!-- Settings -->
+
+    <string name="settings_sample">Sample</string>
+    <string name="setting_sample_delay_title">Sample Delay</string>
+    <string name="setting_sample_delay_summary">Time between two samples in seconds</string>
+
+    <string name="settings_measurement">Measurement</string>
+    <string name="setting_measurements_per_sample_title">Measurement per sample</string>
+    <string name="setting_measurements_per_sample_summary">Number of measurements per sample</string>
+    <string name="setting_measurement_delay_title">Measurement Delay</string>
+    <string name="setting_measurement_delay_summary">Time between two measurements in milliseconds</string>
+
     <!-- Bike Activity Details -->
 
     <string name="bike_activity_sample">Bike Activity Sample</string>
@@ -121,6 +134,7 @@
     <string name="bike_activity_measurement_lon_lat">%1$.3f</string>
     <string name="bike_activity_measurement_speed">%1$.1f km/h</string>
     <string name="bike_activity_measurement_accelerometer">%1$.1f</string>
+
     <!-- Surface / Smoothness Type -->
 
     <string name="default_value">value</string>

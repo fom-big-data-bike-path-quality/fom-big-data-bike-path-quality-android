@@ -20,6 +20,7 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.main.adapters.LogEntryListAdapter
+import de.florianschwanz.bikepathquality.ui.settings.SettingsActivity
 
 class LogFragment : Fragment() {
 
@@ -55,6 +56,15 @@ class LogFragment : Fragment() {
             when (it.itemId) {
                 R.id.action_clear -> {
                     logEntryViewModel.deleteAll()
+                }
+                R.id.action_settings -> {
+                    val intent = Intent(
+                        requireActivity().applicationContext,
+                        SettingsActivity::class.java
+                    )
+
+                    @Suppress("DEPRECATION")
+                    requireActivity().startActivity(intent)
                 }
                 ACTION_ENABLED_AUTOMATIC_TRACKING -> {
                     enableAutomaticTracking()

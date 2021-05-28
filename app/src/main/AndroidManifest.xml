@@ -31,6 +31,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
             android:name=".ui.details.BikeActivityDetailsActivity"
             android:label="@string/title_bike_activity_details"
             android:parentActivityName=".ui.main.MainActivity"

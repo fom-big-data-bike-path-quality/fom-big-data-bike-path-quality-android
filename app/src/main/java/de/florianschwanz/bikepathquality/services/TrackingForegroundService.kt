@@ -13,6 +13,7 @@ import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
@@ -67,6 +68,12 @@ class TrackingForegroundService : LifecycleService() {
     private val activitySampleHandler = Handler(Looper.getMainLooper())
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
+
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            val activitySampleDelay = sharedPreferences.getInt("sample_delay", DEFAULT_ACTIVITY_SAMPLE_DELAY) * 1_000
+            val activitySampleSize = sharedPreferences.getInt("measurements_per_sample", DEEFAULT_ACTIVITY_SAMPLE_SIZE)
+            val activityMeasurementDelay = sharedPreferences.getInt("measurement_delay", DEFAULT_ACTIVITY_MEASUREMENT_DELAY)
+
             try {
                 activitySampleTrackerRunning = true
 
@@ -82,8 +89,8 @@ class TrackingForegroundService : LifecycleService() {
                             trackBikeActivityMeasurement(bikeActivitySample)
                             measurements++
                         } finally {
-                            if (measurements < TRACKING_SAMPLE_SIZE) {
-                                activityMeasurementHandler.postDelayed(this, ACTIVITY_DETAIL_DELAY)
+                            if (measurements < activitySampleSize) {
+                                activityMeasurementHandler.postDelayed(this, activityMeasurementDelay.toLong())
                             } else {
                                 activityMeasurementHandler.removeCallbacks(this)
                             }
@@ -93,7 +100,7 @@ class TrackingForegroundService : LifecycleService() {
 
                 activityMeasurementTracker.run()
             } finally {
-                activitySampleHandler.postDelayed(this, ACTIVITY_SAMPLE_DELAY)
+                activitySampleHandler.postDelayed(this, activitySampleDelay.toLong())
             }
         }
     }
@@ -413,13 +420,13 @@ class TrackingForegroundService : LifecycleService() {
         var status = STATUS_STOPPED
 
         /** Delay between samples in millis */
-        const val ACTIVITY_SAMPLE_DELAY = 10_000L
+        const val DEFAULT_ACTIVITY_SAMPLE_DELAY = 10_000
 
         /** Delay between measurements in a sample in millis */
-        const val ACTIVITY_DETAIL_DELAY = 50L
+        const val DEFAULT_ACTIVITY_MEASUREMENT_DELAY = 50
 
         /** Number of measurements per sample */
-        const val TRACKING_SAMPLE_SIZE = 20
+        const val DEEFAULT_ACTIVITY_SAMPLE_SIZE = 20
 
         /**
          * Converts activity to a string

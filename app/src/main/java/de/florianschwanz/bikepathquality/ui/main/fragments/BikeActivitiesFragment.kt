@@ -29,6 +29,7 @@ import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.main.adapters.BikeActivityListAdapter
+import de.florianschwanz.bikepathquality.ui.settings.SettingsActivity
 import java.time.Instant
 
 class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickListener {
@@ -77,6 +78,15 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
             when (it.itemId) {
                 R.id.action_clear -> {
                     bikeActivityViewModel.deleteAll()
+                }
+                R.id.action_settings -> {
+                    val intent = Intent(
+                        requireActivity().applicationContext,
+                        SettingsActivity::class.java
+                    )
+
+                    @Suppress("DEPRECATION")
+                    requireActivity().startActivity(intent)
                 }
                 ACTION_ENABLED_AUTOMATIC_TRACKING -> {
                     enableAutomaticTracking()

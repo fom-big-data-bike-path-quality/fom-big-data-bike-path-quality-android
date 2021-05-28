@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
+import de.florianschwanz.bikepathquality.ui.settings.SettingsActivity
 
 class SensorsFragment : Fragment() {
 
@@ -34,8 +35,18 @@ class SensorsFragment : Fragment() {
         val view = inflater.inflate(R.layout.sensors_fragment, container, false)
 
         toolbar = view.findViewById(R.id.toolbar)
+        toolbar.inflateMenu(R.menu.menu_sensors_fragment)
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
+                R.id.action_settings -> {
+                    val intent = Intent(
+                        requireActivity().applicationContext,
+                        SettingsActivity::class.java
+                    )
+
+                    @Suppress("DEPRECATION")
+                    requireActivity().startActivity(intent)
+                }
                 ACTION_ENABLED_AUTOMATIC_TRACKING -> {
                     enableAutomaticTracking()
                 }
