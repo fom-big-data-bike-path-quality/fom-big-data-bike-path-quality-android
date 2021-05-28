@@ -41,7 +41,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
                 if (sharedPreferences?.getBoolean(key, false) == true) {
                     enableAutomaticTracking()
                 } else {
-                    enableManualTracking()
+                    disableAutomaticTracking()
                 }
             }
         }
@@ -55,19 +55,17 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
      * Enables automatic tracking
      */
     private fun enableAutomaticTracking() {
-        val trackingForegroundServiceIntent =
-            Intent(this, TrackingForegroundService::class.java)
+        val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
         trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START
         ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
     }
 
     /**
-     * Enables manual tracking
+     * Disables automatic tracking
      */
-    private fun enableManualTracking() {
-        val trackingForegroundServiceIntent =
-            Intent(this, TrackingForegroundService::class.java)
-        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START_MANUALLY
+    private fun disableAutomaticTracking() {
+        val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
+        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_STOP
         ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
     }
 }
