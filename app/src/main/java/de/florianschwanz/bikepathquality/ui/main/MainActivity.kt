@@ -30,7 +30,6 @@ import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity.
 import de.florianschwanz.bikepathquality.ui.rationale.ActivityTransitionPermissionRationaleActivity
 import de.florianschwanz.bikepathquality.ui.rationale.LocationPermissionRationaleActivity
 
-
 /**
  * Main activity
  */
@@ -77,8 +76,6 @@ class MainActivity : AppCompatActivity() {
         requestActivityTransitionPermission()
         requestLocationPermission()
 
-        updateNotificationBanner(clNotification, TrackingForegroundService.status)
-
         initializeData()
     }
 
@@ -90,6 +87,10 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(
             broadcastReceiver, IntentFilter(TrackingForegroundService.TAG)
         )
+
+        val clNotification: ConstraintLayout = findViewById(R.id.clNotification)
+
+        updateNotificationBanner(clNotification, TrackingForegroundService.status)
     }
 
     /**
@@ -108,9 +109,9 @@ class MainActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(resultCode) {
+        when (resultCode) {
             RESULT_OK -> {
-                when(requestCode) {
+                when (requestCode) {
                     REQUEST_BIKE_ACTIVITY_DETAILS -> {
                         data?.getStringExtra(RESULT_BIKE_ACTIVITY_UID)?.let { bikeActivityUid ->
                             bikeActivityViewModel.singleBikeActivityWithSamples(bikeActivityUid)
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             RESULT_CANCELED -> {
-                when(requestCode) {
+                when (requestCode) {
                     REQUEST_ACTIVITY_TRANSITION_PERMISSION -> finishAffinity()
                     REQUEST_LOCATION_PERMISSION -> finishAffinity()
                 }

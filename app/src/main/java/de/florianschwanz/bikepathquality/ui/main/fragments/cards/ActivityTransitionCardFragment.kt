@@ -42,7 +42,7 @@ class ActivityTransitionCardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.activity_transition_fragment, container, false)
+        val view = inflater.inflate(R.layout.activity_transition_card_fragment, container, false)
 
         ivStill = view.findViewById(R.id.ivStill)
         ivWalking = view.findViewById(R.id.ivWalking)

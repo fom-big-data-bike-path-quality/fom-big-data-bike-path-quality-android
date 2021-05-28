@@ -69,10 +69,20 @@ class TrackingForegroundService : LifecycleService() {
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
 
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val activitySampleDelay = sharedPreferences.getInt("sample_delay", DEFAULT_ACTIVITY_SAMPLE_DELAY) * 1_000
-            val activitySampleSize = sharedPreferences.getInt("measurements_per_sample", DEEFAULT_ACTIVITY_SAMPLE_SIZE)
-            val activityMeasurementDelay = sharedPreferences.getInt("measurement_delay", DEFAULT_ACTIVITY_MEASUREMENT_DELAY)
+            val sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            val activitySampleDelay = sharedPreferences.getInt(
+                resources.getString(R.string.setting_sample_delay),
+                DEFAULT_ACTIVITY_SAMPLE_DELAY
+            ) * 1_000
+            val activitySampleSize = sharedPreferences.getInt(
+                resources.getString(R.string.setting_measurements_per_sample),
+                DEEFAULT_ACTIVITY_SAMPLE_SIZE
+            )
+            val activityMeasurementDelay = sharedPreferences.getInt(
+                resources.getString(R.string.setting_measurement_delay),
+                DEFAULT_ACTIVITY_MEASUREMENT_DELAY
+            )
 
             try {
                 activitySampleTrackerRunning = true
@@ -90,7 +100,10 @@ class TrackingForegroundService : LifecycleService() {
                             measurements++
                         } finally {
                             if (measurements < activitySampleSize) {
-                                activityMeasurementHandler.postDelayed(this, activityMeasurementDelay.toLong())
+                                activityMeasurementHandler.postDelayed(
+                                    this,
+                                    activityMeasurementDelay.toLong()
+                                )
                             } else {
                                 activityMeasurementHandler.removeCallbacks(this)
                             }
@@ -160,6 +173,7 @@ class TrackingForegroundService : LifecycleService() {
                 sendBroadcast(broadCastIntent)
                 status = STATUS_STARTED
 
+                setSharedPreferenceTrackingAutomatic(true)
                 log("Start tracking service")
             }
             ACTION_START_MANUALLY -> {
@@ -183,6 +197,7 @@ class TrackingForegroundService : LifecycleService() {
                 sendBroadcast(broadCastIntent)
                 status = STATUS_STARTED_MANUALLY
 
+                setSharedPreferenceTrackingAutomatic(false)
                 log("Start tracking service (manually)")
             }
             ACTION_STOP -> {
@@ -197,6 +212,7 @@ class TrackingForegroundService : LifecycleService() {
                 sendBroadcast(broadCastIntent)
                 status = STATUS_STOPPED
 
+                setSharedPreferenceTrackingAutomatic(false)
                 log("Stop tracking service")
             }
         }
@@ -238,6 +254,15 @@ class TrackingForegroundService : LifecycleService() {
         Intent(this, MainActivity::class.java),
         0
     )
+
+    /**
+     * Sets shared preference to a given value
+     */
+    private fun setSharedPreferenceTrackingAutomatic(value: Boolean) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        sharedPreferences.edit()
+            .putBoolean(resources.getString(R.string.setting_tracking_automatic), value).apply()
+    }
 
     /**
      * Retrieves user data from the database

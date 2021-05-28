@@ -151,8 +151,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
                     }
-                    else -> {
-                    }
                 }
 
                 false
@@ -525,6 +523,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         viewModel.bikeActivitySampleInFocus.value = bikeActivitySampleWithMeasurements
     }
 
+    /**
+     * Handles click on bike activity sample item
+     */
     override fun onBikeActivitySampleSurfaceTypeClicked(
         bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements,
         position: Int

@@ -3,6 +3,7 @@ package de.florianschwanz.bikepathquality
 import android.app.Application
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import de.florianschwanz.bikepathquality.data.storage.AppDatabase
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurementRepository
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityRepository
@@ -41,5 +42,10 @@ class BikePathQualityApplication : Application() {
         val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
         trackingForegroundServiceIntent.setAction(ACTION_START)
         ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
+
+        // Needs to be set manually since the default does not work
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        sharedPreferences.edit()
+            .putBoolean(resources.getString(R.string.setting_tracking_automatic), true).apply()
     }
 }

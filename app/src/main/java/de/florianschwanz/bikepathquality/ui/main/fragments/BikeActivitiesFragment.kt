@@ -3,7 +3,6 @@ package de.florianschwanz.bikepathquality.ui.main.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -88,14 +87,6 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
                     @Suppress("DEPRECATION")
                     requireActivity().startActivity(intent)
                 }
-                ACTION_ENABLED_AUTOMATIC_TRACKING -> {
-                    enableAutomaticTracking()
-                }
-                ACTION_DISABLED_AUTOMATIC_TRACKING -> {
-                    disableAutomaticTracking()
-                }
-                else -> {
-                }
             }
 
             false
@@ -109,11 +100,9 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
 
             if (userData != null) {
                 if (bikeActivity != null) {
-                    log("Stop manually")
                     disableAutomaticTracking()
                     bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
                 } else {
-                    log("Start manually")
                     enableManualTracking()
                     bikeActivityViewModel.insert(
                         BikeActivity(trackingType = BikeActivityTrackingType.MANUAL)
@@ -150,19 +139,8 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
     }
 
     /**
-     * Handles on-resume lifecycle phase
+     * Handles click on bike activity item
      */
-    override fun onResume() {
-        super.onResume()
-
-        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-        viewModel.trackingServiceStatus.observe(viewLifecycleOwner, { trackingServiceStatus ->
-            updateMenuItems(toolbar, trackingServiceStatus)
-        })
-
-        updateMenuItems(toolbar, TrackingForegroundService.status)
-    }
-
     override fun onBikeActivityItemClicked(bikeActivityWithSamples: BikeActivityWithSamples) {
         val intent = Intent(
             requireActivity().applicationContext,
@@ -185,43 +163,6 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
     //
     // Helpers
     //
-
-    /**
-     * Updates menu items based on tracking service state
-     */
-    private fun updateMenuItems(toolbar: Toolbar, trackingServiceStatus: String) {
-        toolbar.menu.removeItem(ACTION_ENABLED_AUTOMATIC_TRACKING)
-        toolbar.menu.removeItem(ACTION_DISABLED_AUTOMATIC_TRACKING)
-
-        when (trackingServiceStatus) {
-            TrackingForegroundService.STATUS_STARTED -> {
-                toolbar.menu.add(
-                    Menu.NONE,
-                    ACTION_DISABLED_AUTOMATIC_TRACKING,
-                    Menu.NONE,
-                    getString(R.string.action_disable_automatic_tracking)
-                )
-            }
-            TrackingForegroundService.STATUS_STOPPED -> {
-                toolbar.menu.add(
-                    Menu.NONE,
-                    ACTION_ENABLED_AUTOMATIC_TRACKING,
-                    Menu.NONE,
-                    getString(R.string.action_enable_automatic_tracking)
-                )
-            }
-        }
-    }
-
-    /**
-     * Enables automatic tracking
-     */
-    private fun enableAutomaticTracking() {
-        val trackingForegroundServiceIntent =
-            Intent(requireActivity(), TrackingForegroundService::class.java)
-        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START
-        ContextCompat.startForegroundService(requireActivity(), trackingForegroundServiceIntent)
-    }
 
     /**
      * Enables manual tracking
@@ -251,10 +192,5 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
      */
     private fun log(message: String) {
         logEntryViewModel.insert(LogEntry(message = message))
-    }
-
-    companion object {
-        const val ACTION_ENABLED_AUTOMATIC_TRACKING = 0
-        const val ACTION_DISABLED_AUTOMATIC_TRACKING = 1
     }
 }
