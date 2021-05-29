@@ -633,7 +633,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 highlight.second,
                 highlight.first,
                 10f,
-                R.attr.colorSecondaryVariant
+                R.attr.colorSecondary
             )
 
             mapboxMap.uiSettings.isRotateGesturesEnabled = false

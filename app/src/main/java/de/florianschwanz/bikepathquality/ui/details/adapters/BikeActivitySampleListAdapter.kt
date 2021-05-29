@@ -1,12 +1,14 @@
 package de.florianschwanz.bikepathquality.ui.details.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -70,7 +72,9 @@ class BikeActivitySampleListAdapter(
         RecyclerView.ViewHolder(itemView) {
         private val clBikeActivitySample: ConstraintLayout =
             itemView.findViewById(R.id.clBikeActivitySample)
+        private val ivBike: ImageView = itemView.findViewById(R.id.ivBike)
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
+        private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         private val tvMeasurements: TextView = itemView.findViewById(R.id.tvMeasurements)
         private val tvSpeed: TextView = itemView.findViewById(R.id.tvSpeed)
         private val btnSurfaceType: MaterialButton = itemView.findViewById(R.id.btnSurfaceType)
@@ -97,29 +101,15 @@ class BikeActivitySampleListAdapter(
                 itemClickListener.onBikeActivitySampleItemClicked(item, position)
             }
 
-            clBikeActivitySample.setBackgroundColor(
-                when {
-                    item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
-                        Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondaryVariant))
-                    }
-                    position % 2 == 1 -> {
-                        when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                            Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
-                                context,
-                                R.color.transparent_light
-                            )
-                            Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(
-                                context,
-                                R.color.transparent_dark
-                            )
-                            else -> ContextCompat.getColor(context, R.color.transparent)
-                        }
-                    }
-                    else -> {
-                        ContextCompat.getColor(context, R.color.transparent)
-                    }
-                }
-            )
+            clBikeActivitySample.setBackgroundColor(buildBackgroundColor(context, item, focus))
+            ivBike.setImageTintList(ColorStateList.valueOf(buildTextColor(context, item, focus)))
+            tvStartTime.setTextColor(buildTextColor(context, item, focus))
+            tvTitle.setTextColor(buildTextColor(context, item, focus))
+            tvMeasurements.setTextColor(buildTextColor(context, item, focus))
+            tvSpeed.setTextColor(buildTextColor(context, item, focus))
+            btnSurfaceType.setTextColor(buildTextColor(context, item, focus))
+            btnSurfaceType.setIconTint(ColorStateList.valueOf(buildTextColor(context, item, focus)))
+            tvAccelerometer.setTextColor(buildTextColor(context, item, focus))
 
             tvStartTime.text = sdf.format(Date.from(item.bikeActivitySample.timestamp))
             tvMeasurements.text = resources.getQuantityString(
@@ -180,6 +170,51 @@ class BikeActivitySampleListAdapter(
 
         private fun Float.square(): Float = this * this
         private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
+
+        /**
+         * Builds background color based on whether the item is focussed or not
+         */
+        private fun buildBackgroundColor(
+            context: Context,
+            item: BikeActivitySampleWithMeasurements,
+            focus: BikeActivitySampleWithMeasurements?
+        ) = when {
+            item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
+                Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondary))
+            }
+            position % 2 == 1 -> {
+                when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
+                        context,
+                        R.color.transparent_light
+                    )
+                    Configuration.UI_MODE_NIGHT_YES -> ContextCompat.getColor(
+                        context,
+                        R.color.transparent_dark
+                    )
+                    else -> ContextCompat.getColor(context, R.color.transparent)
+                }
+            }
+            else -> {
+                ContextCompat.getColor(context, R.color.transparent)
+            }
+        }
+
+        /**
+         * Builds text color based on whether the item is focussed or not
+         */
+        private fun buildTextColor(
+            context: Context,
+            item: BikeActivitySampleWithMeasurements,
+            focus: BikeActivitySampleWithMeasurements?
+        ) = when {
+            item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
+                Color.parseColor(getThemeColorInHex(context, R.attr.colorOnSecondary))
+            }
+            else -> {
+                Color.parseColor(getThemeColorInHex(context, R.attr.colorOnSurface))
+            }
+        }
 
         /**
          * Retrieves theme color
