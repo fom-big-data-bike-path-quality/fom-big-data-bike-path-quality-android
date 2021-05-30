@@ -113,7 +113,13 @@ class TrackingForegroundService : LifecycleService() {
 
                 activityMeasurementTracker.run()
             } finally {
-                activitySampleHandler.postDelayed(this, activitySampleDelay.toLong())
+                activitySampleHandler.postDelayed(
+                    this,
+                    maxOf(
+                        activitySampleDelay,
+                        activityMeasurementDelay * activitySampleSize
+                    ).toLong()
+                )
             }
         }
     }
