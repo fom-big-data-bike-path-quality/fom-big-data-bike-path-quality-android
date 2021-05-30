@@ -133,6 +133,8 @@ class BikeActivityListAdapter(
                         .replace("_", " ")
                         .replace(":", " ")
                 )
+            } ?: run {
+                tvTitle.text = resources.getString(R.string.bike_activity)
             }
 
             tvStartTime.text =
