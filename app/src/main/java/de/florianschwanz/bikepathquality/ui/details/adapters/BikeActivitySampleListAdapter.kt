@@ -102,13 +102,13 @@ class BikeActivitySampleListAdapter(
             }
 
             clBikeActivitySample.setBackgroundColor(buildBackgroundColor(context, item, focus))
-            ivBike.setImageTintList(ColorStateList.valueOf(buildTextColor(context, item, focus)))
+            ivBike.imageTintList = ColorStateList.valueOf(buildTextColor(context, item, focus))
             tvStartTime.setTextColor(buildTextColor(context, item, focus))
             tvTitle.setTextColor(buildTextColor(context, item, focus))
             tvMeasurements.setTextColor(buildTextColor(context, item, focus))
             tvSpeed.setTextColor(buildTextColor(context, item, focus))
             btnSurfaceType.setTextColor(buildTextColor(context, item, focus))
-            btnSurfaceType.setIconTint(ColorStateList.valueOf(buildTextColor(context, item, focus)))
+            btnSurfaceType.iconTint = ColorStateList.valueOf(buildTextColor(context, item, focus))
             tvAccelerometer.setTextColor(buildTextColor(context, item, focus))
 
             tvStartTime.text = sdf.format(Date.from(item.bikeActivitySample.timestamp))
@@ -182,7 +182,7 @@ class BikeActivitySampleListAdapter(
             item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
                 Color.parseColor(getThemeColorInHex(context, R.attr.colorSecondary))
             }
-            position % 2 == 1 -> {
+            layoutPosition % 2 == 1 -> {
                 when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                     Configuration.UI_MODE_NIGHT_NO -> ContextCompat.getColor(
                         context,
@@ -207,8 +207,8 @@ class BikeActivitySampleListAdapter(
             context: Context,
             item: BikeActivitySampleWithMeasurements,
             focus: BikeActivitySampleWithMeasurements?
-        ) = when {
-            item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid -> {
+        ) = when (item.bikeActivitySample.uid) {
+            focus?.bikeActivitySample?.uid -> {
                 Color.parseColor(getThemeColorInHex(context, R.attr.colorOnSecondary))
             }
             else -> {

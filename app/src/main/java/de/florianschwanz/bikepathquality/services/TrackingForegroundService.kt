@@ -77,7 +77,7 @@ class TrackingForegroundService : LifecycleService() {
             ) * 1_000
             val activitySampleSize = sharedPreferences.getInt(
                 resources.getString(R.string.setting_measurements_per_sample),
-                DEEFAULT_ACTIVITY_SAMPLE_SIZE
+                DEFAULT_ACTIVITY_SAMPLE_SIZE
             )
             val activityMeasurementDelay = sharedPreferences.getInt(
                 resources.getString(R.string.setting_measurement_delay),
@@ -451,7 +451,7 @@ class TrackingForegroundService : LifecycleService() {
         const val DEFAULT_ACTIVITY_MEASUREMENT_DELAY = 50
 
         /** Number of measurements per sample */
-        const val DEEFAULT_ACTIVITY_SAMPLE_SIZE = 20
+        const val DEFAULT_ACTIVITY_SAMPLE_SIZE = 20
 
         /**
          * Converts activity to a string
