@@ -139,8 +139,9 @@ class BikeActivitySampleListAdapter(
                 }.average()
             )
 
-            clBikeActivityMeasurements.maxHeight =
-                if (item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) 5000 else 0
+            clBikeActivityMeasurements.maxHeight = 0
+//            clBikeActivityMeasurements.maxHeight =
+//                if (item.bikeActivitySample.uid == focus?.bikeActivitySample?.uid) 5000 else 0
             clBikeActivityMeasurements.setBackgroundColor(
                 when {
                     position % 2 == 1 -> {
