@@ -30,8 +30,8 @@
     <PreferenceCategory app:title="@string/settings_measurement">
 
         <SeekBarPreference
-            android:defaultValue="20"
-            android:max="100"
+            android:defaultValue="100"
+            android:max="500"
             android:min="1"
             app:key="measurements_per_sample"
             app:seekBarIncrement="1"
@@ -41,7 +41,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
-            android:defaultValue="50"
+            android:defaultValue="20"
             android:max="100"
             android:min="0"
             app:key="measurement_delay"
