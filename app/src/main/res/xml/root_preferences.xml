@@ -4,7 +4,7 @@
     <PreferenceCategory app:title="@string/settings_tracking">
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:key="@string/setting_tracking_automatic"
             app:summary="@string/setting_tracking_automatic_summary"
             app:title="@string/setting_tracking_automatic_title"

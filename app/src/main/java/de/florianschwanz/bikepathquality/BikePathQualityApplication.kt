@@ -42,10 +42,5 @@ class BikePathQualityApplication : Application() {
         val trackingForegroundServiceIntent = Intent(this, TrackingForegroundService::class.java)
         trackingForegroundServiceIntent.setAction(ACTION_START)
         ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
-
-        // Needs to be set manually since the default does not work
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        sharedPreferences.edit()
-            .putBoolean(resources.getString(R.string.setting_tracking_automatic), true).apply()
     }
 }
