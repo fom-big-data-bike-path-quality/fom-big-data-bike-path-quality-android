@@ -10,9 +10,7 @@ import android.os.Looper
 import android.util.TypedValue
 import android.view.Menu
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
@@ -119,6 +117,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val ivStop: ImageView = findViewById(R.id.ivStop)
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
+        val btnPhonePosition: MaterialButton = findViewById(R.id.btnPhonePosition)
+        val spPhonePosition: Spinner = findViewById(R.id.spPhonePosition)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvSamples: TextView = findViewById(R.id.tvSamples)
         val rvBikeActivitySamples: RecyclerView = findViewById(R.id.rvBikeActivitySamples)
@@ -209,7 +209,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 btnSurfaceType.isEnabled = true
                 btnSmoothnessType.isEnabled = true
 
-                if (bikeActivityWithSamples.bikeActivity.surfaceType != null && bikeActivityWithSamples.bikeActivity.smoothnessType != null) {
+                if (bikeActivityWithSamples.bikeActivity.surfaceType != null &&
+                    bikeActivityWithSamples.bikeActivity.smoothnessType != null &&
+                    bikeActivityWithSamples.bikeActivity.phonePosition != null
+                ) {
                     fab.visibility = View.VISIBLE
                 } else {
                     fab.visibility = View.INVISIBLE
@@ -268,6 +271,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             } ?: run {
                 btnSmoothnessType.text = resources.getString(R.string.default_smoothness_type)
             }
+            bikeActivityWithSamples.bikeActivity.phonePosition?.let {
+                btnPhonePosition.text = it
+            } ?: run {
+                btnPhonePosition.text = resources.getString(R.string.default_phone_position)
+            }
 
             btnSurfaceType.setOnClickListener {
                 val intent = Intent(
@@ -298,6 +306,48 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 @Suppress("DEPRECATION")
                 startActivityForResult(intent, REQUEST_SMOOTHNESS_TYPE)
             }
+
+            var spPhonePositionClicked = false
+
+            btnPhonePosition.setOnClickListener {
+                spPhonePosition.performClick()
+                spPhonePositionClicked = true
+            }
+
+            ArrayAdapter.createFromResource(
+                this,
+                R.array.phone_position_array,
+                android.R.layout.simple_spinner_item
+            ).also {
+                it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spPhonePosition.adapter = it
+            }
+
+            spPhonePosition.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        if (spPhonePositionClicked) {
+                            val selectedItem =
+                                if (position > 0) parent.getItemAtPosition(position)
+                                    .toString() else null
+
+                            bikeActivityViewModel.update(
+                                bikeActivityWithSamples.bikeActivity.copy(phonePosition = selectedItem)
+                            )
+                        }
+
+                        spPhonePositionClicked = false
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                }
+
 
             fab.setOnClickListener {
                 if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {

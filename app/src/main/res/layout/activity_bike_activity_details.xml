@@ -197,6 +197,34 @@
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@id/btnSurfaceType" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPhonePosition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/default_phone_position"
+            android:textColor="?attr/colorOnSurface"
+            app:icon="@drawable/ic_baseline_phone_android_24"
+            app:iconGravity="textStart"
+            app:iconTint="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnSurfaceType" />
+
+        <Spinner
+            android:id="@+id/spPhonePosition"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btnPhonePosition"
+            app:layout_constraintEnd_toEndOf="@id/btnPhonePosition"
+            app:layout_constraintStart_toStartOf="@id/btnPhonePosition"
+            app:layout_constraintTop_toTopOf="@id/btnPhonePosition" />
+
         <ImageView
             android:id="@+id/ivWatch"
             android:layout_width="wrap_content"
@@ -208,7 +236,7 @@
             android:scaleY="0.6"
             android:src="@drawable/ic_outline_watch_later_24"
             app:layout_constraintStart_toStartOf="@id/clDescription"
-            app:layout_constraintTop_toBottomOf="@id/btnSurfaceType"
+            app:layout_constraintTop_toBottomOf="@id/btnPhonePosition"
             app:tint="?attr/colorOnSurface" />
 
         <TextView
