@@ -1,10 +1,7 @@
 package de.florianschwanz.bikepathquality.data.storage
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityDao
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurement
@@ -17,8 +14,8 @@ import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataDao
 
 @Database(
-    entities = [LogEntry::class, BikeActivity::class, BikeActivitySample::class, BikeActivityMeasurement::class, UserData::class],
-    version = 1
+    version = 2,
+    entities = [LogEntry::class, BikeActivity::class, BikeActivitySample::class, BikeActivityMeasurement::class, UserData::class]
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
