@@ -149,6 +149,18 @@
         <item>other</item>
     </string-array>
 
+    <string-array name="bike_type_array">
+        <item>BIKE TYPE</item>
+        <item>road bicycle</item>
+        <item>touring bicycle</item>
+        <item>cyclo cross</item>
+        <item>cargo bike</item>
+        <item>mountain bike</item>
+        <item>racing bicycle</item>
+        <item>electric bicycle</item>
+        <item>other</item>
+    </string-array>
+
     <string name="bike_activity_measurement_lon_lat">%1$.3f</string>
     <string name="bike_activity_measurement_speed">%1$.1f km/h</string>
     <string name="bike_activity_measurement_accelerometer">%1$.1f</string>
@@ -160,6 +172,7 @@
     <string name="default_surface_type">Surface type</string>
     <string name="default_smoothness_type">Smoothness type</string>
     <string name="default_phone_position">Phone position</string>
+    <string name="default_bike_type">Bike type</string>
 
     <!-- Descriptions -->
 

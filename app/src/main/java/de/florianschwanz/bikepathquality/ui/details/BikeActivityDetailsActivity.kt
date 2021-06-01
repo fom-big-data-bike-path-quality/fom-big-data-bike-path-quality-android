@@ -119,6 +119,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
         val btnPhonePosition: MaterialButton = findViewById(R.id.btnPhonePosition)
         val spPhonePosition: Spinner = findViewById(R.id.spPhonePosition)
+        val btnBikeType: MaterialButton = findViewById(R.id.btnBikeType)
+        val spBikeType: Spinner = findViewById(R.id.spBikeType)
         val tvDuration: TextView = findViewById(R.id.tvDuration)
         val tvSamples: TextView = findViewById(R.id.tvSamples)
         val rvBikeActivitySamples: RecyclerView = findViewById(R.id.rvBikeActivitySamples)
@@ -276,6 +278,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             } ?: run {
                 btnPhonePosition.text = resources.getString(R.string.default_phone_position)
             }
+            bikeActivityWithSamples.bikeActivity.bikeType?.let {
+                btnBikeType.text = it
+            } ?: run {
+                btnBikeType.text = resources.getString(R.string.default_bike_type)
+            }
 
             btnSurfaceType.setOnClickListener {
                 val intent = Intent(
@@ -348,6 +355,46 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     }
                 }
 
+            var spBikeTypeClicked = false
+
+            btnBikeType.setOnClickListener {
+                spBikeType.performClick()
+                spBikeTypeClicked = true
+            }
+
+            ArrayAdapter.createFromResource(
+                this,
+                R.array.bike_type_array,
+                android.R.layout.simple_spinner_item
+            ).also {
+                it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spBikeType.adapter = it
+            }
+
+            spBikeType.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        if (spBikeTypeClicked) {
+                            val selectedItem =
+                                if (position > 0) parent.getItemAtPosition(position)
+                                    .toString() else null
+
+                            bikeActivityViewModel.update(
+                                bikeActivityWithSamples.bikeActivity.copy(bikeType = selectedItem)
+                            )
+                        }
+
+                        spBikeTypeClicked = false
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                }
 
             fab.setOnClickListener {
                 if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
