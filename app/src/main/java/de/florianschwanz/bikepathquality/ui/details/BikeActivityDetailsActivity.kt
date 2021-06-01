@@ -114,6 +114,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
+        val tvSamples: TextView = findViewById(R.id.tvSamples)
         val ivStop: ImageView = findViewById(R.id.ivStop)
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
@@ -121,8 +122,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val spPhonePosition: Spinner = findViewById(R.id.spPhonePosition)
         val btnBikeType: MaterialButton = findViewById(R.id.btnBikeType)
         val spBikeType: Spinner = findViewById(R.id.spBikeType)
-        val tvDuration: TextView = findViewById(R.id.tvDuration)
-        val tvSamples: TextView = findViewById(R.id.tvSamples)
         val rvBikeActivitySamples: RecyclerView = findViewById(R.id.rvBikeActivitySamples)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
 
@@ -232,13 +231,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     sdfShort.format(Date.from(bikeActivityWithSamples.bikeActivity.endTime))
                 tvDelimiter.visibility = View.VISIBLE
                 tvStopTime.visibility = View.VISIBLE
-
-                val diff =
-                    bikeActivityWithSamples.bikeActivity.endTime.toEpochMilli() - bikeActivityWithSamples.bikeActivity.startTime.toEpochMilli()
-                val duration = (diff / 1000 / 60).toInt()
-                tvDuration.text =
-                    resources.getQuantityString(R.plurals.duration, duration, duration)
-
                 ivStop.visibility = View.INVISIBLE
             } else {
                 tvDelimiter.visibility = View.INVISIBLE

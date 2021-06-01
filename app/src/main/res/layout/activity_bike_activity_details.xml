@@ -113,7 +113,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_start_time"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/ivBike"
                 app:layout_constraintStart_toEndOf="@id/ivBike"
                 app:layout_constraintTop_toTopOf="@id/ivBike" />
@@ -125,7 +124,6 @@
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:text="@string/delimiter_dash"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/ivBike"
                 app:layout_constraintStart_toEndOf="@id/tvStartTime"
                 app:layout_constraintTop_toTopOf="@id/ivBike" />
@@ -135,9 +133,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_stop_time"
-                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@id/ivBike"
                 app:layout_constraintStart_toEndOf="@id/tvDelimiter"
+                app:layout_constraintTop_toTopOf="@id/ivBike" />
+
+            <TextView
+                android:id="@+id/tvDelimiter2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:text="@string/delimiter"
+                app:layout_constraintBottom_toBottomOf="@id/ivBike"
+                app:layout_constraintStart_toEndOf="@id/tvStopTime"
+                app:layout_constraintTop_toTopOf="@id/ivBike" />
+
+            <TextView
+                android:id="@+id/tvSamples"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_samples"
+                app:layout_constraintBottom_toBottomOf="@id/ivBike"
+                app:layout_constraintStart_toEndOf="@id/tvDelimiter2"
                 app:layout_constraintTop_toTopOf="@id/ivBike" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -237,7 +254,7 @@
             android:background="@android:color/transparent"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:text="@string/default_phone_position"
+            android:text="@string/default_bike_type"
             android:textColor="?attr/colorOnSurface"
             app:icon="@drawable/ic_baseline_pedal_bike_24"
             app:iconGravity="textStart"
@@ -256,73 +273,6 @@
             app:layout_constraintEnd_toEndOf="@id/btnBikeType"
             app:layout_constraintStart_toStartOf="@id/btnBikeType"
             app:layout_constraintTop_toTopOf="@id/btnBikeType" />
-
-        <ImageView
-            android:id="@+id/ivWatch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:contentDescription="@string/description_duration"
-            android:gravity="center_vertical"
-            android:scaleX="0.6"
-            android:scaleY="0.6"
-            android:src="@drawable/ic_outline_watch_later_24"
-            app:layout_constraintStart_toStartOf="@id/clDescription"
-            app:layout_constraintTop_toBottomOf="@id/btnPhonePosition"
-            app:tint="?attr/colorOnSurface" />
-
-        <TextView
-            android:id="@+id/tvLabelDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description_duration"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@id/ivWatch"
-            app:layout_constraintStart_toEndOf="@id/ivWatch"
-            app:layout_constraintTop_toTopOf="@id/ivWatch" />
-
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/default_duration"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@id/ivWatch"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivWatch" />
-
-        <ImageView
-            android:id="@+id/ivList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/description_details"
-            android:gravity="center_vertical"
-            android:scaleX="0.6"
-            android:scaleY="0.6"
-            android:src="@drawable/ic_baseline_list_24"
-            app:layout_constraintStart_toStartOf="@id/clDescription"
-            app:layout_constraintTop_toBottomOf="@id/ivWatch"
-            app:tint="?attr/colorOnSurface" />
-
-        <TextView
-            android:id="@+id/tvLabelDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description_details"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@id/ivList"
-            app:layout_constraintStart_toEndOf="@id/ivList"
-            app:layout_constraintTop_toTopOf="@id/ivList" />
-
-        <TextView
-            android:id="@+id/tvSamples"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/default_samples"
-            android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@id/ivList"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivList" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
