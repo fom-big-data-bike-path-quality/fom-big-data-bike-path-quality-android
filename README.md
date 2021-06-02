@@ -79,9 +79,11 @@ Click on any sample in the list to highlight it on the map. Next to a highlighte
 :-------------------------:|:-------------------------:
 Activity details screen | Highlighted activity sample
 
-Click on _Surface type_ to select the surface you did the ride on.
-Click on _Smoothness type_ to evaluate the quality of the bike path surface.
-After both surface type and smoothness type are selected click on the floating action button in the bottom right corner in order to upload you activity data. An _Uploaded_ badge will appear next to the title indicating that the upload was successful. The data includes a user ID that identifies you anonymously.
+* Click on _Surface type_ to select the surface you did the ride on
+* Click on _Smoothness type_ to evaluate the quality of the bike path surface
+* Click on _Phone position_ to select where your phone has been during the ride (not in screenshot)
+* Click on _Bike type_ to select your bike type (not in screenshot)
+After all four things are selected click on the floating action button in the bottom right corner in order to upload you activity data. An _Uploaded_ badge will appear next to the title indicating that the upload was successful. The data includes a user ID that identifies you anonymously.
 
 <img src=".screenshots/screenshot-09-surface-type.png" width="300">  |  <img src=".screenshots/screenshot-10-smoothness-type.png" width="300">  |  <img src=".screenshots/screenshot-11-uploaded.png" width="300">
 :-------------------------:|:-------------------------:|:-------------------------:
@@ -97,6 +99,12 @@ See the [open issues](https://github.com/florianschwanz/fom-big-data-bike-path-q
 * 1.2.0 Activity sample selection
 * 1.1.0 Anonymous user identification
 * 1.0.0 Basic functionality
+  * Activity transition detection
+  * Accelerometer sensor measurement
+  * Location sensor measurement
+  * Bike activity tracking - in background, manual and automatic
+  * Bike activity samples on a map
+  * Surface type and smoothness type selection
 
 ### Version 2.*
 
