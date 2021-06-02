@@ -10,7 +10,7 @@
   <h1 align="center">Bike Path Quality (Ahuacamolli)</h1>
 
   <p align="center">
-    Android application that let's you track raw data for bike path quality analysis 
+    Android application that lets you track raw data for <a href="https://github.com/florianschwanz/fom-big-data-bike-path-quality-model">bike path quality analysis</a> 
   </p>
 </p>
 
@@ -61,19 +61,22 @@ Permission rationale location | Permission rationale activity transition | Main 
 The app can track biking data in two modes
 * **automatic tracking** <sup>experimental</sup> will automatically start and stop bike activity tracking when you start or stop riding a bike 
 * **manual tracking** allows you to start and stop a bike activity whenever you want (this will disable automatic tracking)
+
 You can switch between the two modes in the settings menu which you can reach by clicking on the gear symbol in the top right corner.
 
-Start a bike activity (either automatically by starting to ride a bike if you used automatic tracking or manually by clicking the play button) which will add an entry for the ongoing tracking to the activity list.
-**Important:** in order to train the model pure data is needed. Try to ride on one surface type only when tracking a bike activity. Stop and restart the activity tracking when you switch the surface type. (Later you can set the surface type for each sample individually which might become cumbersome if you need to do it for too many samples) 
+* Start a bike activity (either automatically by starting to ride a bike if you used automatic tracking or manually by clicking the play button) which will add an entry for the ongoing tracking to the activity list
 
-Stop the bike activity (either by stopping to ride your bike if you used automatic tracking and/or by clicking the stop button)
+> **Important:** in order to train the model pure data is needed. Try to ride on one surface type only when tracking a bike activity. Stop and restart the activity tracking when you switch the surface type. (Later you can set the surface type for each sample individually which might become cumbersome if you need to do it for too many samples) 
+
+* Stop the bike activity (either by stopping to ride your bike if you used automatic tracking and/or by clicking the stop button)
 
 <img src=".screenshots/screenshot-04-settings.png" width="300">  |  <img src=".screenshots/screenshot-05-ongoing-activity.png" width="300">  |  <img src=".screenshots/screenshot-06-completed-activity.png" width="300">
 :-------------------------:|:-------------------------:|:-------------------------:
 Settings screen | Ongoing activity tracking | Completed activity tracking
 
-Click on an activity in the list to get to the activity details screen in which you can see your bike activity on a map and a list of tracked samples.
-Click on any sample in the list to highlight it on the map. Next to a highlighted sample the _surface type_ icon appears which lets you set the surface type for an individual sample.
+* Click on an activity in the list to get to the activity details screen in which you can see your bike activity on a map and a list of tracked samples
+* Click on any sample in the list to highlight it on the map
+* Next to a highlighted sample the _surface type_ icon appears which lets you set the surface type for an individual sample
 
 <img src=".screenshots/screenshot-07-activity-details.png" width="300">  |  <img src=".screenshots/screenshot-08-activity-sample-highlight.png" width="300">
 :-------------------------:|:-------------------------:
@@ -83,6 +86,7 @@ Activity details screen | Highlighted activity sample
 * Click on _Smoothness type_ to evaluate the quality of the bike path surface
 * Click on _Phone position_ to select where your phone has been during the ride (not in screenshot)
 * Click on _Bike type_ to select your bike type (not in screenshot)
+
 After all four things are selected click on the floating action button in the bottom right corner in order to upload you activity data. An _Uploaded_ badge will appear next to the title indicating that the upload was successful. The data includes a user ID that identifies you anonymously.
 
 <img src=".screenshots/screenshot-09-surface-type.png" width="300">  |  <img src=".screenshots/screenshot-10-smoothness-type.png" width="300">  |  <img src=".screenshots/screenshot-11-uploaded.png" width="300">
@@ -95,6 +99,7 @@ See the [open issues](https://github.com/florianschwanz/fom-big-data-bike-path-q
 
 ### Version 1.*
 
+* 1.4.0 Phone position and bike type selection
 * 1.3.0 Configurable tracking intervals
 * 1.2.0 Activity sample selection
 * 1.1.0 Anonymous user identification
