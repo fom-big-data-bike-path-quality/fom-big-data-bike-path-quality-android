@@ -209,10 +209,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 tvUploaded.visibility = View.INVISIBLE
                 btnSurfaceType.isEnabled = true
                 btnSmoothnessType.isEnabled = true
+                btnPhonePosition.isEnabled = true
+                btnBikeType.isEnabled = true
 
                 if (bikeActivityWithSamples.bikeActivity.surfaceType != null &&
                     bikeActivityWithSamples.bikeActivity.smoothnessType != null &&
-                    bikeActivityWithSamples.bikeActivity.phonePosition != null
+                    bikeActivityWithSamples.bikeActivity.phonePosition != null &&
+                    bikeActivityWithSamples.bikeActivity.bikeType != null
                 ) {
                     fab.visibility = View.VISIBLE
                 } else {
@@ -223,6 +226,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 tvUploaded.visibility = View.VISIBLE
                 btnSurfaceType.isEnabled = false
                 btnSmoothnessType.isEnabled = false
+                btnPhonePosition.isEnabled = false
+                btnBikeType.isEnabled = false
                 fab.visibility = View.INVISIBLE
             }
 
