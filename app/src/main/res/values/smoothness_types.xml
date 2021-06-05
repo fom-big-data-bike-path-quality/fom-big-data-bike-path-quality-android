@@ -2,14 +2,15 @@
 <resources>
 
     <array name="smoothness_type_values">
-        <item name="">excellent</item>
-        <item name="">good</item>
-        <item name="">intermediate</item>
-        <item name="">bad</item>
-        <item name="">very_bad</item>
-        <item name="">horrible</item>
-        <item name="">very_horrible</item>
-        <item name="">impassable</item>
+        <item name="excellent">excellent</item>
+        <item name="good">good</item>
+        <item name="intermediate">intermediate</item>
+        <item name="bad">bad</item>
+        <item name="very_bad">very_bad</item>
+        <item name="horrible">horrible</item>
+        <item name="very_horrible">very_horrible</item>
+        <item name="impassable">impassable</item>
+        <item name="mixed">mixed</item>
     </array>
 
     <array name="smoothness_type_comments">
@@ -53,6 +54,7 @@
             it. Consider to map narrow parts as path, and the whole way as disused:=* or
             abandoned:=*
         </item>
+        <item name="mixed">Mixed smoothness types (will not be used for training)</item>
     </array>
 
     <integer-array name="smoothness_type_photo_resources">
@@ -64,6 +66,7 @@
         <item name="horrible">@drawable/smoothness_type_horrible</item>
         <item name="very_horrible">@drawable/smoothness_type_very_horrible</item>
         <item name="impassable">@drawable/smoothness_type_impassable</item>
+        <item name="mixed">@drawable/empty</item>
     </integer-array>
 
 </resources>

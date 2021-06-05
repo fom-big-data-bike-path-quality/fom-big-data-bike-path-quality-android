@@ -31,6 +31,7 @@
         <item name="snow">snow</item>
         <item name="ice">ice</item>
         <item name="salt">salt</item>
+        <item name="mixed">mixed</item>
     </array>
 
     <array name="surface_type_comments">
@@ -138,6 +139,7 @@
         <item name="snow">Winter roads surfaced with compacted snow.</item>
         <item name="ice">Ice roads, winter roads</item>
         <item name="salt">Dry salt lakes</item>
+        <item name="mixed">Mixed surface types (will not be used for training)</item>
     </array>
 
     <array name="surface_type_photo_resources">
@@ -170,6 +172,7 @@
         <item name="snow">@drawable/empty</item>
         <item name="ice">@drawable/surface_type_ice</item>
         <item name="salt">@drawable/surface_type_salt</item>
+        <item name="mixed">@drawable/empty</item>
     </array>
 
 </resources>
