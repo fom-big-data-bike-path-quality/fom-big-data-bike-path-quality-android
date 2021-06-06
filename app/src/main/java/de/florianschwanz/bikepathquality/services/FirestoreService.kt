@@ -12,7 +12,9 @@ import com.google.gson.GsonBuilder
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.utils.InstantTypeConverter
+import de.florianschwanz.bikepathquality.utils.UuidTypeConverter
 import java.time.Instant
+import java.util.*
 
 /**
  * Handles Firestore uploads
@@ -65,6 +67,7 @@ class FirestoreService : JobIntentService() {
 
         private val gson = GsonBuilder()
             .registerTypeAdapter(Instant::class.java, InstantTypeConverter())
+            .registerTypeAdapter(UUID::class.java, UuidTypeConverter())
             .create()
 
         /**

@@ -2,17 +2,17 @@ package de.florianschwanz.bikepathquality.utils
 
 import com.google.gson.*
 import java.lang.reflect.Type
-import java.time.Instant
+import java.util.*
 
 
-class InstantTypeConverter : JsonSerializer<Instant?>, JsonDeserializer<Instant?> {
+class UuidTypeConverter : JsonSerializer<UUID?>, JsonDeserializer<UUID?> {
 
     override fun serialize(
-        src: Instant?,
+        src: UUID?,
         srcType: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonPrimitive(src?.toEpochMilli())
+        return JsonPrimitive(src?.toString())
     }
 
     @Throws(JsonParseException::class)
@@ -20,7 +20,7 @@ class InstantTypeConverter : JsonSerializer<Instant?>, JsonDeserializer<Instant?
         json: JsonElement,
         type: Type?,
         context: JsonDeserializationContext?
-    ): Instant {
-        return Instant.ofEpochMilli(json.asLong)
+    ): UUID {
+        return UUID.fromString(json.asString)
     }
 }
