@@ -1,7 +1,9 @@
 package de.florianschwanz.bikepathquality.ui.details
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -42,6 +44,7 @@ import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
@@ -204,6 +207,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 sdf.format(Date.from(bikeActivityWithSamples.bikeActivity.startTime))
             tvStartTime.visibility = View.VISIBLE
 
+            val activeColor = Color.parseColor(getThemeColorInHex(R.attr.colorPrimary))
+            val inactiveColor = getColor(R.color.grey_500)
+
             if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
                 ivCheck.visibility = View.INVISIBLE
                 tvUploaded.visibility = View.INVISIBLE
@@ -217,9 +223,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     bikeActivityWithSamples.bikeActivity.phonePosition != null &&
                     bikeActivityWithSamples.bikeActivity.bikeType != null
                 ) {
-                    fab.visibility = View.VISIBLE
+                    fab.backgroundTintList = ColorStateList.valueOf(activeColor)
                 } else {
-                    fab.visibility = View.INVISIBLE
+                    fab.backgroundTintList = ColorStateList.valueOf(inactiveColor)
                 }
             } else {
                 ivCheck.visibility = View.VISIBLE
@@ -228,7 +234,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 btnSmoothnessType.isEnabled = false
                 btnPhonePosition.isEnabled = false
                 btnBikeType.isEnabled = false
-                fab.visibility = View.INVISIBLE
+
+                fab.backgroundTintList = ColorStateList.valueOf(inactiveColor)
             }
 
             if (bikeActivityWithSamples.bikeActivity.endTime != null) {
@@ -396,25 +403,35 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             fab.setOnClickListener {
                 if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
 
-                    val serviceResultReceiver =
-                        FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
-                    serviceResultReceiver.receiver = this
-
-                    viewModel.userData.value?.let { userData ->
-                        FirestoreService.enqueueWork(
-                            this,
-                            bikeActivityWithSamples.bikeActivity,
-                            viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
-                            userData,
-                            serviceResultReceiver
-                        )
+                    if (bikeActivityWithSamples.bikeActivity.surfaceType != null &&
+                        bikeActivityWithSamples.bikeActivity.smoothnessType != null &&
+                        bikeActivityWithSamples.bikeActivity.phonePosition != null &&
+                        bikeActivityWithSamples.bikeActivity.bikeType != null
+                    ) {
+                        uploadData(bikeActivityWithSamples)
+                    } else {
+                        AlertDialog.Builder(this)
+                            .setTitle(R.string.dialog_complete_data_title)
+                            .setMessage(R.string.dialog_complete_data_message)
+                            .setPositiveButton(R.string.action_got_it) { dialog, id ->
+                                uploadData(bikeActivityWithSamples)
+                            }
+                            .create()
+                            .show()
                     }
+
+
                 } else {
-                    Toast.makeText(
-                        applicationContext,
-                        R.string.action_upload_already_done,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_upload_again_title)
+                        .setMessage(R.string.dialog_upload_again_message)
+                        .setPositiveButton(R.string.action_okay) { dialog, id ->
+                            uploadData(bikeActivityWithSamples)
+                        }
+                        .setNegativeButton(R.string.action_cancel) { dialog, id ->
+                        }
+                        .create()
+                        .show()
                 }
             }
         })
@@ -668,6 +685,22 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     //
     // Helpers
     //
+
+    private fun uploadData(bikeActivityWithSamples: BikeActivityWithSamples) {
+        val serviceResultReceiver =
+            FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
+        serviceResultReceiver.receiver = this
+
+        viewModel.userData.value?.let { userData ->
+            FirestoreService.enqueueWork(
+                this,
+                bikeActivityWithSamples.bikeActivity,
+                viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
+                userData,
+                serviceResultReceiver
+            )
+        }
+    }
 
     /**
      * Builds map style based on night mode

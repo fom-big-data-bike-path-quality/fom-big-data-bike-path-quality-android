@@ -16,6 +16,10 @@
 
     <!-- Actions -->
 
+    <string name="action_okay">Okay</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_got_it">Got it</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_clear_activities">Clear activities</string>
     <string name="action_clear_log">Clear log</string>
@@ -164,6 +168,12 @@
     <string name="bike_activity_measurement_lon_lat">%1$.3f</string>
     <string name="bike_activity_measurement_speed">%1$.1f km/h</string>
     <string name="bike_activity_measurement_accelerometer">%1$.1f</string>
+
+    <string name="dialog_complete_data_title">Incomplete data</string>
+    <string name="dialog_complete_data_message">Please select surface type, smoothness type, phone position and bike type before upload</string>
+
+    <string name="dialog_upload_again_title">Re-upload bike activity</string>
+    <string name="dialog_upload_again_message">Do you want to re-upload this bike activity?</string>
 
     <!-- Surface / Smoothness Type -->
 
