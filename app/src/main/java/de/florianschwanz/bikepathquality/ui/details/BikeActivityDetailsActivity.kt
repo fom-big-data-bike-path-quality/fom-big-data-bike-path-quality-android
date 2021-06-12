@@ -123,7 +123,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val btnBikeType: MaterialButton = findViewById(R.id.btnBikeType)
         val spBikeType: Spinner = findViewById(R.id.spBikeType)
         val rvBikeActivitySamples: RecyclerView = findViewById(R.id.rvBikeActivitySamples)
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val fab: FloatingActionButton = findViewById(R.id.fab)
 
         val adapter = BikeActivitySampleListAdapter(this, this)
 
@@ -395,6 +395,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
             fab.setOnClickListener {
                 if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
+
                     val serviceResultReceiver =
                         FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
                     serviceResultReceiver.receiver = this
@@ -402,7 +403,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     viewModel.userData.value?.let { userData ->
                         FirestoreService.enqueueWork(
                             this,
-                            bikeActivityWithSamples,
+                            bikeActivityWithSamples.bikeActivity,
+                            viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
                             userData,
                             serviceResultReceiver
                         )

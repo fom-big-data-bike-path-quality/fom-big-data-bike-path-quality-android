@@ -9,7 +9,9 @@ import android.os.ResultReceiver
 import androidx.core.app.JobIntentService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.GsonBuilder
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.utils.InstantTypeConverter
 import de.florianschwanz.bikepathquality.utils.UuidTypeConverter
@@ -35,7 +37,7 @@ class FirestoreService : JobIntentService() {
             ACTION_UPLOAD_BIKE_ACTIVITY -> {
                 val resultReceiver = intent.getParcelableExtra<ResultReceiver>(EXTRA_RECEIVER)
                 val bundle = Bundle()
-                val uid = uploadEnvelope.bikeActivityWithSamples.bikeActivity.uid.toString()
+                val uid = uploadEnvelope.bikeActivity.uid.toString()
                 val database = FirebaseFirestore.getInstance()
 
                 database.collection("BikeActivities")
@@ -75,7 +77,8 @@ class FirestoreService : JobIntentService() {
          */
         fun enqueueWork(
             context: Context,
-            bikeActivityWithSamples: BikeActivityWithSamples,
+            bikeActivity: BikeActivity,
+            bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
             userData: UserData,
             firestoreServiceResultReceiver: FirestoreServiceResultReceiver?
         ) {
@@ -84,7 +87,7 @@ class FirestoreService : JobIntentService() {
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
             intent.putExtra(
                 EXTRA_UPLOAD_ENVELOPE,
-                gson.toJson(UploadEnvelope(bikeActivityWithSamples, userData))
+                gson.toJson(UploadEnvelope(bikeActivity, bikeActivitySamplesWithMeasurements, userData))
             )
 
             enqueueWork(context, FirestoreService::class.java, UPLOAD_JOB_ID, intent)
@@ -93,7 +96,8 @@ class FirestoreService : JobIntentService() {
 }
 
 data class UploadEnvelope(
-    val bikeActivityWithSamples: BikeActivityWithSamples,
+    val bikeActivity: BikeActivity,
+    val bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
     val userData: UserData
 )
 
