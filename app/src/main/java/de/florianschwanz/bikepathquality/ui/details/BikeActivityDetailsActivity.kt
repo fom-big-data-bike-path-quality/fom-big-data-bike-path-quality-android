@@ -114,6 +114,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         val clDescription: ConstraintLayout = findViewById(R.id.clDescription)
         val ivCheck: ImageView = findViewById(R.id.ivCheck)
         val tvUploaded: TextView = findViewById(R.id.tvUploaded)
+        val ivWarning: ImageView = findViewById(R.id.ivWarning)
+        val tvChangedAfterUpload: TextView = findViewById(R.id.tvChangedAfterUpload)
         val tvStartTime: TextView = findViewById(R.id.tvStartTime)
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
@@ -210,54 +212,37 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             val activeColor = Color.parseColor(getThemeColorInHex(R.attr.colorPrimary))
             val inactiveColor = getColor(R.color.grey_500)
 
-            if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
-                ivCheck.visibility = View.INVISIBLE
-                tvUploaded.visibility = View.INVISIBLE
-                btnSurfaceType.isEnabled = true
-                btnSmoothnessType.isEnabled = true
-                btnPhonePosition.isEnabled = true
-                btnBikeType.isEnabled = true
+            ivCheck.visibility =
+                if (bikeActivityWithSamples.isUploaded()) View.VISIBLE else View.INVISIBLE
+            tvUploaded.visibility =
+                if (bikeActivityWithSamples.isUploaded()) View.VISIBLE else View.INVISIBLE
+            ivWarning.visibility =
+                if (bikeActivityWithSamples.isChangedAfterUpload()) View.VISIBLE else View.INVISIBLE
+            tvChangedAfterUpload.visibility =
+                if (bikeActivityWithSamples.isChangedAfterUpload()) View.VISIBLE else View.INVISIBLE
 
-                if (bikeActivityWithSamples.bikeActivity.surfaceType != null &&
-                    bikeActivityWithSamples.bikeActivity.smoothnessType != null &&
-                    bikeActivityWithSamples.bikeActivity.phonePosition != null &&
-                    bikeActivityWithSamples.bikeActivity.bikeType != null
-                ) {
-                    fab.backgroundTintList = ColorStateList.valueOf(activeColor)
-                } else {
-                    fab.backgroundTintList = ColorStateList.valueOf(inactiveColor)
-                }
-            } else {
-                ivCheck.visibility = View.VISIBLE
-                tvUploaded.visibility = View.VISIBLE
-                btnSurfaceType.isEnabled = false
-                btnSmoothnessType.isEnabled = false
-                btnPhonePosition.isEnabled = false
-                btnBikeType.isEnabled = false
+            fab.backgroundTintList =
+                if (bikeActivityWithSamples.isLabelledCompletely() && !bikeActivityWithSamples.isUploaded()) ColorStateList.valueOf(
+                    activeColor
+                ) else ColorStateList.valueOf(
+                    inactiveColor
+                )
 
-                fab.backgroundTintList = ColorStateList.valueOf(inactiveColor)
-            }
-
-            if (bikeActivityWithSamples.bikeActivity.endTime != null) {
-                tvStopTime.text =
-                    sdfShort.format(Date.from(bikeActivityWithSamples.bikeActivity.endTime))
-                tvDelimiter.visibility = View.VISIBLE
-                tvStopTime.visibility = View.VISIBLE
-                ivStop.visibility = View.INVISIBLE
-            } else {
-                tvDelimiter.visibility = View.INVISIBLE
-                tvStopTime.visibility = View.INVISIBLE
-                ivStop.visibility = View.VISIBLE
-            }
-
+            tvStopTime.text = if (bikeActivityWithSamples.isFinished())
+                sdfShort.format(Date.from(bikeActivityWithSamples.bikeActivity.endTime)) else ""
+            tvDelimiter.visibility =
+                if (bikeActivityWithSamples.isFinished()) View.VISIBLE else View.INVISIBLE
+            tvStopTime.visibility =
+                if (bikeActivityWithSamples.isFinished()) View.VISIBLE else View.INVISIBLE
+            ivStop.visibility =
+                if (bikeActivityWithSamples.isFinished()) View.INVISIBLE else View.VISIBLE
             tvSamples.text = resources.getQuantityString(
                 R.plurals.samples,
                 bikeActivityWithSamples.bikeActivitySamples.size,
                 bikeActivityWithSamples.bikeActivitySamples.size
             )
-            ivStop.setOnClickListener {
 
-                // Update bike activity
+            ivStop.setOnClickListener {
                 viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
                     bikeActivityViewModel.update(it.copy(endTime = Instant.now()))
                 }
@@ -401,27 +386,27 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                 }
 
             fab.setOnClickListener {
-                if (bikeActivityWithSamples.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
-
-                    if (bikeActivityWithSamples.bikeActivity.surfaceType != null &&
-                        bikeActivityWithSamples.bikeActivity.smoothnessType != null &&
-                        bikeActivityWithSamples.bikeActivity.phonePosition != null &&
-                        bikeActivityWithSamples.bikeActivity.bikeType != null
-                    ) {
-                        uploadData(bikeActivityWithSamples)
-                    } else {
-                        AlertDialog.Builder(this)
-                            .setTitle(R.string.dialog_complete_data_title)
-                            .setMessage(R.string.dialog_complete_data_message)
-                            .setPositiveButton(R.string.action_got_it) { dialog, id ->
-                                uploadData(bikeActivityWithSamples)
-                            }
-                            .create()
-                            .show()
-                    }
-
-
-                } else {
+                if (!bikeActivityWithSamples.isLabelledCompletely()) {
+                    AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_complete_data_title)
+                        .setMessage(R.string.dialog_complete_data_message)
+                        .setPositiveButton(R.string.action_got_it) { dialog, id ->
+                            uploadData(bikeActivityWithSamples)
+                        }
+                        .create()
+                        .show()
+                } else if (bikeActivityWithSamples.isUploaded()) {
+                    AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_nothing_changed_title)
+                        .setMessage(R.string.dialog_nothing_changed_message)
+                        .setPositiveButton(R.string.action_okay) { dialog, id ->
+                            uploadData(bikeActivityWithSamples)
+                        }
+                        .setNegativeButton(R.string.action_cancel) { dialog, id ->
+                        }
+                        .create()
+                        .show()
+                } else if (bikeActivityWithSamples.isChangedAfterUpload()) {
                     AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_upload_again_title)
                         .setMessage(R.string.dialog_upload_again_message)
@@ -432,6 +417,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                         }
                         .create()
                         .show()
+                } else {
+                    uploadData(bikeActivityWithSamples)
                 }
             }
         })
@@ -590,7 +577,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 it.copy(
                                     surfaceType = data?.getStringExtra(
                                         RESULT_SURFACE_TYPE
-                                    )
+                                    ),
+                                    uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL
                                 )
                             )
                         }
@@ -601,7 +589,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                 it.copy(
                                     smoothnessType = data?.getStringExtra(
                                         RESULT_SMOOTHNESS_TYPE
-                                    )
+                                    ),
+                                    uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL
                                 )
                             )
                         }
@@ -613,6 +602,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                                     surfaceType = data?.getStringExtra(
                                         RESULT_SURFACE_TYPE
                                     )
+                                )
+                            )
+                        }
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(
+                                it.copy(
+                                    uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL
                                 )
                             )
                         }
@@ -685,6 +681,20 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     //
     // Helpers
     //
+
+    private fun BikeActivityWithSamples.isLabelledCompletely() =
+        this.bikeActivity.surfaceType != null &&
+                this.bikeActivity.smoothnessType != null &&
+                this.bikeActivity.phonePosition != null &&
+                this.bikeActivity.bikeType != null
+
+    private fun BikeActivityWithSamples.isUploaded() =
+        this.bikeActivity.uploadStatus == BikeActivityStatus.UPLOADED
+
+    private fun BikeActivityWithSamples.isChangedAfterUpload() =
+        this.bikeActivity.uploadStatus == BikeActivityStatus.CHANGED_AFTER_UPLOAD
+
+    private fun BikeActivityWithSamples.isFinished() = this.bikeActivity.endTime != null
 
     private fun uploadData(bikeActivityWithSamples: BikeActivityWithSamples) {
         val serviceResultReceiver =

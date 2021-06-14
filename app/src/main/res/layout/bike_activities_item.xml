@@ -56,6 +56,20 @@
         app:tint="@color/green_500" />
 
     <ImageView
+        android:id="@+id/ivWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/description_warning"
+        android:gravity="center_vertical"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:src="@drawable/ic_baseline_warning_amber_24"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toEndOf="@id/tvTitle"
+        app:layout_constraintTop_toTopOf="@id/tvTitle"
+        app:tint="@color/amber_600" />
+
+    <ImageView
         android:id="@+id/ivOngoing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

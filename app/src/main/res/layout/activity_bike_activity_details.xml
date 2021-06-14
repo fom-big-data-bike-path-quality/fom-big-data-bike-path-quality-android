@@ -96,6 +96,35 @@
                 app:layout_constraintTop_toTopOf="@id/tvTitle" />
 
             <ImageView
+                android:id="@+id/ivWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/description_warning"
+                android:gravity="center_vertical"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@drawable/ic_baseline_warning_amber_24"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toEndOf="@id/tvTitle"
+                app:layout_constraintTop_toTopOf="@id/tvTitle"
+                app:tint="@color/amber_600" />
+
+            <TextView
+                android:id="@+id/tvChangedAfterUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text='@string/action_changed_after_upload'
+                android:textColor="@color/amber_600"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toEndOf="@id/ivCheck"
+                app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+            <ImageView
                 android:id="@+id/ivBike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

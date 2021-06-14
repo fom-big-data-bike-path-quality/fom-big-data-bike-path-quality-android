@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
@@ -52,6 +53,7 @@ class BikeActivityListAdapter(
         private val tvStartTime: TextView = itemView.findViewById(R.id.tvStartTime)
         private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         private val ivCheck: ImageView = itemView.findViewById(R.id.ivCheck)
+        private val ivWarning: ImageView = itemView.findViewById(R.id.ivWarning)
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
         private val tvSamples: TextView = itemView.findViewById(R.id.tvSamples)
@@ -81,11 +83,8 @@ class BikeActivityListAdapter(
                 }
             )
 
-            if (item.bikeActivity.uploadStatus != BikeActivityStatus.UPLOADED) {
-                ivCheck.visibility = View.INVISIBLE
-            } else {
-                ivCheck.visibility = View.VISIBLE
-            }
+            ivCheck.visibility = if (item.bikeActivity.isUploaded()) View.VISIBLE else View.INVISIBLE
+            ivWarning.visibility = if (item.bikeActivity.isChangedAfterUpload()) View.VISIBLE else View.INVISIBLE
 
             if (item.bikeActivity.endTime != null) {
                 ivOngoing.visibility = View.INVISIBLE
@@ -149,6 +148,10 @@ class BikeActivityListAdapter(
 
         private fun Instant.isToday() =
             this.truncatedTo(ChronoUnit.DAYS).equals(Instant.now().truncatedTo(ChronoUnit.DAYS))
+
+        private fun BikeActivity.isUploaded() = this.uploadStatus == BikeActivityStatus.UPLOADED
+
+        private fun BikeActivity.isChangedAfterUpload() = this.uploadStatus == BikeActivityStatus.CHANGED_AFTER_UPLOAD
 
         /**
          * Retrieves theme color

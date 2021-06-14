@@ -14,8 +14,8 @@ enum class BikeActivityTrackingType {
 
 enum class BikeActivityStatus {
     LOCAL,
-    SCHEDULED_FOR_UPLOAD,
-    UPLOADED
+    UPLOADED,
+    CHANGED_AFTER_UPLOAD
 }
 
 @Entity

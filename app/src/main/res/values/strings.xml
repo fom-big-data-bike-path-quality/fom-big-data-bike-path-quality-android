@@ -32,6 +32,7 @@
     <string name="action_upload_failed">Uploading data failed</string>
     <string name="action_upload_already_done">Data has been updated already</string>
     <string name="action_uploaded">Uploaded</string>
+    <string name="action_changed_after_upload">Changed after upload</string>
     <string name="action_activity_deleted">Activity deleted</string>
 
     <string name="action_tracking_bike_activity_idle">Bike activity</string>
@@ -169,6 +170,9 @@
     <string name="bike_activity_measurement_speed">%1$.1f km/h</string>
     <string name="bike_activity_measurement_accelerometer">%1$.1f</string>
 
+    <string name="dialog_nothing_changed_title">Nothing changed</string>
+    <string name="dialog_nothing_changed_message">Nothing has changed since you uploaded the data. Do you still want to re-upload this bike activity?</string>
+
     <string name="dialog_complete_data_title">Incomplete data</string>
     <string name="dialog_complete_data_message">Please select surface type, smoothness type, phone position and bike type before upload</string>
 
@@ -198,6 +202,7 @@
     <string name="description_bike">Bike</string>
     <string name="description_details">Details</string>
     <string name="description_check">Check</string>
+    <string name="description_warning">Warning</string>
     <string name="description_recording">Recording</string>
     <string name="description_duration">Duration</string>
 
