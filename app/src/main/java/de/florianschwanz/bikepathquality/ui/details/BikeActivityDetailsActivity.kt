@@ -1,5 +1,6 @@
 package de.florianschwanz.bikepathquality.ui.details
 
+import androidx.lifecycle.Observer
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -18,6 +19,8 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -708,7 +711,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     private fun markBikeActivityAsUploaded(bikeActivityUid: String?) = bikeActivityUid?.let {
         bikeActivityViewModel
             .singleBikeActivityWithSamples(it)
-            .observe(this, { bikeActivityWithDetails ->
+            .observeOnce(this, { bikeActivityWithDetails ->
                 bikeActivityViewModel.update(
                     bikeActivityWithDetails.bikeActivity.copy(
                         uploadStatus = BikeActivityStatus.UPLOADED
@@ -717,9 +720,18 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             })
     }
 
-//
-// Helpers
-//
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
+    }
+
+    //
+    // Helpers
+    //
 
     private fun BikeActivityWithSamples.isLabelledCompletely() =
         this.bikeActivity.surfaceType != null &&
