@@ -18,9 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
-import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
-import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
-import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
@@ -37,9 +34,6 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
 
     private lateinit var toolbar: Toolbar
 
-    private val logEntryViewModel: LogEntryViewModel by viewModels {
-        LogEntryViewModelFactory((requireActivity().application as BikePathQualityApplication).logEntryRepository)
-    }
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((requireActivity().application as BikePathQualityApplication).bikeActivityRepository)
     }
@@ -185,12 +179,5 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
             requireActivity(),
             trackingForegroundServiceIntent
         )
-    }
-
-    /**
-     * Logs message
-     */
-    private fun log(message: String) {
-        logEntryViewModel.insert(LogEntry(message = message))
     }
 }
