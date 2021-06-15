@@ -62,7 +62,11 @@
             android:theme="@style/Theme.BikePathQuality.NoActionBar" />
 
         <service
-            android:name=".services.FirestoreService"
+            android:name=".services.FirebaseFirestoreService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".services.FirebaseStorageService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service

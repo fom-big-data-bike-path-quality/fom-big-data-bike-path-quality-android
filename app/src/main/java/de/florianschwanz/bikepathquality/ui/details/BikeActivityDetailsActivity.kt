@@ -55,8 +55,10 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
-import de.florianschwanz.bikepathquality.services.FirestoreService
-import de.florianschwanz.bikepathquality.services.FirestoreServiceResultReceiver
+import de.florianschwanz.bikepathquality.services.FirebaseFirestoreService
+import de.florianschwanz.bikepathquality.services.FirebaseFirestoreServiceResultReceiver
+import de.florianschwanz.bikepathquality.services.FirebaseStorageService
+import de.florianschwanz.bikepathquality.services.FirebaseStorageServiceResultReceiver
 import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity.Companion.EXTRA_SMOOTHNESS_TYPE
@@ -68,7 +70,9 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 
-class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultReceiver.Receiver,
+class BikeActivityDetailsActivity : AppCompatActivity(),
+    FirebaseFirestoreServiceResultReceiver.Receiver,
+    FirebaseStorageServiceResultReceiver.Receiver,
     BikeActivitySampleListAdapter.OnItemClickListener {
 
     private val logEntryViewModel: LogEntryViewModel by viewModels {
@@ -391,7 +395,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_complete_data_title)
                         .setMessage(R.string.dialog_complete_data_message)
-                        .setPositiveButton(R.string.action_got_it) { dialog, id ->
+                        .setPositiveButton(R.string.action_got_it) { _, _ ->
                             uploadData(bikeActivityWithSamples)
                         }
                         .create()
@@ -400,10 +404,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_nothing_changed_title)
                         .setMessage(R.string.dialog_nothing_changed_message)
-                        .setPositiveButton(R.string.action_okay) { dialog, id ->
+                        .setPositiveButton(R.string.action_okay) { _, _ ->
                             uploadData(bikeActivityWithSamples)
                         }
-                        .setNegativeButton(R.string.action_cancel) { dialog, id ->
+                        .setNegativeButton(R.string.action_cancel) { _, _ ->
                         }
                         .create()
                         .show()
@@ -411,10 +415,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_upload_again_title)
                         .setMessage(R.string.dialog_upload_again_message)
-                        .setPositiveButton(R.string.action_okay) { dialog, id ->
+                        .setPositiveButton(R.string.action_okay) { _, _ ->
                             uploadData(bikeActivityWithSamples)
                         }
-                        .setNegativeButton(R.string.action_cancel) { dialog, id ->
+                        .setNegativeButton(R.string.action_cancel) { _, _ ->
                         }
                         .create()
                         .show()
@@ -522,11 +526,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     }
 
     /**
-     * Handles results of Firestore service
+     * Handles results of Firebase Firestore service
      */
-    override fun onReceiveFirestoreServiceResult(resultCode: Int, resultData: Bundle?) {
+    override fun onReceiveFirebaseFirestoreServiceResult(resultCode: Int, resultData: Bundle?) {
         when (resultCode) {
-            FirestoreService.RESULT_SUCCESS -> {
+            FirebaseFirestoreService.RESULT_SUCCESS -> {
 
                 Toast.makeText(
                     applicationContext,
@@ -534,21 +538,12 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     Toast.LENGTH_LONG
                 ).show()
 
-                resultData
-                    ?.getString(FirestoreService.EXTRA_BIKE_ACTIVITY_UID)
-                    ?.let {
-                        bikeActivityViewModel
-                            .singleBikeActivityWithSamples(it)
-                            .observe(this, { bikeActivityWithDetails ->
-                                bikeActivityViewModel.update(
-                                    bikeActivityWithDetails.bikeActivity.copy(
-                                        uploadStatus = BikeActivityStatus.UPLOADED
-                                    )
-                                )
-                            })
-                    }
+                val bikeActivityUid =
+                    resultData?.getString(FirebaseFirestoreService.EXTRA_BIKE_ACTIVITY_UID)
+
+                markBikeActivityAsUploaded(bikeActivityUid)
             }
-            FirestoreService.RESULT_FAILURE -> {
+            FirebaseFirestoreService.RESULT_FAILURE -> {
 
                 Toast.makeText(
                     applicationContext,
@@ -556,7 +551,38 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
                     Toast.LENGTH_LONG
                 ).show()
 
-                resultData?.getString(FirestoreService.EXTRA_ERROR_MESSAGE)?.let { log(it) }
+                resultData?.getString(FirebaseFirestoreService.EXTRA_ERROR_MESSAGE)?.let { log(it) }
+            }
+        }
+    }
+
+    /**
+     * Handles results of Firebase Storage service
+     */
+    override fun onReceiveFirebaseStorageServiceResult(resultCode: Int, resultData: Bundle?) {
+        when (resultCode) {
+            FirebaseFirestoreService.RESULT_SUCCESS -> {
+
+                Toast.makeText(
+                    applicationContext,
+                    R.string.action_upload_successful,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                val bikeActivityUid =
+                    resultData?.getString(FirebaseFirestoreService.EXTRA_BIKE_ACTIVITY_UID)
+
+                markBikeActivityAsUploaded(bikeActivityUid)
+            }
+            FirebaseFirestoreService.RESULT_FAILURE -> {
+
+                Toast.makeText(
+                    applicationContext,
+                    R.string.action_upload_failed,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                resultData?.getString(FirebaseFirestoreService.EXTRA_ERROR_MESSAGE)?.let { log(it) }
             }
         }
     }
@@ -679,9 +705,21 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
         })
     }
 
-    //
-    // Helpers
-    //
+    private fun markBikeActivityAsUploaded(bikeActivityUid: String?) = bikeActivityUid?.let {
+        bikeActivityViewModel
+            .singleBikeActivityWithSamples(it)
+            .observe(this, { bikeActivityWithDetails ->
+                bikeActivityViewModel.update(
+                    bikeActivityWithDetails.bikeActivity.copy(
+                        uploadStatus = BikeActivityStatus.UPLOADED
+                    )
+                )
+            })
+    }
+
+//
+// Helpers
+//
 
     private fun BikeActivityWithSamples.isLabelledCompletely() =
         this.bikeActivity.surfaceType != null &&
@@ -699,10 +737,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
 
     private fun uploadData(bikeActivityWithSamples: BikeActivityWithSamples) {
         val serviceResultReceiver =
-            FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
+            FirebaseStorageServiceResultReceiver(Handler(Looper.getMainLooper()))
         serviceResultReceiver.receiver = this
 
-        FirestoreService.enqueueWork(
+        FirebaseStorageService.enqueueWork(
             this,
             bikeActivityWithSamples.bikeActivity,
             viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
@@ -805,14 +843,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
     private fun Style.addLineLayer(
         layerName: String,
         sourceName: String,
-        lineDasharray: FloatArray,
+        lineDashArray: FloatArray,
         lineCap: String,
         lineJoin: String,
         lineWidth: Float,
         lineColor: Int
     ) = this.addLayer(
         LineLayer(layerName, sourceName).withProperties(
-            PropertyFactory.lineDasharray(lineDasharray.toTypedArray()),
+            PropertyFactory.lineDasharray(lineDashArray.toTypedArray()),
             PropertyFactory.lineCap(lineCap),
             PropertyFactory.lineJoin(lineJoin),
             PropertyFactory.lineWidth(lineWidth),

@@ -88,6 +88,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
 
