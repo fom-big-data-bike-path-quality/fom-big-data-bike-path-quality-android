@@ -52,6 +52,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntry
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModel
 import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.FirestoreService
@@ -701,15 +702,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(), FirestoreServiceResultR
             FirestoreServiceResultReceiver(Handler(Looper.getMainLooper()))
         serviceResultReceiver.receiver = this
 
-        viewModel.userData.value?.let { userData ->
-            FirestoreService.enqueueWork(
-                this,
-                bikeActivityWithSamples.bikeActivity,
-                viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
-                userData,
-                serviceResultReceiver
-            )
-        }
+        FirestoreService.enqueueWork(
+            this,
+            bikeActivityWithSamples.bikeActivity,
+            viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
+            viewModel.userData.value ?: UserData(),
+            serviceResultReceiver
+        )
     }
 
     /**

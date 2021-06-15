@@ -26,7 +26,11 @@ class FirestoreService : JobIntentService() {
             ACTION_UPLOAD_BIKE_ACTIVITY -> {
                 uploadEnvelope?.let { uploadEnvelope ->
                     val bundle = Bundle()
-                    val uid = uploadEnvelope.bikeActivity.uid.toString()
+
+                    val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
+                    val chunkIndex = intent.getStringExtra(EXTRA_CHUNK_INDEX)
+
+                    val uid = "$bikeActivityUid-$chunkIndex"
                     val database = FirebaseFirestore.getInstance()
 
                     database.collection("BikeActivities")
@@ -48,12 +52,15 @@ class FirestoreService : JobIntentService() {
     companion object {
 
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
+        const val EXTRA_CHUNK_INDEX = "extra.CHUNK_INDEX"
         const val EXTRA_ERROR_MESSAGE = "extra.ERROR_MESSAGE"
         const val RESULT_SUCCESS = 0
         const val RESULT_FAILURE = 1
 
         private const val UPLOAD_JOB_ID = 1000
         private const val ACTION_UPLOAD_BIKE_ACTIVITY = "action.UPLOAD_DATA"
+
+        private const val CHUNK_SIZE = 100
 
         private var uploadEnvelope: UploadEnvelope? = null
         private var resultReceiver: FirestoreServiceResultReceiver? = null
@@ -68,13 +75,20 @@ class FirestoreService : JobIntentService() {
             userData: UserData,
             firestoreServiceResultReceiver: FirestoreServiceResultReceiver?
         ) {
-            uploadEnvelope = UploadEnvelope(bikeActivity, bikeActivitySamplesWithMeasurements, userData)
-            resultReceiver = firestoreServiceResultReceiver
+            var chunkIndex = 0
+            bikeActivitySamplesWithMeasurements.chunked(CHUNK_SIZE) { bikeActivitySamplesWithMeasurementsChunk ->
+                uploadEnvelope =
+                    UploadEnvelope(bikeActivity, bikeActivitySamplesWithMeasurementsChunk, userData)
+                resultReceiver = firestoreServiceResultReceiver
 
-            val intent = Intent(context, JobService::class.java)
-            intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
+                val intent = Intent(context, JobService::class.java)
+                intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+                intent.putExtra(EXTRA_CHUNK_INDEX, chunkIndex.toString())
+                intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
 
-            enqueueWork(context, FirestoreService::class.java, UPLOAD_JOB_ID, intent)
+                enqueueWork(context, FirestoreService::class.java, UPLOAD_JOB_ID, intent)
+                chunkIndex++
+            }
         }
     }
 }
