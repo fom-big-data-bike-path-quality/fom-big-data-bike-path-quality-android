@@ -11,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.GsonBuilder
+import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
@@ -39,9 +40,9 @@ class FirebaseStorageService : JobIntentService() {
                 val documentUid = intent.getStringExtra(EXTRA_DOCUMENT_UID)
                 val uploadEnvelope = uploadEnvelopes[documentUid]
 
-                val storage = Firebase.storage("gs://bike-path-quality.appspot.com")
+                val storage = Firebase.storage(resources.getString(R.string.firebase_storage_bucket_url))
                 val storageRef = storage.reference
-                val bikeActivityRef = storageRef.child("$documentUid.json")
+                val bikeActivityRef = storageRef.child("measurements").child("json").child("$documentUid.json")
 
                 val uploadEnvelopeJson = gson.toJson(uploadEnvelope)
                 val uploadTask = bikeActivityRef.putBytes(uploadEnvelopeJson.toByteArray())
