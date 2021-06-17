@@ -8,15 +8,18 @@ import android.content.IntentFilter
 import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.google.android.gms.location.*
+import com.google.android.gms.location.ActivityRecognition
+import com.google.android.gms.location.ActivityTransitionRequest
+import com.google.android.gms.location.ActivityTransitionResult
+import com.google.android.gms.location.DetectedActivity
 import de.florianschwanz.bikepathquality.BuildConfig
-import de.florianschwanz.bikepathquality.data.model.ActivityTransitionModel
+import de.florianschwanz.bikepathquality.data.model.tracking.ActivityTransition
 
 /**
  * Activity transition live data
  */
 class ActivityTransitionLiveData(val context: Context) :
-    LiveData<ActivityTransitionModel>() {
+    LiveData<ActivityTransition>() {
 
     /** Activity transitions pending intent */
     private var activityTransitionsPendingIntent: PendingIntent? = null
@@ -25,7 +28,8 @@ class ActivityTransitionLiveData(val context: Context) :
     private var transitionsReceiver: TransitionsReceiver? = null
 
     /** List of activity transitions to detect */
-    private var activityTransitionList = mutableListOf<ActivityTransition>()
+    private var activityTransitionList =
+        mutableListOf<com.google.android.gms.location.ActivityTransition>()
 
     init {
         initActivityTransitions()
@@ -84,43 +88,43 @@ class ActivityTransitionLiveData(val context: Context) :
         // Add activity transitions to track
         activityTransitionList.addTransition(
             DetectedActivity.STILL,
-            ActivityTransition.ACTIVITY_TRANSITION_ENTER
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
         )
         activityTransitionList.addTransition(
             DetectedActivity.STILL,
-            ActivityTransition.ACTIVITY_TRANSITION_EXIT
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_EXIT
         )
         activityTransitionList.addTransition(
             DetectedActivity.WALKING,
-            ActivityTransition.ACTIVITY_TRANSITION_ENTER
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
         )
         activityTransitionList.addTransition(
             DetectedActivity.WALKING,
-            ActivityTransition.ACTIVITY_TRANSITION_EXIT
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_EXIT
         )
         activityTransitionList.addTransition(
             DetectedActivity.RUNNING,
-            ActivityTransition.ACTIVITY_TRANSITION_ENTER
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
         )
         activityTransitionList.addTransition(
             DetectedActivity.RUNNING,
-            ActivityTransition.ACTIVITY_TRANSITION_EXIT
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_EXIT
         )
         activityTransitionList.addTransition(
             DetectedActivity.ON_BICYCLE,
-            ActivityTransition.ACTIVITY_TRANSITION_ENTER
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
         )
         activityTransitionList.addTransition(
             DetectedActivity.ON_BICYCLE,
-            ActivityTransition.ACTIVITY_TRANSITION_EXIT
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_EXIT
         )
         activityTransitionList.addTransition(
             DetectedActivity.IN_VEHICLE,
-            ActivityTransition.ACTIVITY_TRANSITION_ENTER
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
         )
         activityTransitionList.addTransition(
             DetectedActivity.IN_VEHICLE,
-            ActivityTransition.ACTIVITY_TRANSITION_EXIT
+            com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_EXIT
         )
 
         // Initialize PendingIntent that will be triggered when a activity transition occurs
@@ -132,11 +136,11 @@ class ActivityTransitionLiveData(val context: Context) :
         transitionsReceiver = TransitionsReceiver()
     }
 
-    private fun MutableList<ActivityTransition>.addTransition(
+    private fun MutableList<com.google.android.gms.location.ActivityTransition>.addTransition(
         activityType: Int,
         acvtivityTransition: Int
     ) = this.add(
-        ActivityTransition.Builder()
+        com.google.android.gms.location.ActivityTransition.Builder()
             .setActivityType(activityType)
             .setActivityTransition(acvtivityTransition)
             .build()
@@ -174,7 +178,11 @@ class ActivityTransitionLiveData(val context: Context) :
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result = ActivityTransitionResult.extractResult(intent)
                 for (event in result!!.transitionEvents) {
-                    value = ActivityTransitionModel(event.activityType, event.transitionType)
+                    value =
+                        ActivityTransition(
+                            event.activityType,
+                            event.transitionType
+                        )
                 }
             }
         }

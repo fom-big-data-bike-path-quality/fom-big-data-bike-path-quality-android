@@ -1,4 +1,4 @@
-package de.florianschwanz.bikepathquality.data.model
+package de.florianschwanz.bikepathquality.data.model.tracking
 
 import android.graphics.drawable.Drawable
 

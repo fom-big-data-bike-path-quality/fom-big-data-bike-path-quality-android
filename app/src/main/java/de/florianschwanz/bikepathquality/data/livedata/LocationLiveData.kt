@@ -2,18 +2,17 @@ package de.florianschwanz.bikepathquality.data.livedata
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import de.florianschwanz.bikepathquality.data.model.LocationModel
+import de.florianschwanz.bikepathquality.data.model.tracking.Location
 
 /**
  * Location live data
  */
-class LocationLiveData(context: Context) : LiveData<LocationModel>() {
+class LocationLiveData(context: Context) : LiveData<Location>() {
 
     /** Fused location client */
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -37,7 +36,7 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
     override fun onActive() {
         super.onActive()
         fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
+            .addOnSuccessListener { location: android.location.Location? ->
                 location?.also {
                     setLocationData(it)
                 }
@@ -70,8 +69,8 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
     /**
      * Sets location data
      */
-    private fun setLocationData(location: Location) {
-        value = LocationModel(
+    private fun setLocationData(location: android.location.Location) {
+        value = Location(
             lon = location.longitude,
             lat = location.latitude,
             speed = location.speed

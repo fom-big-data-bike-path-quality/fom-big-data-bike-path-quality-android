@@ -6,20 +6,20 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.lifecycle.LiveData
-import de.florianschwanz.bikepathquality.data.model.AccelerometerModel
+import de.florianschwanz.bikepathquality.data.model.tracking.Accelerometer
 
 /**
  * Accelerometer live data
  */
 class AccelerometerLiveData(context: Context) :
-    LiveData<AccelerometerModel>(),
+    LiveData<Accelerometer>(),
     SensorEventListener {
 
     /** Gravity acting on the device */
-    private var gravity = AccelerometerModel(0.0f, 0.0f, 0.0f)
+    private var gravity = Accelerometer(0.0f, 0.0f, 0.0f)
 
     /** Acceleration acting on the device */
-    private var acceleration = AccelerometerModel(0.0f, 0.0f, 0.0f)
+    private var acceleration = Accelerometer(0.0f, 0.0f, 0.0f)
 
     /** Sensor manager */
     private var sensorManager: SensorManager
@@ -86,7 +86,7 @@ class AccelerometerLiveData(context: Context) :
                 value = acceleration
             }
             Sensor.TYPE_GRAVITY -> {
-                gravity = AccelerometerModel(
+                gravity = Accelerometer(
                     event.values[0],
                     event.values[1],
                     event.values[2]

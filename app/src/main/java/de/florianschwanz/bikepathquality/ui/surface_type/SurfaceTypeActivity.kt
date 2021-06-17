@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.model.SurfaceType
+import de.florianschwanz.bikepathquality.data.model.tracking.SurfaceType
 import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeListAdapter
 
 class SurfaceTypeActivity : AppCompatActivity(), SurfaceTypeListAdapter.OnItemClickListener {

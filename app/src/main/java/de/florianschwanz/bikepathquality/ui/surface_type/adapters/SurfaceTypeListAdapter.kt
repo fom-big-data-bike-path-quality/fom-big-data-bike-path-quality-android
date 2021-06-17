@@ -1,8 +1,6 @@
 package de.florianschwanz.bikepathquality.ui.surface_type.adapters
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.model.SurfaceType
-import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
+import de.florianschwanz.bikepathquality.data.model.tracking.SurfaceType
 
 class SurfaceTypeListAdapter(
     private val context: Context,

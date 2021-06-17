@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.model.SmoothnessType
+import de.florianschwanz.bikepathquality.data.model.tracking.SmoothnessType
 import de.florianschwanz.bikepathquality.ui.smoothness_type.adapters.SmoothnessTypeListAdapter
 
 class SmoothnessTypeActivity : AppCompatActivity(), SmoothnessTypeListAdapter.OnItemClickListener {
