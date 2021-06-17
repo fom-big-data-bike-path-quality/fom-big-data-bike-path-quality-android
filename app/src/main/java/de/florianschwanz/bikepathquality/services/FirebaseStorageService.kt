@@ -12,6 +12,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.GsonBuilder
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
@@ -21,7 +22,7 @@ import java.time.Instant
 import java.util.*
 
 /**
- * Handles Firebase storage uploads
+ * Handles Firebase Storage uploads
  */
 class FirebaseStorageService : JobIntentService() {
 
@@ -72,7 +73,7 @@ class FirebaseStorageService : JobIntentService() {
         private const val UPLOAD_JOB_ID = 1000
         private const val ACTION_UPLOAD_BIKE_ACTIVITY = "action.UPLOAD_DATA"
 
-        private var uploadEnvelopes = mutableMapOf<String, UploadEnvelope>()
+        private var uploadEnvelopes = mutableMapOf<String, BikeActivityUploadEnvelope>()
         private var resultReceiver: FirebaseStorageServiceResultReceiver? = null
 
         private val gson = GsonBuilder()
@@ -97,7 +98,7 @@ class FirebaseStorageService : JobIntentService() {
             bikeActivitySamplesWithMeasurements.chunked(chunkSize) { bikeActivitySamplesWithMeasurementsChunk ->
                 val documentUid = if (bikeActivitySamplesWithMeasurements.size > chunkSize)
                     "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid.toString()
-                val uploadEnvelope = UploadEnvelope(
+                val uploadEnvelope = BikeActivityUploadEnvelope(
                     bikeActivity,
                     bikeActivitySamplesWithMeasurementsChunk,
                     userData
