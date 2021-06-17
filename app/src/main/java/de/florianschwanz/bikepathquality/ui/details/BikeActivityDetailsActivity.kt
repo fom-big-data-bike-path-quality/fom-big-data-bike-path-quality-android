@@ -717,6 +717,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         // Upload data
         FirebaseStorageService.enqueueWork(
             this,
+            "measurements/json",
             bikeActivityWithSamples.bikeActivity,
             viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
             viewModel.userData.value ?: UserData(),
@@ -730,6 +731,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         // Upload metadata
         FirebaseFirestoreService.enqueueWork(
             this,
+            "measurements",
             bikeActivityWithSamples.bikeActivity,
             viewModel.userData.value ?: UserData(),
             firebaseFirestoreServiceResultReceiver

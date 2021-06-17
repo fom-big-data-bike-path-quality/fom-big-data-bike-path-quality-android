@@ -54,23 +54,15 @@ class FirebaseDatabaseService : JobIntentService() {
                     }
                     .addOnCompleteListener { task ->
                         if (!task.isSuccessful) {
-                            Log.e("FirebaseDatabaseService", "Failed to upload data")
+                            Log.e(TAG, "Failed to upload data")
                         }
                     }
-//                    .addOnCompleteListener(new CompletionListener() {
-//                        @Override
-//                        public void onComplete(Task<Void> task) {
-//                            Log.i("firebase", String.valueOf(task.isSuccessful()))
-//                            if (!task.isSuccessful()) {
-//                                Log.i("firebase", "Throwing exception")
-//                                throw new RuntimeException(task.getException());
-//                            }
-//                        }
             }
         }
     }
 
     companion object {
+        const val TAG = "FirebaseDatabaseService"
 
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
         const val EXTRA_DOCUMENT_UID = "extra.DOCUMENT_UID"

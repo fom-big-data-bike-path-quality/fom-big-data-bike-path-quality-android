@@ -38,12 +38,13 @@ class FirebaseStorageService : JobIntentService() {
                 val bundle = Bundle()
 
                 val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
+                val path = intent.getStringExtra(EXTRA_PATH)
                 val documentUid = intent.getStringExtra(EXTRA_DOCUMENT_UID)
                 val uploadEnvelope = uploadEnvelopes[documentUid]
 
                 val storage = Firebase.storage(resources.getString(R.string.firebase_storage_bucket_url))
                 val storageRef = storage.reference
-                val bikeActivityRef = storageRef.child("measurements").child("json").child("$documentUid.json")
+                val bikeActivityRef = storageRef.child(path!!).child("$documentUid.json")
 
                 val uploadEnvelopeJson = gson.toJson(uploadEnvelope)
                 val uploadTask = bikeActivityRef.putBytes(uploadEnvelopeJson.toByteArray())
@@ -65,6 +66,7 @@ class FirebaseStorageService : JobIntentService() {
     companion object {
 
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
+        const val EXTRA_PATH = "extra.PATH"
         const val EXTRA_DOCUMENT_UID = "extra.DOCUMENT_UID"
         const val EXTRA_ERROR_MESSAGE = "extra.ERROR_MESSAGE"
         const val RESULT_SUCCESS = 0
@@ -86,6 +88,7 @@ class FirebaseStorageService : JobIntentService() {
          */
         fun enqueueWork(
             context: Context,
+            path: String,
             bikeActivity: BikeActivity,
             bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
             userData: UserData,
@@ -109,6 +112,7 @@ class FirebaseStorageService : JobIntentService() {
                 val intent = Intent(context, JobService::class.java)
                 intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
                 intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+                intent.putExtra(EXTRA_PATH, path)
                 intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
                 enqueueWork(context, FirebaseStorageService::class.java, UPLOAD_JOB_ID, intent)

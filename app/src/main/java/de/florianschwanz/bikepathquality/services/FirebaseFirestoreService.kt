@@ -29,13 +29,14 @@ class FirebaseFirestoreService : JobIntentService() {
                 val bundle = Bundle()
 
                 val bikeActivityUid = intent.getStringExtra(EXTRA_BIKE_ACTIVITY_UID)
+                val collection = intent.getStringExtra(EXTRA_COLLECTION)
                 val documentUid = intent.getStringExtra(EXTRA_DOCUMENT_UID)
                 val uploadEnvelope = uploadEnvelopes[documentUid]
 
                 val database = Firebase.firestore
 
                 database
-                    .collection("BikeActivities")
+                    .collection(collection!!)
                     .document(documentUid.toString()).set(uploadEnvelope!!)
                     .addOnSuccessListener {
                         bundle.putString(EXTRA_BIKE_ACTIVITY_UID, bikeActivityUid)
@@ -52,6 +53,7 @@ class FirebaseFirestoreService : JobIntentService() {
     companion object {
 
         const val EXTRA_BIKE_ACTIVITY_UID = "extra.BIKE_ACTIVITY_UID"
+        const val EXTRA_COLLECTION = "extra.COLLECTION"
         const val EXTRA_DOCUMENT_UID = "extra.DOCUMENT_UID"
         const val EXTRA_ERROR_MESSAGE = "extra.ERROR_MESSAGE"
         const val RESULT_SUCCESS = 0
@@ -68,6 +70,7 @@ class FirebaseFirestoreService : JobIntentService() {
          */
         fun enqueueWork(
             context: Context,
+            collection: String,
             bikeActivity: BikeActivity,
             bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
             userData: UserData,
@@ -90,6 +93,7 @@ class FirebaseFirestoreService : JobIntentService() {
                 val intent = Intent(context, JobService::class.java)
                 intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
                 intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+                intent.putExtra(EXTRA_COLLECTION, collection)
                 intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
                 enqueueWork(context, FirebaseFirestoreService::class.java, UPLOAD_JOB_ID, intent)
@@ -102,6 +106,7 @@ class FirebaseFirestoreService : JobIntentService() {
          */
         fun enqueueWork(
             context: Context,
+            collection: String,
             bikeActivity: BikeActivity,
             userData: UserData,
             firebaseFirestoreServiceResultReceiver: FirebaseFirestoreServiceResultReceiver?,
@@ -118,6 +123,7 @@ class FirebaseFirestoreService : JobIntentService() {
             val intent = Intent(context, JobService::class.java)
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
             intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+            intent.putExtra(EXTRA_COLLECTION, collection)
             intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
             enqueueWork(context, FirebaseFirestoreService::class.java, UPLOAD_JOB_ID, intent)
