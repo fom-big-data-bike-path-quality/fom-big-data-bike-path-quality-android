@@ -89,6 +89,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
 
