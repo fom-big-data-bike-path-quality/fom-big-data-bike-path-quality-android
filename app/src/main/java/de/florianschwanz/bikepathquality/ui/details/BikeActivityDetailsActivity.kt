@@ -399,7 +399,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         .setTitle(R.string.dialog_complete_data_title)
                         .setMessage(R.string.dialog_complete_data_message)
                         .setPositiveButton(R.string.action_got_it) { _, _ ->
-                            uploadData(bikeActivityWithSamples)
                         }
                         .create()
                         .show()
