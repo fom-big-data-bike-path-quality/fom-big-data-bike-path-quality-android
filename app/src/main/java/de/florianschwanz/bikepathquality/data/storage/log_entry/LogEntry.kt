@@ -9,7 +9,7 @@ import java.util.*
 @Entity
 data class LogEntry(
 
-    @PrimaryKey val uid: UUID = UUID.randomUUID(),
+    @PrimaryKey val uid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "timestamp") val timestamp: Instant = Instant.now(),
     @ColumnInfo(name = "message") val message: String?
 )

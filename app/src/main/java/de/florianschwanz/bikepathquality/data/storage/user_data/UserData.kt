@@ -9,6 +9,6 @@ import java.util.*
 @Entity
 data class UserData(
 
-    @PrimaryKey val uid: UUID = UUID.randomUUID(),
+    @PrimaryKey val uid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "creation_time") val startTime: Instant = Instant.now(),
 )

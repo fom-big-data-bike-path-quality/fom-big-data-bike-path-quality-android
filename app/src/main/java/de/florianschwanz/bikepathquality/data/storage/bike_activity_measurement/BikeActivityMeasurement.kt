@@ -18,8 +18,8 @@ import java.util.*
 )
 data class BikeActivityMeasurement(
 
-    @PrimaryKey val uid: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "bike_activity_sample_uid") val bikeActivitySampleUid: UUID = UUID.randomUUID(),
+    @PrimaryKey val uid: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "bike_activity_sample_uid") val bikeActivitySampleUid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "timestamp") val timestamp: Instant = Instant.now(),
     @ColumnInfo(name = "lon") val lon: Double,
     @ColumnInfo(name = "lat") val lat: Double,
