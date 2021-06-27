@@ -13,7 +13,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.GsonBuilder
 import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityMetadataUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
-import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.utils.InstantTypeConverter
 import de.florianschwanz.bikepathquality.utils.UuidTypeConverter
@@ -87,7 +87,7 @@ class FirebaseDatabaseService : JobIntentService() {
         fun enqueueWork(
             context: Context,
             bikeActivity: BikeActivity,
-            bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
+            bikeActivitySamples: List<BikeActivitySample>,
             userData: UserData,
             firebaseDatabaseServiceResultReceiver: FirebaseDatabaseServiceResultReceiver?,
             chunkSize: Int = 1_000
@@ -95,11 +95,12 @@ class FirebaseDatabaseService : JobIntentService() {
             var chunkIndex = 0
 
             this.resultReceiver = firebaseDatabaseServiceResultReceiver
-            bikeActivitySamplesWithMeasurements.chunked(chunkSize) {
-                val documentUid = if (bikeActivitySamplesWithMeasurements.size > chunkSize)
-                    "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid.toString()
+            bikeActivitySamples.chunked(chunkSize) {
+                val documentUid = if (bikeActivitySamples.size > chunkSize)
+                    "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid
                 val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                     bikeActivity,
+                    bikeActivitySamples.size,
                     userData
                 )
 
@@ -107,7 +108,7 @@ class FirebaseDatabaseService : JobIntentService() {
 
                 val intent = Intent(context, JobService::class.java)
                 intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
-                intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+                intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid)
                 intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
                 enqueueWork(context, FirebaseDatabaseService::class.java, UPLOAD_JOB_ID, intent)
@@ -121,13 +122,15 @@ class FirebaseDatabaseService : JobIntentService() {
         fun enqueueWork(
             context: Context,
             bikeActivity: BikeActivity,
+            bikeActivitySamples: List<BikeActivitySample>,
             userData: UserData,
             firebaseDatabaseServiceResultReceiver: FirebaseDatabaseServiceResultReceiver?,
         ) {
             this.resultReceiver = firebaseDatabaseServiceResultReceiver
-            val documentUid = bikeActivity.uid.toString()
+            val documentUid = bikeActivity.uid
             val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                 bikeActivity,
+                bikeActivitySamples.size,
                 userData
             )
 
@@ -135,7 +138,7 @@ class FirebaseDatabaseService : JobIntentService() {
 
             val intent = Intent(context, JobService::class.java)
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
-            intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+            intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid)
             intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
             enqueueWork(context, FirebaseDatabaseService::class.java, UPLOAD_JOB_ID, intent)

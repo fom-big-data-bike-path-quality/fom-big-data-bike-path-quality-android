@@ -153,7 +153,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         val resultIntent = Intent()
                         resultIntent.putExtra(
                             RESULT_BIKE_ACTIVITY_UID,
-                            bikeActivityWithSamples.bikeActivity.uid.toString()
+                            bikeActivityWithSamples.bikeActivity.uid
                         )
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
@@ -733,6 +733,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             this,
             "measurements",
             bikeActivityWithSamples.bikeActivity,
+            bikeActivityWithSamples.bikeActivitySamples,
             viewModel.userData.value ?: UserData(),
             firebaseFirestoreServiceResultReceiver
         )

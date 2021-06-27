@@ -11,6 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityMetadataUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 
@@ -82,9 +83,10 @@ class FirebaseFirestoreService : JobIntentService() {
             this.resultReceiver = firebaseFirestoreServiceResultReceiver
             bikeActivitySamplesWithMeasurements.chunked(chunkSize) {
                 val documentUid = if (bikeActivitySamplesWithMeasurements.size > chunkSize)
-                    "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid.toString()
+                    "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid
                 val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                     bikeActivity,
+                    bikeActivitySamplesWithMeasurements.size,
                     userData
                 )
 
@@ -92,7 +94,7 @@ class FirebaseFirestoreService : JobIntentService() {
 
                 val intent = Intent(context, JobService::class.java)
                 intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
-                intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+                intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid)
                 intent.putExtra(EXTRA_COLLECTION, collection)
                 intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
@@ -108,13 +110,15 @@ class FirebaseFirestoreService : JobIntentService() {
             context: Context,
             collection: String,
             bikeActivity: BikeActivity,
+            bikeActivitySamples: List<BikeActivitySample>,
             userData: UserData,
             firebaseFirestoreServiceResultReceiver: FirebaseFirestoreServiceResultReceiver?,
         ) {
             this.resultReceiver = firebaseFirestoreServiceResultReceiver
-            val documentUid = bikeActivity.uid.toString()
+            val documentUid = bikeActivity.uid
             val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                 bikeActivity,
+                bikeActivitySamples.size,
                 userData
             )
 
@@ -122,7 +126,7 @@ class FirebaseFirestoreService : JobIntentService() {
 
             val intent = Intent(context, JobService::class.java)
             intent.action = ACTION_UPLOAD_BIKE_ACTIVITY
-            intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid.toString())
+            intent.putExtra(EXTRA_BIKE_ACTIVITY_UID, bikeActivity.uid)
             intent.putExtra(EXTRA_COLLECTION, collection)
             intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 

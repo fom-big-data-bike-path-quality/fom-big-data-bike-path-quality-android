@@ -8,5 +8,6 @@ import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
  */
 data class BikeActivityMetadataUploadEnvelope(
     val bikeActivity: BikeActivity,
+    val bikeActivitySamples: Int = 0,
     val userData: UserData,
 )
