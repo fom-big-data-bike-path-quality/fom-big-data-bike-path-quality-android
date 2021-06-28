@@ -29,6 +29,7 @@ import de.florianschwanz.bikepathquality.data.storage.log_entry.LogEntryViewMode
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
+import java.lang.System.currentTimeMillis
 import java.time.Instant
 
 /**
@@ -65,23 +66,26 @@ class TrackingForegroundService : LifecycleService() {
     private var currentAccelerometerY = 0.0f
     private var currentAccelerometerZ = 0.0f
 
+    private var activitySampleStart = 0L
     private val activitySampleHandler = Handler(Looper.getMainLooper())
     private val activitySampleTracker: Runnable = object : Runnable {
         override fun run() {
 
+            activitySampleStart = currentTimeMillis()
+
             val sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val activitySampleDelay = sharedPreferences.getInt(
-                resources.getString(R.string.setting_sample_delay),
-                DEFAULT_ACTIVITY_SAMPLE_DELAY
+            val activitySampleInterval = sharedPreferences.getInt(
+                resources.getString(R.string.setting_sample_interval),
+                DEFAULT_ACTIVITY_SAMPLE_INTERVAL
             ) * 1_000
             val activitySampleSize = sharedPreferences.getInt(
                 resources.getString(R.string.setting_measurements_per_sample),
                 DEFAULT_ACTIVITY_SAMPLE_SIZE
             )
-            val activityMeasurementDelay = sharedPreferences.getInt(
-                resources.getString(R.string.setting_measurement_delay),
-                DEFAULT_ACTIVITY_MEASUREMENT_DELAY
+            val activityMeasurementInterval = sharedPreferences.getInt(
+                resources.getString(R.string.setting_measurement_interval),
+                DEFAULT_ACTIVITY_MEASUREMENT_INTERVAL
             )
 
             try {
@@ -91,18 +95,28 @@ class TrackingForegroundService : LifecycleService() {
                 val bikeActivitySample = trackBikeActivitySample(activeBikeActivity)
 
                 var measurements = 0
+                var activityMeasurementStart = 0L
                 val activityMeasurementHandler = Handler(Looper.getMainLooper())
                 val activityMeasurementTracker: Runnable = object : Runnable {
                     override fun run() {
                         try {
+                            activityMeasurementStart = currentTimeMillis()
+
                             // Track bike activity measurement
                             trackBikeActivityMeasurement(bikeActivitySample)
                             measurements++
                         } finally {
                             if (measurements < activitySampleSize) {
+
+                                val activityMeasurementEnd = currentTimeMillis()
+                                val activityMeasurementDuration =
+                                    activityMeasurementEnd - activityMeasurementStart
+                                val activityMeasurementDelay =
+                                    activityMeasurementInterval.toLong() - activityMeasurementDuration
+
                                 activityMeasurementHandler.postDelayed(
                                     this,
-                                    activityMeasurementDelay.toLong()
+                                    activityMeasurementDelay
                                 )
                             } else {
                                 activityMeasurementHandler.removeCallbacks(this)
@@ -113,12 +127,16 @@ class TrackingForegroundService : LifecycleService() {
 
                 activityMeasurementTracker.run()
             } finally {
+                val activitySampleEnd = currentTimeMillis()
+                val activitySampleDuration = activitySampleEnd - activitySampleStart
+                val activitySampleDelay = maxOf(
+                    activitySampleInterval,
+                    activityMeasurementInterval * activitySampleSize
+                ).toLong() - activitySampleDuration
+
                 activitySampleHandler.postDelayed(
                     this,
-                    maxOf(
-                        activitySampleDelay,
-                        activityMeasurementDelay * activitySampleSize
-                    ).toLong()
+                    activitySampleDelay
                 )
             }
         }
@@ -342,30 +360,34 @@ class TrackingForegroundService : LifecycleService() {
                     && it.activityType == targetActivityType
                     && it.transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                 ) {
-                    bikeActivityViewModel.insert(
-                        BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC)
-                    )
+                    startBikeActivity()
                 } else {
-                    activeBikeActivity?.let { bikeActivity ->
-                        bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
-
-                        NotificationCompat.Builder(this, createNotificationChannel())
-                            .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
-                            .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
-                            .setSmallIcon(R.drawable.ic_baseline_pause_24)
-                            .setContentIntent(buildPendingIntent())
-                            .setPriority(IMPORTANCE_HIGH)
-                            .setWhen(0)
-                            .build()
-                            .startForeground()
-
-                    }
+                    stopBikeActivity()
                 }
             }
 
             activeActivityType = it.activityType
             activeTransitionType = it.transitionType
         })
+    }
+
+    private fun startBikeActivity() = bikeActivityViewModel.insert(
+        BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC)
+    )
+
+    private fun stopBikeActivity() = activeBikeActivity?.let { bikeActivity ->
+        bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
+
+        NotificationCompat.Builder(this, createNotificationChannel())
+            .setContentTitle(getString(R.string.action_tracking_bike_activity_idle))
+            .setContentText(getString(R.string.action_tracking_bike_activity_idle_description))
+            .setSmallIcon(R.drawable.ic_baseline_pause_24)
+            .setContentIntent(buildPendingIntent())
+            .setPriority(IMPORTANCE_HIGH)
+            .setWhen(0)
+            .build()
+            .startForeground()
+
     }
 
     /**
@@ -450,14 +472,14 @@ class TrackingForegroundService : LifecycleService() {
         const val STATUS_STOPPED = "status.STOPPED"
         var status = STATUS_STOPPED
 
-        /** Delay between samples in millis */
-        const val DEFAULT_ACTIVITY_SAMPLE_DELAY = 10
+        /** Interval between samples in millis */
+        const val DEFAULT_ACTIVITY_SAMPLE_INTERVAL = 10
 
-        /** Delay between measurements in a sample in millis */
-        const val DEFAULT_ACTIVITY_MEASUREMENT_DELAY = 50
+        /** Interval between measurements in a sample in millis */
+        const val DEFAULT_ACTIVITY_MEASUREMENT_INTERVAL = 50
 
         /** Number of measurements per sample */
-        const val DEFAULT_ACTIVITY_SAMPLE_SIZE = 20
+        const val DEFAULT_ACTIVITY_SAMPLE_SIZE = 250
 
         /**
          * Converts activity to a string

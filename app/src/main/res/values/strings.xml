@@ -116,17 +116,17 @@
     <string name="setting_tracking_automatic_summary">Whether or not biking activities are started and stopped automatically</string>
 
     <string name="settings_sample">Sample</string>
-    <string name="setting_sample_delay">sample_delay</string>
-    <string name="setting_sample_delay_title">Sample Delay</string>
-    <string name="setting_sample_delay_summary">Time between two samples in seconds</string>
+    <string name="setting_sample_interval">sample_interval</string>
+    <string name="setting_sample_interval_title">Sample Interval</string>
+    <string name="setting_sample_interval_summary">Time between two samples in seconds</string>
 
     <string name="settings_measurement">Measurement</string>
     <string name="setting_measurements_per_sample">measurements_per_sample</string>
     <string name="setting_measurements_per_sample_title">Measurement per sample</string>
     <string name="setting_measurements_per_sample_summary">Number of measurements per sample</string>
-    <string name="setting_measurement_delay">measurement_delay</string>
-    <string name="setting_measurement_delay_title">Measurement Delay</string>
-    <string name="setting_measurement_delay_summary">Time between two measurements in milliseconds</string>
+    <string name="setting_measurement_interval">measurement_interval</string>
+    <string name="setting_measurement_interval_title">Measurement Interval</string>
+    <string name="setting_measurement_interval_summary">Time between two measurements in milliseconds</string>
 
     <!-- Bike Activity Details -->
 

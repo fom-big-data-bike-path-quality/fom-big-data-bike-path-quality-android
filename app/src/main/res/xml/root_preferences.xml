@@ -21,8 +21,8 @@
             app:key="sample_delay"
             app:seekBarIncrement="1"
             app:showSeekBarValue="true"
-            app:summary="@string/setting_sample_delay_summary"
-            app:title="@string/setting_sample_delay_title"
+            app:summary="@string/setting_sample_interval_summary"
+            app:title="@string/setting_sample_interval_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -30,25 +30,25 @@
     <PreferenceCategory app:title="@string/settings_measurement">
 
         <SeekBarPreference
-            android:defaultValue="100"
+            android:defaultValue="250"
             android:max="500"
             android:min="1"
             app:key="measurements_per_sample"
-            app:seekBarIncrement="1"
+            app:seekBarIncrement="10"
             app:showSeekBarValue="true"
             app:summary="@string/setting_measurements_per_sample_summary"
             app:title="@string/setting_measurements_per_sample_title"
             app:useSimpleSummaryProvider="true" />
 
         <SeekBarPreference
-            android:defaultValue="20"
+            android:defaultValue="50"
             android:max="100"
             android:min="0"
             app:key="measurement_delay"
             app:seekBarIncrement="5"
             app:showSeekBarValue="true"
-            app:summary="@string/setting_measurement_delay_summary"
-            app:title="@string/setting_measurement_delay_title"
+            app:summary="@string/setting_measurement_interval_summary"
+            app:title="@string/setting_measurement_interval_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
