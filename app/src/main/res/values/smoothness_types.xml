@@ -5,11 +5,11 @@
         <item name="excellent">excellent</item>
         <item name="good">good</item>
         <item name="intermediate">intermediate</item>
-        <item name="bad">bad</item>
-        <item name="very_bad">very_bad</item>
-        <item name="horrible">horrible</item>
-        <item name="very_horrible">very_horrible</item>
-        <item name="impassable">impassable</item>
+<!--        <item name="bad">bad</item>-->
+<!--        <item name="very_bad">very_bad</item>-->
+<!--        <item name="horrible">horrible</item>-->
+<!--        <item name="very_horrible">very_horrible</item>-->
+<!--        <item name="impassable">impassable</item>-->
         <item name="mixed">mixed</item>
     </array>
 
@@ -32,28 +32,28 @@
             above 50% of the speed they would drive at if the road was smooth). The best unpaved but
             compacted roads fall in this category.
         </item>
-        <item name="bad">Heavily damaged paved roads that badly need maintenance: many potholes,
-            some of them quite deep. The average speed of cars is less than 50% of what it would be
-            on a smooth road. However, it isn’t so rough that ground clearance becomes a problem. A
-            ground clearance of a normal passenger car (>14 cm) is sufficient. Good unpaved roads
-            without risk of damage to normal passenger cars are also included here.
-        </item>
-        <item name="very_bad">Unpaved roads with potholes and ruts, but still passable with an
-            average SUV with a ground clearance of at least 18 cm.*
-        </item>
-        <item name="horrible">Unpaved tracks with ruts, rocks etc that need a ground clearance of at
-            least 21 cm (Toyota Landcruiser, Landrover, Lada Niva, bukhanka, etc.). Skid plate
-            protection is advisable.
-        </item>
-        <item name="very_horrible">Tracks with deep ruts and other obstacles that need a ground
-            clearance of at least 24 cm.
-        </item>
-        <item name="impassable">Ways that used to be passable roads and can still be recognised as
-            such in the landscape (useful for hikers), but have deteriorated so much because of
-            fallen trees, being overgrown, severely eroded, etc. that no 4-wheeled vehicle can pass
-            it. Consider to map narrow parts as path, and the whole way as disused:=* or
-            abandoned:=*
-        </item>
+<!--        <item name="bad">Heavily damaged paved roads that badly need maintenance: many potholes,-->
+<!--            some of them quite deep. The average speed of cars is less than 50% of what it would be-->
+<!--            on a smooth road. However, it isn’t so rough that ground clearance becomes a problem. A-->
+<!--            ground clearance of a normal passenger car (>14 cm) is sufficient. Good unpaved roads-->
+<!--            without risk of damage to normal passenger cars are also included here.-->
+<!--        </item>-->
+<!--        <item name="very_bad">Unpaved roads with potholes and ruts, but still passable with an-->
+<!--            average SUV with a ground clearance of at least 18 cm.*-->
+<!--        </item>-->
+<!--        <item name="horrible">Unpaved tracks with ruts, rocks etc that need a ground clearance of at-->
+<!--            least 21 cm (Toyota Landcruiser, Landrover, Lada Niva, bukhanka, etc.). Skid plate-->
+<!--            protection is advisable.-->
+<!--        </item>-->
+<!--        <item name="very_horrible">Tracks with deep ruts and other obstacles that need a ground-->
+<!--            clearance of at least 24 cm.-->
+<!--        </item>-->
+<!--        <item name="impassable">Ways that used to be passable roads and can still be recognised as-->
+<!--            such in the landscape (useful for hikers), but have deteriorated so much because of-->
+<!--            fallen trees, being overgrown, severely eroded, etc. that no 4-wheeled vehicle can pass-->
+<!--            it. Consider to map narrow parts as path, and the whole way as disused:=* or-->
+<!--            abandoned:=*-->
+<!--        </item>-->
         <item name="mixed">Mixed smoothness types (will not be used for training)</item>
     </array>
 
@@ -61,11 +61,11 @@
         <item name="excellent">@drawable/smoothness_type_excellent</item>
         <item name="good">@drawable/smoothness_type_good</item>
         <item name="intermediate">@drawable/smoothness_type_intermediate</item>
-        <item name="bad">@drawable/smoothness_type_bad</item>
-        <item name="very_bad">@drawable/smoothness_type_very_bad</item>
-        <item name="horrible">@drawable/smoothness_type_horrible</item>
-        <item name="very_horrible">@drawable/smoothness_type_very_horrible</item>
-        <item name="impassable">@drawable/smoothness_type_impassable</item>
+<!--        <item name="bad">@drawable/smoothness_type_bad</item>-->
+<!--        <item name="very_bad">@drawable/smoothness_type_very_bad</item>-->
+<!--        <item name="horrible">@drawable/smoothness_type_horrible</item>-->
+<!--        <item name="very_horrible">@drawable/smoothness_type_very_horrible</item>-->
+<!--        <item name="impassable">@drawable/smoothness_type_impassable</item>-->
         <item name="mixed">@drawable/empty</item>
     </integer-array>
 
