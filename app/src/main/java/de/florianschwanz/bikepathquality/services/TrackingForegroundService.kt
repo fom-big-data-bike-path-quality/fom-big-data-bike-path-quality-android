@@ -451,7 +451,7 @@ class TrackingForegroundService : LifecycleService() {
         var status = STATUS_STOPPED
 
         /** Delay between samples in millis */
-        const val DEFAULT_ACTIVITY_SAMPLE_DELAY = 10_000
+        const val DEFAULT_ACTIVITY_SAMPLE_DELAY = 10
 
         /** Delay between measurements in a sample in millis */
         const val DEFAULT_ACTIVITY_MEASUREMENT_DELAY = 50
