@@ -2,51 +2,51 @@
 <resources>
 
     <array name="surface_type_values">
-        <item name="paved">paved</item>
+<!--        <item name="paved">paved</item>-->
         <item name="asphalt">asphalt</item>
-        <item name="concrete">concrete</item>
+<!--        <item name="concrete">concrete</item>-->
         <item name="concrete:lanes">concrete:lanes</item>
         <item name="concrete:plates">concrete:plates</item>
         <item name="paving_stones">paving_stones</item>
         <item name="sett">sett</item>
         <item name="unhewn_cobblestone">unhewn_cobblestone</item>
-        <item name="cobblestone">cobblestone</item>
-        <item name="metal">metal</item>
+<!--        <item name="cobblestone">cobblestone</item>-->
+<!--        <item name="metal">metal</item>-->
         <item name="wood">wood</item>
         <item name="stepping_stones">stepping_stones</item>
-        <item name="unpaved">unpaved</item>
+<!--        <item name="unpaved">unpaved</item>-->
         <item name="compacted">compacted</item>
         <item name="fine_gravel">fine_gravel</item>
         <item name="gravel">gravel</item>
         <item name="rock">rock</item>
         <item name="pebblestone">pebblestone</item>
-        <item name="ground">ground</item>
-        <item name="dirt">dirt</item>
-        <item name="earth">earth</item>
+<!--        <item name="ground">ground</item>-->
+<!--        <item name="dirt">dirt</item>-->
+<!--        <item name="earth">earth</item>-->
         <item name="grass">grass</item>
         <item name="grass_paver">grass_paver</item>
         <item name="mud">mud</item>
         <item name="sand">sand</item>
         <item name="woodchips">woodchips</item>
-        <item name="snow">snow</item>
-        <item name="ice">ice</item>
-        <item name="salt">salt</item>
+<!--        <item name="snow">snow</item>-->
+<!--        <item name="ice">ice</item>-->
+<!--        <item name="salt">salt</item>-->
         <item name="mixed">mixed</item>
     </array>
 
     <array name="surface_type_comments">
-        <item name="paved">A feature that is predominantly paved; i.e., it is covered with paving
-            stones, concrete or bitumen. This value gives only a rough description; use a more
-            precise value if possible.
-        </item>
+<!--        <item name="paved">A feature that is predominantly paved; i.e., it is covered with paving-->
+<!--            stones, concrete or bitumen. This value gives only a rough description; use a more-->
+<!--            precise value if possible.-->
+<!--        </item>-->
         <item name="asphalt">Short for asphalt concrete - mineral aggregate bound by asphalt. Most
             such features are tagged as paved without specifying exact surface.
         </item>
-        <item name="concrete">Cement based concrete, forming a large surface, typically cast in
-            place and may have predetermined breaking joints. For pre-fabricated plates, please use
-            concrete:plates or concrete:lanes if you know how the concrete is laid out and one of
-            these tags fits.
-        </item>
+<!--        <item name="concrete">Cement based concrete, forming a large surface, typically cast in-->
+<!--            place and may have predetermined breaking joints. For pre-fabricated plates, please use-->
+<!--            concrete:plates or concrete:lanes if you know how the concrete is laid out and one of-->
+<!--            these tags fits.-->
+<!--        </item>-->
         <item name="concrete:lanes">Long, narrow concrete elements for a two-tracked vehicle
             (motorcars) so that the tires always hit the concrete. There might be sand, ground,
             grass, pavers, asphalt, etc. in between them. Note that if you tag a single-tracked way
@@ -67,22 +67,22 @@
         <item name="unhewn_cobblestone">Raw cobblestone of natural, uncut, rounded stones. Unlike
             pebblestone firmly connected to the ground.
         </item>
-        <item name="cobblestone">Generic value for cobblestone in the colloquial sense. It is better
-            to use a more precise value such as sett or unhewn_cobblestone
-        </item>
-        <item name="metal">Used for metal surfaced bridges, or for temporary tracks over fields for
-            normal road vehicles or site traffic.
-        </item>
+<!--        <item name="cobblestone">Generic value for cobblestone in the colloquial sense. It is better-->
+<!--            to use a more precise value such as sett or unhewn_cobblestone-->
+<!--        </item>-->
+<!--        <item name="metal">Used for metal surfaced bridges, or for temporary tracks over fields for-->
+<!--            normal road vehicles or site traffic.-->
+<!--        </item>-->
         <item name="wood">Used for wood surfaced bridges, plank walkways, and garden decking</item>
         <item name="stepping_stones">Stones or plates individually arranged in a row, allowing to
             walk on, surrounded by an unpaved medium such as grass or water
         </item>
-        <item name="unpaved">A feature that is predominantly unsealed (unpaved); i.e., it has a
-            loose covering ranging from compacted stone chippings to earth. Unpaved roads may, in
-            aerial imagery, show evidence of water along their course; in such circumstances, the
-            waterway should not be tagged as a stream, though it might appear as such. This value
-            gives only a rough description; use a more precise value if possible.
-        </item>
+<!--        <item name="unpaved">A feature that is predominantly unsealed (unpaved); i.e., it has a-->
+<!--            loose covering ranging from compacted stone chippings to earth. Unpaved roads may, in-->
+<!--            aerial imagery, show evidence of water along their course; in such circumstances, the-->
+<!--            waterway should not be tagged as a stream, though it might appear as such. This value-->
+<!--            gives only a rough description; use a more precise value if possible.-->
+<!--        </item>-->
         <item name="compacted">A mixture of larger (e.g., gravel) and smaller (e.g., sand) parts,
             compacted (e.g., with a roller), so the surface is more stable than loose gravel. Used,
             for example, for park paths, better tracks, some service ways, … Best sort of ways below
@@ -105,21 +105,20 @@
             in mountainous areas.
         </item>
         <item name="pebblestone">Pebbles are stones rounded by waves or river flow. Typical size
-            range from 2 to 8 cm.
-            Describing a surface in OSM they are loosely arranged. Like gravel pebbles can be used
-            as a building part of compacted.
+            range from 2 to 8 cm. Describing a surface in OSM they are loosely arranged. Like gravel
+            pebbles can be used as a building part of compacted.
         </item>
-        <item name="ground">No special surface, the ground itself has marks of human or animal
-            usage. This value gives only a rough description; if possible, use a more precise value
-            such as grass, clay, sand, earth, gravel or pebblestone.
-        </item>
-        <item name="dirt">Probably very similar to ground. Like all this, it is prone to erosion
-            and therefore often uneven. Gravel is sometimes mistakenly called dirt. Some compacted
-            surfaces are sometimes called "dirt" too, please consider the definition of compacted.
-        </item>
-        <item name="earth">Probably a type of ground. Usually natural, but may also apply to
-            artificial preparations of soil. Duplicate of dirt.
-        </item>
+<!--        <item name="ground">No special surface, the ground itself has marks of human or animal-->
+<!--            usage. This value gives only a rough description; if possible, use a more precise value-->
+<!--            such as grass, clay, sand, earth, gravel or pebblestone.-->
+<!--        </item>-->
+<!--        <item name="dirt">Probably very similar to ground. Like all this, it is prone to erosion-->
+<!--            and therefore often uneven. Gravel is sometimes mistakenly called dirt. Some compacted-->
+<!--            surfaces are sometimes called "dirt" too, please consider the definition of compacted.-->
+<!--        </item>-->
+<!--        <item name="earth">Probably a type of ground. Usually natural, but may also apply to-->
+<!--            artificial preparations of soil. Duplicate of dirt.-->
+<!--        </item>-->
         <item name="grass">Grass covered ground. Mostly nice to walk. May turn into surface=dirt or
             become overgrown and disappear.
         </item>
@@ -136,42 +135,42 @@
         <item name="woodchips">Woodchips as a surface, perhaps for a playground or walking trail.
             Sometimes written as wood chips.
         </item>
-        <item name="snow">Winter roads surfaced with compacted snow.</item>
-        <item name="ice">Ice roads, winter roads</item>
-        <item name="salt">Dry salt lakes</item>
+<!--        <item name="snow">Winter roads surfaced with compacted snow.</item>-->
+<!--        <item name="ice">Ice roads, winter roads</item>-->
+<!--        <item name="salt">Dry salt lakes</item>-->
         <item name="mixed">Mixed surface types (will not be used for training)</item>
     </array>
 
     <array name="surface_type_photo_resources">
-        <item name="paved">@drawable/empty</item>
+<!--        <item name="paved">@drawable/empty</item>-->
         <item name="asphalt">@drawable/surface_type_asphalt</item>
-        <item name="concrete">@drawable/surface_type_concrete</item>
+<!--        <item name="concrete">@drawable/surface_type_concrete</item>-->
         <item name="concrete:lanes">@drawable/surface_type_concrete_lanes</item>
         <item name="concrete:plates">@drawable/surface_type_concrete_plates</item>
         <item name="paving_stones">@drawable/surface_type_paving_stones</item>
         <item name="sett">@drawable/surface_type_sett</item>
         <item name="unhewn_cobblestone">@drawable/surface_type_unhewn_cobblestone</item>
-        <item name="cobblestone">@drawable/surface_type_cobblestone</item>
-        <item name="metal">@drawable/surface_type_metal</item>
+<!--        <item name="cobblestone">@drawable/surface_type_cobblestone</item>-->
+<!--        <item name="metal">@drawable/surface_type_metal</item>-->
         <item name="wood">@drawable/surface_type_wood</item>
         <item name="stepping_stones">@drawable/surface_type_stepping_stones</item>
-        <item name="unpaved">@drawable/empty</item>
+<!--        <item name="unpaved">@drawable/empty</item>-->
         <item name="compacted">@drawable/surface_type_compacted</item>
         <item name="fine_gravel">@drawable/surface_type_fine_gravel</item>
         <item name="gravel">@drawable/empty</item>
         <item name="rock">@drawable/surface_type_rock</item>
         <item name="pebblestone">@drawable/surface_type_pebblestone</item>
-        <item name="ground">@drawable/surface_type_ground</item>
-        <item name="dirt">@drawable/surface_type_dirt</item>
-        <item name="earth">@drawable/surface_type_earth</item>
+<!--        <item name="ground">@drawable/surface_type_ground</item>-->
+<!--        <item name="dirt">@drawable/surface_type_dirt</item>-->
+<!--        <item name="earth">@drawable/surface_type_earth</item>-->
         <item name="grass">@drawable/surface_type_grass</item>
         <item name="grass_paver">@drawable/surface_type_grass_paver</item>
         <item name="mud">@drawable/surface_type_mud</item>
         <item name="sand">@drawable/surface_type_sand</item>
         <item name="woodchips">@drawable/surface_type_woodchips</item>
-        <item name="snow">@drawable/empty</item>
-        <item name="ice">@drawable/surface_type_ice</item>
-        <item name="salt">@drawable/surface_type_salt</item>
+<!--        <item name="snow">@drawable/empty</item>-->
+<!--        <item name="ice">@drawable/surface_type_ice</item>-->
+<!--        <item name="salt">@drawable/surface_type_salt</item>-->
         <item name="mixed">@drawable/empty</item>
     </array>
 
