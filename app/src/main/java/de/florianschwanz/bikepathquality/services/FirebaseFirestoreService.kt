@@ -9,6 +9,8 @@ import android.os.ResultReceiver
 import androidx.core.app.JobIntentService
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityMetadataUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
@@ -73,7 +75,7 @@ class FirebaseFirestoreService : JobIntentService() {
             context: Context,
             collection: String,
             bikeActivity: BikeActivity,
-            bikeActivitySamplesWithMeasurements: List<BikeActivitySampleWithMeasurements>,
+            bikeActivitySamples: List<BikeActivitySample>,
             userData: UserData,
             firebaseFirestoreServiceResultReceiver: FirebaseFirestoreServiceResultReceiver?,
             chunkSize: Int = 1_000
@@ -81,12 +83,13 @@ class FirebaseFirestoreService : JobIntentService() {
             var chunkIndex = 0
 
             this.resultReceiver = firebaseFirestoreServiceResultReceiver
-            bikeActivitySamplesWithMeasurements.chunked(chunkSize) {
-                val documentUid = if (bikeActivitySamplesWithMeasurements.size > chunkSize)
+            bikeActivitySamples.chunked(chunkSize) {
+                val documentUid = if (bikeActivitySamples.size > chunkSize)
                     "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid
                 val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                     bikeActivity,
-                    bikeActivitySamplesWithMeasurements.size,
+                    bikeActivitySamples.size,
+                    buildBounds(bikeActivitySamples),
                     userData
                 )
 
@@ -119,6 +122,7 @@ class FirebaseFirestoreService : JobIntentService() {
             val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                 bikeActivity,
                 bikeActivitySamples.size,
+                buildBounds(bikeActivitySamples),
                 userData
             )
 
@@ -131,6 +135,34 @@ class FirebaseFirestoreService : JobIntentService() {
             intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
             enqueueWork(context, FirebaseFirestoreService::class.java, UPLOAD_JOB_ID, intent)
+        }
+
+        //
+        // Helpers
+        //
+
+        /**
+         * Creates bounds around bike activity samples
+         */
+        private fun buildBounds(bikeActivitySamples: List<BikeActivitySample>): LatLngBounds? {
+            return if (bikeActivitySamples.filter { bikeActivitySample ->
+                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+                }.size > 1) {
+                val latLngBounds = LatLngBounds.Builder()
+
+                bikeActivitySamples.filter { bikeActivitySample ->
+                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+                }.forEach { bikeActivityDetail ->
+                    latLngBounds.include(
+                        LatLng(
+                            bikeActivityDetail.lat,
+                            bikeActivityDetail.lon
+                        )
+                    )
+                }
+
+                latLngBounds.build()
+            } else null
         }
     }
 }

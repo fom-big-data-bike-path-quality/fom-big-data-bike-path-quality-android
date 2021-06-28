@@ -11,6 +11,8 @@ import androidx.core.app.JobIntentService
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.gson.GsonBuilder
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityMetadataUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
@@ -101,6 +103,7 @@ class FirebaseDatabaseService : JobIntentService() {
                 val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                     bikeActivity,
                     bikeActivitySamples.size,
+                    buildBounds(bikeActivitySamples),
                     userData
                 )
 
@@ -131,6 +134,7 @@ class FirebaseDatabaseService : JobIntentService() {
             val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                 bikeActivity,
                 bikeActivitySamples.size,
+                buildBounds(bikeActivitySamples),
                 userData
             )
 
@@ -142,6 +146,35 @@ class FirebaseDatabaseService : JobIntentService() {
             intent.putExtra(EXTRA_DOCUMENT_UID, documentUid)
 
             enqueueWork(context, FirebaseDatabaseService::class.java, UPLOAD_JOB_ID, intent)
+        }
+
+
+        //
+        // Helpers
+        //
+
+        /**
+         * Creates bounds around bike activity samples
+         */
+        private fun buildBounds(bikeActivitySamples: List<BikeActivitySample>): LatLngBounds? {
+            return if (bikeActivitySamples.filter { bikeActivitySample ->
+                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+                }.size > 1) {
+                val latLngBounds = LatLngBounds.Builder()
+
+                bikeActivitySamples.filter { bikeActivitySample ->
+                    bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
+                }.forEach { bikeActivityDetail ->
+                    latLngBounds.include(
+                        LatLng(
+                            bikeActivityDetail.lat,
+                            bikeActivityDetail.lon
+                        )
+                    )
+                }
+
+                latLngBounds.build()
+            } else null
         }
     }
 }
