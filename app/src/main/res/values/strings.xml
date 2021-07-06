@@ -84,7 +84,7 @@
     <!-- Main Activity : Activities -->
 
     <string name="bike_activity">Bike Activity</string>
-    <string name="bike_activity_with_surface_type">Bike Activity on %s</string>
+    <string name="bike_activity_with_surface_type">Bike Activity on %s surface</string>
     <plurals name="duration">
         <item quantity="one">%d min</item>
         <item quantity="other">%d mins</item>

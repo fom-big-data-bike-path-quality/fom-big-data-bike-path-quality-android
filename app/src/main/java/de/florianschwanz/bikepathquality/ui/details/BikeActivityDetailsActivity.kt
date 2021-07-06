@@ -113,6 +113,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val clDescription: ConstraintLayout = findViewById(R.id.clDescription)
+        val tvTitle: TextView = findViewById(R.id.tvTitle)
         val ivCheck: ImageView = findViewById(R.id.ivCheck)
         val tvUploaded: TextView = findViewById(R.id.tvUploaded)
         val ivWarning: ImageView = findViewById(R.id.ivWarning)
@@ -213,6 +214,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             val activeColor = Color.parseColor(getThemeColorInHex(R.attr.colorPrimary))
             val inactiveColor = getColor(R.color.grey_500)
 
+            bikeActivityWithSamples.bikeActivity.surfaceType?.let {
+                tvTitle.text = String.format(
+                    resources.getString(R.string.bike_activity_with_surface_type),
+                    bikeActivityWithSamples.bikeActivity.surfaceType
+                        .replace("_", " ")
+                        .replace(":", " ")
+                )
+            } ?: run {
+                tvTitle.text = resources.getString(R.string.bike_activity)
+            }
             ivCheck.visibility =
                 if (bikeActivityWithSamples.isUploaded()) View.VISIBLE else View.INVISIBLE
             tvUploaded.visibility =
