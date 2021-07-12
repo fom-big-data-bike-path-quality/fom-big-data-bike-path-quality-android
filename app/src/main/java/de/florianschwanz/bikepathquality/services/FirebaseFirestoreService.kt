@@ -14,7 +14,6 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import de.florianschwanz.bikepathquality.data.model.upload.BikeActivityMetadataUploadEnvelope
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
-import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 
 /**
@@ -83,13 +82,14 @@ class FirebaseFirestoreService : JobIntentService() {
             var chunkIndex = 0
 
             this.resultReceiver = firebaseFirestoreServiceResultReceiver
-            bikeActivitySamples.chunked(chunkSize) {
+            bikeActivitySamples.chunked(chunkSize) { chunk ->
                 val documentUid = if (bikeActivitySamples.size > chunkSize)
                     "${bikeActivity.uid}-${chunkIndex}" else bikeActivity.uid
+
                 val uploadEnvelope = BikeActivityMetadataUploadEnvelope(
                     bikeActivity,
-                    bikeActivitySamples.size,
-                    buildBounds(bikeActivitySamples),
+                    chunk.size,
+                    buildBounds(chunk),
                     userData
                 )
 
