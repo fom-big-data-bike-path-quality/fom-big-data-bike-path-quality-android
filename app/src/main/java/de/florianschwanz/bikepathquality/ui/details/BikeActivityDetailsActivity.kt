@@ -732,7 +732,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             bikeActivityWithSamples.bikeActivity,
             viewModel.bikeActivitySamplesWithMeasurements.value ?: listOf(),
             viewModel.userData.value ?: UserData(),
-            firebaseStorageServiceResultReceiver
+            firebaseStorageServiceResultReceiver,
+            chunkSize = 100
         )
 
         val firebaseFirestoreServiceResultReceiver =
@@ -746,7 +747,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             bikeActivityWithSamples.bikeActivity,
             bikeActivityWithSamples.bikeActivitySamples,
             viewModel.userData.value ?: UserData(),
-            firebaseFirestoreServiceResultReceiver
+            firebaseFirestoreServiceResultReceiver,
+            chunkSize = 100
         )
 
 //        val firebaseDatabaseServiceResultReceiver =
