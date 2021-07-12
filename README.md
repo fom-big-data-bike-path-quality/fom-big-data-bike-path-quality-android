@@ -99,6 +99,8 @@ See the [open issues](https://github.com/florianschwanz/fom-big-data-bike-path-q
 
 ### Version 1.*
 
+* 1.6.0 Tracking fixes
+* 1.5.0 Firebase upload
 * 1.4.0 Phone position and bike type selection
 * 1.3.0 Configurable tracking intervals
 * 1.2.0 Activity sample selection
