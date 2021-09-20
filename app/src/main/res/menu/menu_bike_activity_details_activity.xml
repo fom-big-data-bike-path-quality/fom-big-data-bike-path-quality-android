@@ -19,6 +19,5 @@
         android:icon="@drawable/ic_baseline_delete_24"
         android:orderInCategory="200"
         android:title="@string/action_delete_activity"
-        android:visible="false"
         app:showAsAction="never" />
 </menu>
