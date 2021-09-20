@@ -186,6 +186,31 @@
                 app:layout_constraintStart_toEndOf="@id/tvDelimiter2"
                 app:layout_constraintTop_toTopOf="@id/ivBike" />
 
+            <TextView
+                android:id="@+id/tvDelimiter3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:text="@string/delimiter"
+                app:layout_constraintBottom_toBottomOf="@id/ivBike"
+                app:layout_constraintStart_toEndOf="@id/tvSamples"
+                app:layout_constraintTop_toTopOf="@id/ivBike" />
+
+            <ImageView
+                android:id="@+id/ivScience"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description_science"
+                android:gravity="center_vertical"
+                android:scaleX="0.6"
+                android:scaleY="0.6"
+                android:src="@drawable/ic_baseline_science_24"
+                app:layout_constraintBottom_toBottomOf="@id/ivBike"
+                app:layout_constraintStart_toEndOf="@id/tvDelimiter3"
+                app:layout_constraintTop_toTopOf="@id/ivBike"
+                app:tint="@color/grey_500" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView

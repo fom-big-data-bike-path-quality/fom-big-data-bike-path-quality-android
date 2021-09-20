@@ -122,6 +122,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         val tvDelimiter: TextView = findViewById(R.id.tvDelimiter)
         val tvStopTime: TextView = findViewById(R.id.tvStopTime)
         val tvSamples: TextView = findViewById(R.id.tvSamples)
+        val tvDelimiter3: TextView = findViewById(R.id.tvDelimiter3)
+        val ivScience: ImageView = findViewById(R.id.ivScience)
         val ivStop: ImageView = findViewById(R.id.ivStop)
         val btnSurfaceType: MaterialButton = findViewById(R.id.btnSurfaceType)
         val btnSmoothnessType: MaterialButton = findViewById(R.id.btnSmoothnessType)
@@ -148,6 +150,35 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
+                    R.id.action_flag_lab_conditions -> {
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(
+                                it.copy(
+                                    uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
+                                    flaggedLabConditions = true
+                                )
+                            )
+
+                            Toast.makeText(
+                                applicationContext,
+                                R.string.action_flagged_lab_conditions,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    R.id.action_unflag_lab_conditions -> {
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                            bikeActivityViewModel.update(it.copy(
+                                uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
+                                flaggedLabConditions = false
+                            ))
+                            Toast.makeText(
+                                applicationContext,
+                                R.string.action_unflagged_lab_conditions,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
                     R.id.action_delete -> {
                         viewModel.bikeActivityWithSamples.removeObservers(this)
 
@@ -224,6 +255,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             } ?: run {
                 tvTitle.text = resources.getString(R.string.bike_activity)
             }
+
             ivCheck.visibility =
                 if (bikeActivityWithSamples.isUploaded()) View.VISIBLE else View.INVISIBLE
             tvUploaded.visibility =
@@ -253,6 +285,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 bikeActivityWithSamples.bikeActivitySamples.size,
                 bikeActivityWithSamples.bikeActivitySamples.size
             )
+            tvDelimiter3.visibility =
+                if (bikeActivityWithSamples.bikeActivity.flaggedLabConditions) View.VISIBLE else View.INVISIBLE
+            ivScience.visibility =
+                if (bikeActivityWithSamples.bikeActivity.flaggedLabConditions) View.VISIBLE else View.INVISIBLE
 
             ivStop.setOnClickListener {
                 viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
@@ -397,6 +433,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                     }
                 }
 
+
+
             fab.setOnClickListener {
                 if (!bikeActivityWithSamples.isLabelledCompletely()) {
                     AlertDialog.Builder(this)
@@ -528,6 +566,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_bike_activity_details_activity, menu)
+
+        viewModel.bikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
+            menu?.findItem(R.id.action_flag_lab_conditions)
+                ?.setVisible(!bikeActivityWithSamples.bikeActivity.flaggedLabConditions)
+            menu?.findItem(R.id.action_unflag_lab_conditions)
+                ?.setVisible(bikeActivityWithSamples.bikeActivity.flaggedLabConditions)
+        })
+
         return super.onCreateOptionsMenu(menu)
     }
 

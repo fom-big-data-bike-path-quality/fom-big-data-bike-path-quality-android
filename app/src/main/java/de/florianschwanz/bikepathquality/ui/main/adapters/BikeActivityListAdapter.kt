@@ -57,8 +57,10 @@ class BikeActivityListAdapter(
         private val ivOngoing: ImageView = itemView.findViewById(R.id.ivOngoing)
         private val tvDuration: TextView = itemView.findViewById(R.id.tvDuration)
         private val tvSamples: TextView = itemView.findViewById(R.id.tvSamples)
-        private val tvDelimiter: TextView = itemView.findViewById(R.id.tvDelimiter2)
+        private val tvDelimiter2: TextView = itemView.findViewById(R.id.tvDelimiter2)
         private val tvTrackingMode: TextView = itemView.findViewById(R.id.tvTrackingType)
+        private val tvDelimiter3: TextView = itemView.findViewById(R.id.tvDelimiter3)
+        private val ivScience: ImageView = itemView.findViewById(R.id.ivScience)
 
         private var sdfShort: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
         private var sdf: SimpleDateFormat = SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH)
@@ -112,15 +114,15 @@ class BikeActivityListAdapter(
 
             when (item.bikeActivity.trackingType) {
                 BikeActivityTrackingType.MANUAL -> {
-                    tvDelimiter.visibility = View.VISIBLE
+                    tvDelimiter2.visibility = View.VISIBLE
                     tvTrackingMode.text = resources.getText(R.string.tracking_mode_manual)
                 }
                 BikeActivityTrackingType.AUTOMATIC -> {
-                    tvDelimiter.visibility = View.VISIBLE
+                    tvDelimiter2.visibility = View.VISIBLE
                     tvTrackingMode.text = resources.getText(R.string.tracking_mode_automatic)
                 }
                 else -> {
-                    tvDelimiter.visibility = View.INVISIBLE
+                    tvDelimiter2.visibility = View.INVISIBLE
                     tvTrackingMode.text = resources.getText(R.string.empty)
                 }
             }
@@ -140,6 +142,9 @@ class BikeActivityListAdapter(
                 if (item.bikeActivity.startTime.isToday()) sdfShort.format(Date.from(item.bikeActivity.startTime)) else sdf.format(
                     Date.from(item.bikeActivity.startTime)
                 )
+
+            tvDelimiter3.visibility = if (item.bikeActivity.flaggedLabConditions) View.VISIBLE else View.INVISIBLE
+            ivScience.visibility = if (item.bikeActivity.flaggedLabConditions) View.VISIBLE else View.INVISIBLE
 
             itemView.setOnClickListener {
                 itemClickListener.onBikeActivityItemClicked(item)
