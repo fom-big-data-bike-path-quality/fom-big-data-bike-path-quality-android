@@ -29,5 +29,6 @@ data class BikeActivity(
     @ColumnInfo(name = "surface_type") val surfaceType: String? = null,
     @ColumnInfo(name = "smoothness_type") val smoothnessType: String? = null,
     @ColumnInfo(name = "phone_position") val phonePosition: String? = null,
-    @ColumnInfo(name = "bike_type") val bikeType: String? = null
+    @ColumnInfo(name = "bike_type") val bikeType: String? = null,
+    @ColumnInfo(name = "lab_conditions") val flaggedLabConditions: Boolean = false
 )

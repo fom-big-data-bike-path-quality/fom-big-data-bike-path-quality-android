@@ -14,7 +14,7 @@ import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataDao
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [LogEntry::class, BikeActivity::class, BikeActivitySample::class, BikeActivityMeasurement::class, UserData::class]
 )
 @TypeConverters(Converters::class)
