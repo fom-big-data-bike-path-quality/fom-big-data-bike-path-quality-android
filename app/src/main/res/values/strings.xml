@@ -27,6 +27,8 @@
     <string name="action_stop_activity">Stop biking</string>
     <string name="action_upload">Upload</string>
     <string name="action_delete_activity">Delete activity</string>
+    <string name="action_flag_lab_conditions">Flag lab-conditions</string>
+    <string name="action_unflag_lab_conditions">Un-flag lab-conditions</string>
 
     <string name="action_upload_successful">Uploaded data successfully</string>
     <string name="action_upload_failed">Uploading data failed</string>
@@ -34,6 +36,10 @@
     <string name="action_uploaded">Uploaded</string>
     <string name="action_changed_after_upload">Changed after upload</string>
     <string name="action_activity_deleted">Activity deleted</string>
+    <string name="action_flagged_lab_conditions">Flagged activity as under lab-conditions</string>
+    <string name="action_unflagged_lab_conditions">Unflagged activity as under lab-conditions</string>
+
+    <string name="status_flagged_lab_conditions">Lab conditions</string>
 
     <string name="action_tracking_bike_activity_idle">Bike activity</string>
     <string name="action_tracking_bike_activity_idle_description">Waiting for a bike activity</string>
@@ -211,6 +217,8 @@
     <string name="description_photo">Photo</string>
     <string name="description_upload">Upload</string>
     <string name="description_notification">Notification</string>
+
+    <string name="description_science">Science</string>
 
     <!-- Other -->
 
