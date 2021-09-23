@@ -1,16 +1,16 @@
-[![Build](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml/badge.svg?branch=main)](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml)
-[![Issues](https://img.shields.io/github/issues/florianschwanz/fom-big-data-bike-path-quality-android)](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/issues)
+[![Build](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml/badge.svg?branch=main)](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android/actions/workflows/build-app-workflow.yml)
+[![Issues](https://img.shields.io/github/issues/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android)](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android/issues)
 
 <br />
 <p align="center">
-  <a href="https://github.com/florianschwanz/fom-big-data-bike-path-quality-android">
+  <a href="https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android">
     <img src="./app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Logo" width="80" height="80">
   </a>
 
   <h1 align="center">Bike Path Quality (Ahuacamolli)</h1>
 
   <p align="center">
-    Android application that lets you track raw data for <a href="https://github.com/florianschwanz/fom-big-data-bike-path-quality-model">bike path quality analysis</a> 
+    Android application that lets you track raw data for <a href="https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-model">bike path quality analysis</a> 
   </p>
 </p>
 
@@ -21,7 +21,7 @@ The aim of this app is to track phone sensor data while riding a bike. These sen
 * [accelerometer](https://developer.android.com/guide/topics/sensors/sensors_motion)
 
 After you performed a bike activity (aka bike trip) you can review the bike activity and the tracked samples, specify the surface type and smoothness type of the bike path and upload the data.
-The uploaded raw data will be used to train [a neural net](https://github.com/florianschwanz/fom-big-data-bike-path-quality-model) which will be able to determine the surface type of a bike path as well as to detect anomalies such as potholes based on sensor data.
+The uploaded raw data will be used to train [a neural net](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-model) which will be able to determine the surface type of a bike path as well as to detect anomalies such as potholes based on sensor data.
 
 ### Built With
 
@@ -36,7 +36,7 @@ There are two ways to install the app - from the bundled releases and from your 
 
 ### Install bundled release (recommended)
 
-* Download the latest ```app-release.apk``` from the [releases section](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/releases)
+* Download the latest ```app-release.apk``` from the [releases section](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android/releases)
 * Open the file and follow the instructions
 
 ### Install from local IDE
@@ -95,7 +95,7 @@ Surface type selection | Smoothness type selection | Uploaded activity
 
 ## Roadmap
 
-See the [open issues](https://github.com/florianschwanz/fom-big-data-bike-path-quality-android/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android/issues) for a list of proposed features (and known issues).
 
 ### Version 1.*
 
