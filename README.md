@@ -44,7 +44,7 @@ There are two ways to install the app - from the bundled releases and from your 
 * Download and install the latest version of [Android Studio](https://developer.android.com/studio)
 * Clone the repo
  ```sh
- git clone git@github.com:florianschwanz/fom-big-data-bike-path-quality-android.git
+ git clone git@github.com:fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android.git
  ```
 * Open the project in Android Studio
 * Connect an Android device via USB cable
