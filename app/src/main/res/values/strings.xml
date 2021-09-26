@@ -137,6 +137,9 @@
     <string name="settings_user">User</string>
     <string name="settings_user_id">User ID</string>
 
+    <string name="settings_app">App</string>
+    <string name="settings_app_version">Version</string>
+
 
     <!-- Bike Activity Details -->
 

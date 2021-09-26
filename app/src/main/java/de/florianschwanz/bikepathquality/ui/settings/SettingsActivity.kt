@@ -10,6 +10,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
+import de.florianschwanz.bikepathquality.BuildConfig
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
@@ -50,6 +51,8 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             userDataViewModel.singleUserData().observe(this, { userData ->
                 findPreference<EditTextPreference>("user_id")?.summary = userData.uid
             })
+
+            findPreference<EditTextPreference>("app_version")?.summary = BuildConfig.VERSION_NAME
         }
     }
 
