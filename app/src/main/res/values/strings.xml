@@ -142,6 +142,9 @@
     <!-- Bike Activity Details -->
 
     <string name="bike_activity_sample">Bike Activity Sample</string>
+    <string name="bike_activity_sample_unlabled">Bike Activity Sample (missing label)</string>
+    <string name="bike_activity_sample_too_slow">Bike Activity Sample (too slow)</string>
+    <string name="bike_activity_sample_invalid">Bike Activity Sample (invalid)</string>
     <plurals name="measurements">
         <item quantity="zero">no measurements</item>
         <item quantity="one">%d measurement</item>

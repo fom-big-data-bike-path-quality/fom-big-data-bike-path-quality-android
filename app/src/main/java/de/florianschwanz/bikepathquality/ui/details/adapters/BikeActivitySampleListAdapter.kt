@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityMeasurement
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
@@ -40,7 +41,7 @@ class BikeActivitySampleListAdapter(
             field = value
             notifyDataSetChanged()
         }
-    var uploadStatus: BikeActivityStatus? = null
+    var bikeActivity: BikeActivity? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -57,7 +58,7 @@ class BikeActivitySampleListAdapter(
 
     override fun onBindViewHolder(holder: BikeActivitySampleViewHolder, position: Int) {
         val current = data[position]
-        holder.bind(current, position, focus, uploadStatus, context, itemClickListener, this)
+        holder.bind(current, position, focus, bikeActivity, context, itemClickListener, this)
     }
 
     override fun onBikeActivityMeasurementItemClicked(
@@ -68,8 +69,7 @@ class BikeActivitySampleListAdapter(
 
     class BikeActivitySampleViewHolder(
         itemView: View
-    ) :
-        RecyclerView.ViewHolder(itemView) {
+    ) : RecyclerView.ViewHolder(itemView) {
         private val clBikeActivitySample: ConstraintLayout =
             itemView.findViewById(R.id.clBikeActivitySample)
         private val ivBike: ImageView = itemView.findViewById(R.id.ivBike)
@@ -90,21 +90,36 @@ class BikeActivitySampleListAdapter(
             item: BikeActivitySampleWithMeasurements,
             position: Int,
             focus: BikeActivitySampleWithMeasurements?,
-            uploadStatus: BikeActivityStatus?,
+            bikeActivity: BikeActivity?,
             context: Context,
             itemClickListener: OnItemClickListener,
             bikeActivityMeasurementItemClickListener: BikeActivityMeasurementArrayAdapter.OnItemClickListener
         ) {
             val resources = context.resources
+            val isValid = isValid(bikeActivity, item)
 
             clBikeActivitySample.setOnClickListener {
                 itemClickListener.onBikeActivitySampleItemClicked(item, position)
             }
 
-            clBikeActivitySample.setBackgroundColor(buildBackgroundColor(context, item, focus))
+            if (isValid) {
+                clBikeActivitySample.setBackgroundColor(buildBackgroundColor(context, item, focus))
+            } else {
+                clBikeActivitySample.setBackgroundResource(
+                    buildBackgroundResourceInvalid(context, item, focus)
+                )
+            }
+
             ivBike.imageTintList = ColorStateList.valueOf(buildTextColor(context, item, focus))
             tvStartTime.setTextColor(buildTextColor(context, item, focus))
             tvTitle.setTextColor(buildTextColor(context, item, focus))
+            tvTitle.text = when {
+                isValid -> resources.getString(R.string.bike_activity_sample)
+                !item.isLabeled() -> resources.getString(R.string.bike_activity_sample_unlabled)
+                !item.isAboveSpeedLimit() -> resources.getString(R.string.bike_activity_sample_too_slow)
+                else -> resources.getString(R.string.bike_activity_sample_invalid)
+            }
+
             tvMeasurements.setTextColor(buildTextColor(context, item, focus))
             tvSpeed.setTextColor(buildTextColor(context, item, focus))
             btnSurfaceType.setTextColor(buildTextColor(context, item, focus))
@@ -121,7 +136,7 @@ class BikeActivitySampleListAdapter(
                 resources.getString(R.string.bike_activity_sample_speed),
                 item.bikeActivitySample.speed.times(3.6)
             )
-            btnSurfaceType.isEnabled = uploadStatus != BikeActivityStatus.UPLOADED
+            btnSurfaceType.isEnabled = bikeActivity?.uploadStatus != BikeActivityStatus.UPLOADED
             btnSurfaceType.setOnClickListener {
                 itemClickListener.onBikeActivitySampleSurfaceTypeClicked(item, position)
             }
@@ -172,6 +187,23 @@ class BikeActivitySampleListAdapter(
         private fun Float.square(): Float = this * this
         private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
 
+        private fun isValid(
+            bikeActivity: BikeActivity?,
+            bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements
+        ) =
+            (bikeActivity?.isLabeled() ?: false || bikeActivitySampleWithMeasurements.isLabeled()) && bikeActivitySampleWithMeasurements.isAboveSpeedLimit()
+
+        private fun BikeActivity.isLabeled() =
+            this.surfaceType != "mixed"
+
+        private fun BikeActivitySampleWithMeasurements.isLabeled() =
+            this.bikeActivitySample.surfaceType != "mixed"
+
+        private fun BikeActivitySampleWithMeasurements.isAboveSpeedLimit() =
+            this.bikeActivityMeasurements.all {
+                it.speed > 5 * 3.6
+            }
+
         /**
          * Builds background color based on whether the item is focussed or not
          */
@@ -200,6 +232,27 @@ class BikeActivitySampleListAdapter(
                 ContextCompat.getColor(context, R.color.transparent)
             }
         }
+
+        /**
+         * Builds background resource for invalid entries
+         */
+        private fun buildBackgroundResourceInvalid(
+            context: Context,
+            item: BikeActivitySampleWithMeasurements,
+            focus: BikeActivitySampleWithMeasurements?
+        ) = when (item.bikeActivitySample.uid) {
+            focus?.bikeActivitySample?.uid -> {
+                R.drawable.bike_activity_sample_focus
+            }
+            else -> {
+                when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_NO -> R.drawable.bike_activity_sample_invalid
+                    Configuration.UI_MODE_NIGHT_YES -> R.drawable.bike_activity_sample_invalid_night
+                    else -> ContextCompat.getColor(context, R.color.transparent)
+                }
+            }
+        }
+
 
         /**
          * Builds text color based on whether the item is focussed or not

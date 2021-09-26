@@ -146,7 +146,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         viewModel = ViewModelProvider(this).get(BikeActivityDetailsViewModel::class.java)
         viewModel.bikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
 
-            adapter.uploadStatus = bikeActivityWithSamples.bikeActivity.uploadStatus
+            adapter.bikeActivity = bikeActivityWithSamples.bikeActivity
 
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
@@ -432,8 +432,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
-
-
 
             fab.setOnClickListener {
                 if (!bikeActivityWithSamples.isLabelledCompletely()) {
