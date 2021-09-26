@@ -48,10 +48,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
-import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModelFactory
@@ -221,22 +218,24 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 viewModel.bikeActivitySamplesWithMeasurements.observe(
                     this, { bikeActivitySamplesWithMeasurements ->
                         setMapStyle2(
-                            mapboxMap,
-                            buildMapStyle(),
-                            buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
-                            viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                                buildMapCoordinate(it)
-                            }
+                            mapboxMap = mapboxMap,
+                            mapStyle = buildMapStyle(),
+                            mapRouteCoordinates = buildMapCoordinates2(
+                                bikeActivitySamplesWithMeasurements
+                            ),
+                            mapFocusCoordinate = null,
+                            mapFocusRouteCoordinates = null
                         )
 
                         clDescription.setOnClickListener {
                             setMapStyle2(
-                                mapboxMap,
-                                buildMapStyle(),
-                                buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
-                                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                                    buildMapCoordinate(it)
-                                }
+                                mapboxMap = mapboxMap,
+                                mapStyle = buildMapStyle(),
+                                mapRouteCoordinates = buildMapCoordinates2(
+                                    bikeActivitySamplesWithMeasurements
+                                ),
+                                mapFocusCoordinate = null,
+                                mapFocusRouteCoordinates = null
                             )
                             centerMap(
                                 mapboxMap,
@@ -504,15 +503,20 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         )
 
                     viewModel.bikeActivitySamplesWithMeasurements.observe(
-                        this,
-                        { bikeActivitySamplesWithMeasurements ->
+                        this, { bikeActivitySamplesWithMeasurements ->
                             setMapStyle2(
-                                mapboxMap,
-                                buildMapStyle(),
-                                buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
-                                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let { bikeActivitySample ->
+                                mapboxMap = mapboxMap,
+                                mapStyle = buildMapStyle(),
+                                mapRouteCoordinates = buildMapCoordinates2(
+                                    bikeActivitySamplesWithMeasurements
+                                ),
+                                mapFocusCoordinate = bikeActivitySampleInFocus?.bikeActivitySample?.let { bikeActivitySample ->
                                     buildMapCoordinate(bikeActivitySample)
-                                }
+                                },
+                                mapFocusRouteCoordinates = buildMapCoordinates3(
+                                    bikeActivitySamplesWithMeasurements.map { it.bikeActivitySample },
+                                    bikeActivitySampleInFocus?.bikeActivitySample
+                                ).map { buildMapCoordinate(it) }
                             )
                         })
 
@@ -885,9 +889,42 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
      * Builds map coordinates based on bike activity samples
      */
     private fun buildMapCoordinates2(bikeActivitySamples: List<BikeActivitySampleWithMeasurements>) =
-        bikeActivitySamples
-            .filter { it.bikeActivitySample.lon != 0.0 || it.bikeActivitySample.lat != 0.0 }
-            .map(this::buildMapCoordinate2)
+        bikeActivitySamples.filterValid().map(this::buildMapCoordinate2)
+
+    /**
+     * Builds map coordinates based on bike activity measurements
+     */
+    private fun buildMapCoordinates3(
+        bikeActivitySamples: List<BikeActivitySample>,
+        bikeActivitySampleInFocus: BikeActivitySample?
+    ): List<BikeActivitySample> = bikeActivitySampleInFocus?.let { bikeActivitySample ->
+
+        val filteredBikeActivitySamples = bikeActivitySamples.filterValid()
+
+        getIndex(filteredBikeActivitySamples, bikeActivitySample)?.let { index ->
+            if (index < filteredBikeActivitySamples.size - 1) {
+                listOf(
+                    filteredBikeActivitySamples[index],
+                    filteredBikeActivitySamples[index + 1]
+                )
+            } else {
+                listOf()
+            }
+        } ?: listOf()
+    } ?: listOf()
+
+    private fun getIndex(
+        bikeActivitySamples: List<BikeActivitySample>,
+        bikeActivitySample: BikeActivitySample
+    ): Int? {
+        bikeActivitySamples.forEachIndexed { index, it ->
+            if (it.uid == bikeActivitySample.uid) {
+                return index
+            }
+        }
+
+        return null
+    }
 
     /**
      * Builds map coordinate based on bike activity sample
@@ -902,8 +939,18 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             }.average()
         )
 
-    private fun Float.square(): Float = this * this
-    private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
+    /**
+     * Builds map coordinate based on bike activity measurement
+     */
+    private fun buildMapCoordinate3(bikeActivityMeasurement: BikeActivityMeasurement) =
+        Pair(
+            Point.fromLngLat(
+                bikeActivityMeasurement.lon,
+                bikeActivityMeasurement.lat
+            ),
+            ((bikeActivityMeasurement.accelerometerX.square() + bikeActivityMeasurement.accelerometerY.square() + bikeActivityMeasurement.accelerometerZ.square()) / 3).squareRoot()
+                .toDouble()
+        )
 
     /**
      * Sets map style
@@ -933,7 +980,12 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 3f,
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
-            style.addCircleLayerWithThemeColor(samples.second, samples.first, 5f, R.attr.colorPrimary)
+            style.addCircleLayerWithThemeColor(
+                samples.second,
+                samples.first,
+                5f,
+                R.attr.colorPrimary
+            )
 
             // Bike activity sample in focus
             style.addCircleLayerWithThemeColor(
@@ -954,7 +1006,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         mapboxMap: MapboxMap,
         mapStyle: String,
         mapRouteCoordinates: List<Pair<Point, Double>>,
-        mapFocusCoordinate: Point?
+        mapFocusCoordinate: Point?,
+        mapFocusRouteCoordinates: List<Point>?,
     ) {
         val line: Pair<String, String> = Pair("line-source", "line-layer")
         val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
@@ -962,11 +1015,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         val end1: Pair<String, String> = Pair("end-1-source", "end-1-layer")
         val end2: Pair<String, String> = Pair("end-2-source", "end-2-layer")
         val end3: Pair<String, String> = Pair("end-3-source", "end-3-layer")
+        val highlightLine: Pair<String, String> =
+            Pair("highlight-line-source", "highlight-line-layer")
         val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
 
         mapboxMap.setStyle(mapStyle) { style ->
 
             style.addLineSource(line.first, mapRouteCoordinates.map { it.first })
+            style.addLineSource(highlightLine.first, mapFocusRouteCoordinates?: listOf())
             style.addPointSource2(samples.first, mapRouteCoordinates)
             style.addPointSource(start.first, listOf(mapRouteCoordinates.first().first))
             style.addPointSource(end1.first, listOf(mapRouteCoordinates.last().first))
@@ -983,8 +1039,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 3f,
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
+            style.addLineLayer(
+                highlightLine.second,
+                highlightLine.first,
+                floatArrayOf(1f, 0f),
+                Property.LINE_CAP_ROUND,
+                Property.LINE_JOIN_ROUND,
+                4f,
+                Color.parseColor(getThemeColorInHex(R.attr.colorSecondary))
+            )
             style.addCircleLayer2(samples.second, samples.first, 5f)
-
             style.addCircleLayerWithColor(start.second, start.first, 10f, R.color.black)
             style.addCircleLayerWithColor(end1.second, end1.first, 10f, R.color.black)
             style.addCircleLayerWithColor(end2.second, end2.first, 8f, R.color.white)
