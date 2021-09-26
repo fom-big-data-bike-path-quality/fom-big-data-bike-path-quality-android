@@ -150,7 +150,7 @@ class BikeActivitySampleListAdapter(
             tvAccelerometer.text = String.format(
                 resources.getString(R.string.bike_activity_sample_accelerometer),
                 item.bikeActivityMeasurements.map {
-                    (it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()).squareRoot()
+                    ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
                 }.average()
             )
 
