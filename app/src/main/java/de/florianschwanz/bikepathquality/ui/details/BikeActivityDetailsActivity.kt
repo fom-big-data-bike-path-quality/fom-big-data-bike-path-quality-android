@@ -933,10 +933,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 3f,
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
-            style.addCircleLayer(samples.second, samples.first, 5f, R.attr.colorPrimary)
+            style.addCircleLayerWithThemeColor(samples.second, samples.first, 5f, R.attr.colorPrimary)
 
             // Bike activity sample in focus
-            style.addCircleLayer(
+            style.addCircleLayerWithThemeColor(
                 highlight.second,
                 highlight.first,
                 10f,
@@ -958,12 +958,20 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     ) {
         val line: Pair<String, String> = Pair("line-source", "line-layer")
         val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
+        val start: Pair<String, String> = Pair("start-source", "start-layer")
+        val end1: Pair<String, String> = Pair("end-1-source", "end-1-layer")
+        val end2: Pair<String, String> = Pair("end-2-source", "end-2-layer")
+        val end3: Pair<String, String> = Pair("end-3-source", "end-3-layer")
         val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
 
         mapboxMap.setStyle(mapStyle) { style ->
 
             style.addLineSource(line.first, mapRouteCoordinates.map { it.first })
             style.addPointSource2(samples.first, mapRouteCoordinates)
+            style.addPointSource(start.first, listOf(mapRouteCoordinates.first().first))
+            style.addPointSource(end1.first, listOf(mapRouteCoordinates.last().first))
+            style.addPointSource(end2.first, listOf(mapRouteCoordinates.last().first))
+            style.addPointSource(end3.first, listOf(mapRouteCoordinates.last().first))
             mapFocusCoordinate?.let { style.addPointSource(highlight.first, listOf(it)) }
 
             style.addLineLayer(
@@ -977,8 +985,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             )
             style.addCircleLayer2(samples.second, samples.first, 5f)
 
-            // Bike activity sample in focus
-            style.addCircleLayer(
+            style.addCircleLayerWithColor(start.second, start.first, 10f, R.color.black)
+            style.addCircleLayerWithColor(end1.second, end1.first, 10f, R.color.black)
+            style.addCircleLayerWithColor(end2.second, end2.first, 8f, R.color.white)
+            style.addCircleLayerWithColor(end3.second, end3.first, 6f, R.color.black)
+            style.addCircleLayerWithThemeColor(
                 highlight.second,
                 highlight.first,
                 10f,
@@ -1046,7 +1057,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         )
     )
 
-    private fun Style.addCircleLayer(
+    private fun Style.addCircleLayerWithColor(
+        layerName: String,
+        sourceName: String,
+        circleRadius: Float,
+        circleColor: Int
+    ) = this.addLayer(
+        CircleLayer(layerName, sourceName).withProperties(
+            PropertyFactory.circleRadius(circleRadius),
+            PropertyFactory.circleColor(color(getColor(circleColor)))
+        )
+    )
+
+    private fun Style.addCircleLayerWithThemeColor(
         layerName: String,
         sourceName: String,
         circleRadius: Float,
