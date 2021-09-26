@@ -38,6 +38,9 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.expressions.Expression
+import com.mapbox.mapboxsdk.style.expressions.Expression.color
+import com.mapbox.mapboxsdk.style.expressions.Expression.stop
 import com.mapbox.mapboxsdk.style.layers.CircleLayer
 import com.mapbox.mapboxsdk.style.layers.LineLayer
 import com.mapbox.mapboxsdk.style.layers.Property
@@ -67,6 +70,7 @@ import de.florianschwanz.bikepathquality.ui.surface_type.adapters.SurfaceTypeLis
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
+import kotlin.math.sqrt
 
 class BikeActivityDetailsActivity : AppCompatActivity(),
     FirebaseFirestoreServiceResultReceiver.Receiver,
@@ -151,10 +155,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_flag_lab_conditions -> {
-                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let { bikeActivity ->
                             bikeActivityViewModel.update(
-                                it.copy(
-                                    uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
+                                bikeActivity.copy(
+                                    uploadStatus = if (bikeActivity.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
                                     flaggedLabConditions = true
                                 )
                             )
@@ -167,11 +171,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         }
                     }
                     R.id.action_unflag_lab_conditions -> {
-                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let {
-                            bikeActivityViewModel.update(it.copy(
-                                uploadStatus = if (it.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
-                                flaggedLabConditions = false
-                            ))
+                        viewModel.bikeActivityWithSamples.value?.bikeActivity?.let { bikeActivity ->
+                            bikeActivityViewModel.update(
+                                bikeActivity.copy(
+                                    uploadStatus = if (bikeActivity.uploadStatus != BikeActivityStatus.LOCAL) BikeActivityStatus.CHANGED_AFTER_UPLOAD else BikeActivityStatus.LOCAL,
+                                    flaggedLabConditions = false
+                                )
+                            )
                             Toast.makeText(
                                 applicationContext,
                                 R.string.action_unflagged_lab_conditions,
@@ -211,31 +217,38 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                     }
 
                 centerMap(mapboxMap, bikeActivitySamplesFocus, duration = 1_000)
-                setMapStyle(
-                    mapboxMap,
-                    buildMapStyle(),
-                    buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
-                    viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
-                        buildMapCoordinate(it)
-                    }
-                )
 
-                clDescription.setOnClickListener {
-                    setMapStyle(
-                        mapboxMap,
-                        buildMapStyle(),
-                        buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
-                        null
-                    )
-                    centerMap(
-                        mapboxMap,
-                        bikeActivityWithSamples.bikeActivitySamples,
-                        duration = 1_000
-                    )
+                viewModel.bikeActivitySamplesWithMeasurements.observe(
+                    this, { bikeActivitySamplesWithMeasurements ->
+                        setMapStyle2(
+                            mapboxMap,
+                            buildMapStyle(),
+                            buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
+                            viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                                buildMapCoordinate(it)
+                            }
+                        )
 
-                    viewModel.bikeActivitySampleInFocusPosition.value = null
-                    viewModel.bikeActivitySampleInFocus.value = null
-                }
+                        clDescription.setOnClickListener {
+                            setMapStyle2(
+                                mapboxMap,
+                                buildMapStyle(),
+                                buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
+                                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let {
+                                    buildMapCoordinate(it)
+                                }
+                            )
+                            centerMap(
+                                mapboxMap,
+                                bikeActivityWithSamples.bikeActivitySamples,
+                                duration = 1_000
+                            )
+
+                            viewModel.bikeActivitySampleInFocusPosition.value = null
+                            viewModel.bikeActivitySampleInFocus.value = null
+                        }
+                    })
+
             }
 
             tvStartTime.text =
@@ -490,12 +503,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                             if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
                         )
 
-                    setMapStyle(
-                        mapboxMap,
-                        buildMapStyle(),
-                        buildMapCoordinates(bikeActivityWithSamples.bikeActivitySamples),
-                        bikeActivitySampleInFocus?.bikeActivitySample?.let { buildMapCoordinate(it) }
-                    )
+                    viewModel.bikeActivitySamplesWithMeasurements.observe(
+                        this,
+                        { bikeActivitySamplesWithMeasurements ->
+                            setMapStyle2(
+                                mapboxMap,
+                                buildMapStyle(),
+                                buildMapCoordinates2(bikeActivitySamplesWithMeasurements),
+                                viewModel.bikeActivitySampleInFocus.value?.bikeActivitySample?.let { bikeActivitySample ->
+                                    buildMapCoordinate(bikeActivitySample)
+                                }
+                            )
+                        })
+
                     centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
                 }
             }
@@ -566,10 +586,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         menuInflater.inflate(R.menu.menu_bike_activity_details_activity, menu)
 
         viewModel.bikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
-            menu?.findItem(R.id.action_flag_lab_conditions)
-                ?.setVisible(!bikeActivityWithSamples.bikeActivity.flaggedLabConditions)
-            menu?.findItem(R.id.action_unflag_lab_conditions)
-                ?.setVisible(bikeActivityWithSamples.bikeActivity.flaggedLabConditions)
+            menu?.findItem(R.id.action_flag_lab_conditions)?.isVisible =
+                !bikeActivityWithSamples.bikeActivity.flaggedLabConditions
+            menu?.findItem(R.id.action_unflag_lab_conditions)?.isVisible =
+                bikeActivityWithSamples.bikeActivity.flaggedLabConditions
         })
 
         return super.onCreateOptionsMenu(menu)
@@ -862,6 +882,30 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     )
 
     /**
+     * Builds map coordinates based on bike activity samples
+     */
+    private fun buildMapCoordinates2(bikeActivitySamples: List<BikeActivitySampleWithMeasurements>) =
+        bikeActivitySamples
+            .filter { it.bikeActivitySample.lon != 0.0 || it.bikeActivitySample.lat != 0.0 }
+            .map(this::buildMapCoordinate2)
+
+    /**
+     * Builds map coordinate based on bike activity sample
+     */
+    private fun buildMapCoordinate2(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) =
+        Pair(
+            Point.fromLngLat(
+                bikeActivitySampleWithMeasurements.bikeActivitySample.lon,
+                bikeActivitySampleWithMeasurements.bikeActivitySample.lat
+            ), bikeActivitySampleWithMeasurements.bikeActivityMeasurements.map {
+                ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
+            }.average()
+        )
+
+    private fun Float.square(): Float = this * this
+    private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
+
+    /**
      * Sets map style
      */
     private fun setMapStyle(
@@ -890,6 +934,50 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
             )
             style.addCircleLayer(samples.second, samples.first, 5f, R.attr.colorPrimary)
+
+            // Bike activity sample in focus
+            style.addCircleLayer(
+                highlight.second,
+                highlight.first,
+                10f,
+                R.attr.colorSecondary
+            )
+
+            mapboxMap.uiSettings.isRotateGesturesEnabled = false
+        }
+    }
+
+    /**
+     * Sets map style
+     */
+    private fun setMapStyle2(
+        mapboxMap: MapboxMap,
+        mapStyle: String,
+        mapRouteCoordinates: List<Pair<Point, Double>>,
+        mapFocusCoordinate: Point?
+    ) {
+        val line: Pair<String, String> = Pair("line-source", "line-layer")
+        val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
+        val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
+
+        mapboxMap.setStyle(mapStyle) { style ->
+
+            style.addLineSource(line.first, mapRouteCoordinates.map { it.first })
+            style.addPointSource2(samples.first, mapRouteCoordinates)
+            mapFocusCoordinate?.let { style.addPointSource(highlight.first, listOf(it)) }
+
+            style.addLineLayer(
+                line.second,
+                line.first,
+                floatArrayOf(0.01f, 2f),
+                Property.LINE_CAP_ROUND,
+                Property.LINE_JOIN_ROUND,
+                3f,
+                Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
+            )
+            style.addCircleLayer2(samples.second, samples.first, 5f)
+
+            // Bike activity sample in focus
             style.addCircleLayer(
                 highlight.second,
                 highlight.first,
@@ -925,6 +1013,21 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         )
     )
 
+    private fun Style.addPointSource2(name: String, pointsWithValues: List<Pair<Point, Double>>) =
+        this.addSource(
+            GeoJsonSource(
+                name,
+                FeatureCollection.fromFeatures(
+                    pointsWithValues.map { pointWithValue ->
+                        // See https://docs.microsoft.com/de-de/azure/azure-maps/create-data-source-android-sdk?pivots=programming-language-kotlin
+                        val feature = Feature.fromGeometry(pointWithValue.first)
+                        feature.addNumberProperty("accelerometer", pointWithValue.second)
+                        feature
+                    }.toTypedArray()
+                )
+            )
+        )
+
     private fun Style.addLineLayer(
         layerName: String,
         sourceName: String,
@@ -952,6 +1055,23 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         CircleLayer(layerName, sourceName).withProperties(
             PropertyFactory.circleRadius(circleRadius),
             PropertyFactory.circleColor(Color.parseColor(getThemeColorInHex(circleColor)))
+        )
+    )
+
+    private fun Style.addCircleLayer2(
+        layerName: String,
+        sourceName: String,
+        circleRadius: Float
+    ) = this.addLayer(
+        CircleLayer(layerName, sourceName).withProperties(
+            PropertyFactory.circleRadius(circleRadius),
+            PropertyFactory.circleColor(
+                Expression.interpolate(
+                    Expression.linear(), Expression.get("accelerometer"),
+                    stop(1.0f, color(getColor(R.color.green_500))),
+                    stop(15.0f, color(getColor(R.color.amber_500)))
+                )
+            )
         )
     )
 
