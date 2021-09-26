@@ -294,8 +294,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 if (bikeActivityWithSamples.isFinished()) View.INVISIBLE else View.VISIBLE
             tvSamples.text = resources.getQuantityString(
                 R.plurals.samples,
-                bikeActivityWithSamples.bikeActivitySamples.size,
-                bikeActivityWithSamples.bikeActivitySamples.size
+                bikeActivityWithSamples.bikeActivitySamples.filterValid().size,
+                bikeActivityWithSamples.bikeActivitySamples.filterValid().size
             )
             tvDelimiter3.visibility =
                 if (bikeActivityWithSamples.bikeActivity.flaggedLabConditions) View.VISIBLE else View.INVISIBLE
