@@ -134,11 +134,9 @@
     <string name="setting_measurement_interval_title">Measurement Interval</string>
     <string name="setting_measurement_interval_summary">Time between two measurements in milliseconds</string>
 
-    <string name="settings_user">User</string>
+    <string name="settings_about">About</string>
     <string name="settings_user_id">User ID</string>
-
-    <string name="settings_app">App</string>
-    <string name="settings_app_version">Version</string>
+    <string name="settings_app_version">App Version</string>
 
 
     <!-- Bike Activity Details -->
