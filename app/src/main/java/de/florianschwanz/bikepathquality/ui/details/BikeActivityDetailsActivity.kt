@@ -483,7 +483,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             }
         })
         viewModel.bikeActivitySamplesWithMeasurements.observe(this, {
-            adapter.data = it
+            adapter.data = it.filterValid()
             if (adapter.data.isNotEmpty()) {
 
                 rvBikeActivitySamples.smoothScrollToPosition(
@@ -870,7 +870,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
      */
     private fun buildMapCoordinates(bikeActivitySamples: List<BikeActivitySample>) =
         bikeActivitySamples
-            .filter { it.lon != 0.0 || it.lat != 0.0 }
+            .filterValid()
             .map(this::buildMapCoordinate)
 
     /**
@@ -1102,14 +1102,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
      * Creates bounds around bike activity samples
      */
     private fun buildBounds(bikeActivitySamples: List<BikeActivitySample>): LatLngBounds? {
-        return if (bikeActivitySamples.filter { bikeActivitySample ->
-                bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
-            }.size > 1) {
+        return if (bikeActivitySamples.filterValid().size > 1) {
             val latLngBounds = LatLngBounds.Builder()
 
-            bikeActivitySamples.filter { bikeActivitySample ->
-                bikeActivitySample.lon != 0.0 || bikeActivitySample.lat != 0.0
-            }.forEach { bikeActivityDetail ->
+            bikeActivitySamples.filterValid().forEach { bikeActivityDetail ->
                 latLngBounds.include(
                     LatLng(
                         bikeActivityDetail.lat,
@@ -1143,6 +1139,14 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     //
     // Helpers
     //
+
+    private fun Float.square(): Float = this * this
+    private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
+
+    @JvmName("filterValidBikeActivitySampleWithMeasurements")
+    private fun List<BikeActivitySampleWithMeasurements>.filterValid() = this.filter { it.bikeActivitySample.lon != 0.0 || it.bikeActivitySample.lat != 0.0 }
+    @JvmName("filterValidBikeActivitySample")
+    private fun List<BikeActivitySample>.filterValid() = this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
     private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
         observe(lifecycleOwner, object : Observer<T> {

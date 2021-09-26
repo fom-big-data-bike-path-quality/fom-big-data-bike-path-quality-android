@@ -2,7 +2,6 @@ package de.florianschwanz.bikepathquality.ui.main.adapters
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityStatus
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -108,8 +108,8 @@ class BikeActivityListAdapter(
 
             tvSamples.text = resources.getQuantityString(
                 R.plurals.samples,
-                item.bikeActivitySamples.size,
-                item.bikeActivitySamples.size
+                item.bikeActivitySamples.filterValid().size,
+                item.bikeActivitySamples.filterValid().size
             )
 
             when (item.bikeActivity.trackingType) {
@@ -167,6 +167,12 @@ class BikeActivityListAdapter(
 
             return String.format("#%06X", 0xFFFFFF and outValue.data)
         }
+
+        //
+        // Helpers
+        //
+
+        private fun List<BikeActivitySample>.filterValid() = this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
         companion object {
             fun create(parent: ViewGroup): BikeActivityViewHolder {
