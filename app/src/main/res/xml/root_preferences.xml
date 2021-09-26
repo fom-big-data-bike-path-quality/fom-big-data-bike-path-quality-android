@@ -53,4 +53,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_user">
+
+        <EditTextPreference
+            android:enabled="false"
+            android:key="user_id"
+            android:persistent="false"
+            android:selectable="false"
+            android:shouldDisableView="false"
+            android:title="@string/settings_user_id" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
