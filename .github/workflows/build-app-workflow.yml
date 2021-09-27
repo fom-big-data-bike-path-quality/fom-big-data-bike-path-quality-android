@@ -15,6 +15,11 @@ jobs:
         run: echo $RELEASE_KEYSTORE | base64 --decode > release.keystore.jks
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+      - name: Prepare Google services
+        id: prepare-google-services
+        run: echo $GOOGLE_SERVICES | base64 --decode > app/google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
       - name: Build artifact
         id: build-artifact
         env:

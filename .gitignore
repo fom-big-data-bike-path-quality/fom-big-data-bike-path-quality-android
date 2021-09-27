@@ -16,3 +16,5 @@
 .cxx
 local.properties
 *.jks
+
+app/google-services.json
