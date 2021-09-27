@@ -12,6 +12,8 @@ class BikeActivityRepository(private val bikeActivityDao: BikeActivityDao) {
 
     val activeActivity: Flow<BikeActivity> = bikeActivityDao.getActive()
 
+    val activeActivityWithSamples: Flow<BikeActivityWithSamples> = bikeActivityDao.getActiveWithSamples()
+
     fun singleBikeActivityWithSamples(uid: String): Flow<BikeActivityWithSamples> {
         return bikeActivityDao.getSingleWithSamples(uid)
     }

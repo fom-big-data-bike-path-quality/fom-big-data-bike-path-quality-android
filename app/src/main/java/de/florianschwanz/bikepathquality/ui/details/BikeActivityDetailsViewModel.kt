@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleWithMeasurements
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserData
-import java.util.*
 
 class BikeActivityDetailsViewModel(application: Application) : AndroidViewModel(application) {
 

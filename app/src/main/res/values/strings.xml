@@ -84,6 +84,7 @@
     <string name="label_lat">lat:</string>
     <string name="lon">%1$.3f</string>
     <string name="lat">%1$.3f</string>
+    <string name="speed">%1$.1f km/h</string>
 
     <string name="default_lon">-</string>
     <string name="default_lat">-</string>

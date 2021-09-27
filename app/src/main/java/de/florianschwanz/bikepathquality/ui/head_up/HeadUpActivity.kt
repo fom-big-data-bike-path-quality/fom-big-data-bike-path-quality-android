@@ -8,14 +8,20 @@ import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.common.collect.EvictingQueue
+import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
+import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.databinding.ActivityHeadUpBinding
 import kotlin.math.round
 import kotlin.math.sqrt
@@ -27,8 +33,11 @@ import kotlin.math.sqrt
 class HeadUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHeadUpBinding
-    private lateinit var flContainer: FrameLayout
+    private lateinit var clContainer: ConstraintLayout
     private lateinit var tvAccelerometer: TextView
+    private lateinit var tvSpeed: TextView
+    private lateinit var tvSamples: TextView
+    private lateinit var btnLeave: TextView
     private lateinit var fullscreenContentControls: LinearLayout
     private val hideHandler = Handler()
 
@@ -58,6 +67,10 @@ class HeadUpActivity : AppCompatActivity() {
     private var isFullscreen: Boolean = false
 
     private val hideRunnable = Runnable { hide() }
+
+    private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
+        BikeActivityViewModelFactory((application as BikePathQualityApplication).bikeActivityRepository)
+    }
 
     private lateinit var viewModel: HeadUpActivityViewModel
 
@@ -89,10 +102,12 @@ class HeadUpActivity : AppCompatActivity() {
 
         isFullscreen = true
 
-        flContainer = binding.flContainer
-
-        // Set up the user interaction to manually show or hide the system UI.
+        clContainer = binding.flContainer
         tvAccelerometer = binding.tvAccelerometer
+        tvSpeed = binding.tvSpeed
+        tvSamples = binding.tvSamples
+        btnLeave = binding.btnLeave
+
         tvAccelerometer.setOnClickListener { toggle() }
 
         fullscreenContentControls = binding.fullscreenContentControls
@@ -106,12 +121,16 @@ class HeadUpActivity : AppCompatActivity() {
         val accelerometerEvictingQueueY: EvictingQueue<Float> = EvictingQueue.create(500)
         val accelerometerEvictingQueueZ: EvictingQueue<Float> = EvictingQueue.create(500)
 
-        viewModel = ViewModelProvider(this).get(HeadUpActivityViewModel::class.java)
-        viewModel.accelerometerLiveData.observe(this, {
+        bikeActivityViewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
+            viewModel.activeBikeActivityWithSamples.value = bikeActivityWithSamples
+        })
 
-            accelerometerEvictingQueueX.add(it.x)
-            accelerometerEvictingQueueY.add(it.y)
-            accelerometerEvictingQueueZ.add(it.z)
+        viewModel = ViewModelProvider(this).get(HeadUpActivityViewModel::class.java)
+        viewModel.accelerometerLiveData.observe(this, { accelerometer ->
+
+            accelerometerEvictingQueueX.add(accelerometer.x)
+            accelerometerEvictingQueueY.add(accelerometer.y)
+            accelerometerEvictingQueueZ.add(accelerometer.z)
 
             val x = accelerometerEvictingQueueX.average()
             val y = accelerometerEvictingQueueY.average()
@@ -133,16 +152,31 @@ class HeadUpActivity : AppCompatActivity() {
 
             val backgroundColor =
                 ArgbEvaluator().evaluate(
-                    percentage.toFloat(),
-                    backgroundColorGood,
-                    backgroundColorBad
+                    percentage.toFloat(), backgroundColorGood, backgroundColorBad
                 ) as Int
             val textColor =
                 ArgbEvaluator().evaluate(percentage.toFloat(), textColorGood, textColorBad) as Int
 
-            flContainer.setBackgroundColor(backgroundColor)
+            clContainer.setBackgroundColor(backgroundColor)
             tvAccelerometer.setTextColor(textColor)
-            tvAccelerometer.text = rootMeanSquare.round(2).toString()
+            tvAccelerometer.text = rootMeanSquare.round(1).toString()
+            tvSpeed.setTextColor(textColor)
+            tvSamples.setTextColor(textColor)
+            btnLeave.setTextColor(textColor)
+        })
+
+        viewModel.locationLiveData.observe(this, { location ->
+            tvSpeed.text = String.format(resources.getString(R.string.speed), location.speed * 3.6)
+        })
+
+        viewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
+            bikeActivityWithSamples?.let {
+                tvSamples.text = resources.getQuantityString(
+                    R.plurals.samples,
+                    it.bikeActivitySamples.filterValid().size,
+                    it.bikeActivitySamples.filterValid().size
+                )
+            }
         })
     }
 
@@ -208,6 +242,12 @@ class HeadUpActivity : AppCompatActivity() {
         hideHandler.removeCallbacks(hideRunnable)
         hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
     }
+
+    //
+    // Helpers
+    //
+
+    private fun List<BikeActivitySample>.filterValid() = this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
     companion object {
         /**

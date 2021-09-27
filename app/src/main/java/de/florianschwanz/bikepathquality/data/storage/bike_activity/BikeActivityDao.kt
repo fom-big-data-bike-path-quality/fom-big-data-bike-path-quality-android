@@ -22,6 +22,9 @@ interface BikeActivityDao {
     @Query("SELECT * FROM bikeactivity WHERE end_time IS NULL ORDER BY start_time DESC")
     fun getActive(): Flow<BikeActivity>
 
+    @Query("SELECT * FROM bikeactivity WHERE end_time IS NULL ORDER BY start_time DESC")
+    fun getActiveWithSamples(): Flow<BikeActivityWithSamples>
+
     @Insert
     suspend fun insert(bikeActivity: BikeActivity)
 
