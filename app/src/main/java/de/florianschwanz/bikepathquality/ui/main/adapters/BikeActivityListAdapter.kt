@@ -158,16 +158,6 @@ class BikeActivityListAdapter(
 
         private fun BikeActivity.isChangedAfterUpload() = this.uploadStatus == BikeActivityStatus.CHANGED_AFTER_UPLOAD
 
-        /**
-         * Retrieves theme color
-         */
-        private fun getThemeColorInHex(context: Context, @AttrRes attribute: Int): String {
-            val outValue = TypedValue()
-            context.theme.resolveAttribute(attribute, outValue, true)
-
-            return String.format("#%06X", 0xFFFFFF and outValue.data)
-        }
-
         //
         // Helpers
         //

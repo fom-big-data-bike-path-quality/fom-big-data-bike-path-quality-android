@@ -1182,7 +1182,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 Expression.interpolate(
                     Expression.linear(), Expression.get(propertyName),
                     stop(1.0f, color(getColor(R.color.green_500))),
-                    stop(15.0f, color(getColor(R.color.amber_500)))
+                    stop(15.0f, color(getColor(R.color.red_500)))
                 )
             )
         )

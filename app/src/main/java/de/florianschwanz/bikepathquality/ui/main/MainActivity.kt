@@ -218,5 +218,6 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_ACTIVITY_TRANSITION_PERMISSION = 1
         const val REQUEST_LOCATION_PERMISSION = 2
         const val REQUEST_BIKE_ACTIVITY_DETAILS = 3
+        const val REQUEST_HEAD_UP = 4
     }
 }

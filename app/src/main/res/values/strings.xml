@@ -11,6 +11,7 @@
     <string name="title_sensors">Sensors</string>
     <string name="title_log">Log</string>
     <string name="title_bike_activity_details">Bike Activity Details</string>
+    <string name="title_head_up">Head Up</string>
     <string name="title_surface_type">Surface Type</string>
     <string name="title_smoothness_type">Smoothness Type</string>
 
@@ -138,7 +139,6 @@
     <string name="settings_user_id">User ID</string>
     <string name="settings_app_version">App Version</string>
 
-
     <!-- Bike Activity Details -->
 
     <string name="bike_activity_sample">Bike Activity Sample</string>
@@ -192,6 +192,11 @@
 
     <string name="dialog_upload_again_title">Re-upload bike activity</string>
     <string name="dialog_upload_again_message">Do you want to re-upload this bike activity?</string>
+
+    <!-- Head Up -->
+
+    <string name="leave_hud_mode">Leave hud mode</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <!-- Surface / Smoothness Type -->
 

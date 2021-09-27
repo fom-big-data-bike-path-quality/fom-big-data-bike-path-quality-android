@@ -41,6 +41,10 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="fullSensor" />
         <activity
+            android:name=".ui.head_up.HeadUpActivity"
+            android:label="@string/title_head_up"
+            android:theme="@style/Theme.BikePathQuality.NoActionBar.Fullscreen" />
+        <activity
             android:name=".ui.surface_type.SurfaceTypeActivity"
             android:label="@string/title_surface_type"
             android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
@@ -53,13 +57,11 @@
         <activity
             android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
             android:label="@string/title_activity_permission_rationale"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/Theme.BikePathQuality.NoActionBar" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.rationale.LocationPermissionRationaleActivity"
             android:label="@string/title_location_permission_rationale"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/Theme.BikePathQuality.NoActionBar" />
+            android:screenOrientation="fullSensor" />
 
         <service
             android:name=".services.FirebaseFirestoreService"
