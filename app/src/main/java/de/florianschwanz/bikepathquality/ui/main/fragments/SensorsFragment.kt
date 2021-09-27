@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.ui.head_up.HeadUpActivity
 import de.florianschwanz.bikepathquality.ui.settings.SettingsActivity
 
 class SensorsFragment : Fragment() {

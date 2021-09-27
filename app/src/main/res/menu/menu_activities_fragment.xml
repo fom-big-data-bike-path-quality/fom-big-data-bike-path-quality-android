@@ -13,4 +13,10 @@
         android:orderInCategory="200"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_hud"
+        android:icon="@drawable/ic_baseline_fullscreen_24"
+        android:orderInCategory="300"
+        android:title="@string/action_hud"
+        app:showAsAction="ifRoom" />
 </menu>

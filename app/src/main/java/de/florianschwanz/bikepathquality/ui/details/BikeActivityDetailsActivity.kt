@@ -58,6 +58,7 @@ import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewMode
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.*
 import de.florianschwanz.bikepathquality.ui.details.adapters.BikeActivitySampleListAdapter
+import de.florianschwanz.bikepathquality.ui.head_up.HeadUpActivity
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity
 import de.florianschwanz.bikepathquality.ui.smoothness_type.SmoothnessTypeActivity.Companion.EXTRA_SMOOTHNESS_TYPE
 import de.florianschwanz.bikepathquality.ui.smoothness_type.adapters.SmoothnessTypeListAdapter.SmoothnessTypeViewHolder.Companion.RESULT_SMOOTHNESS_TYPE
@@ -192,6 +193,15 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         )
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
+                    }
+                    R.id.action_hud -> {
+                        val intent = Intent(
+                            applicationContext,
+                            HeadUpActivity::class.java
+                        )
+
+                        @Suppress("DEPRECATION")
+                        startActivity(intent)
                     }
                 }
 

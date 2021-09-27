@@ -22,6 +22,7 @@ import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewMode
 import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.services.TrackingForegroundService
 import de.florianschwanz.bikepathquality.ui.details.BikeActivityDetailsActivity
+import de.florianschwanz.bikepathquality.ui.head_up.HeadUpActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivity
 import de.florianschwanz.bikepathquality.ui.main.MainActivityViewModel
 import de.florianschwanz.bikepathquality.ui.main.adapters.BikeActivityListAdapter
@@ -81,6 +82,15 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
                     @Suppress("DEPRECATION")
                     requireActivity().startActivity(intent)
                 }
+                R.id.action_hud -> {
+                    val intent = Intent(
+                        requireActivity().applicationContext,
+                        HeadUpActivity::class.java
+                    )
+
+                    @Suppress("DEPRECATION")
+                    requireActivity().startActivity(intent)
+                }
             }
 
             false
@@ -103,6 +113,7 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
                     )
                 }
             }
+
         }
 
         bikeActivityViewModel.allBikeActivitiesWithSamples.observe(viewLifecycleOwner, {
