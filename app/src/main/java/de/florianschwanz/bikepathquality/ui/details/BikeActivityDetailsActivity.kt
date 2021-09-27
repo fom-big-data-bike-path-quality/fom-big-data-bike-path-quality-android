@@ -217,10 +217,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
                 viewModel.bikeActivitySamplesWithMeasurements.observe(
                     this, { bikeActivitySamplesWithMeasurements ->
-                        setMapStyle2(
+                        setMapStyle(
                             mapboxMap = mapboxMap,
                             mapStyle = buildMapStyle(),
-                            mapRouteCoordinates = buildMapCoordinates2(
+                            mapRouteCoordinates = buildMapCoordinatesForSamples(
                                 bikeActivitySamplesWithMeasurements
                             ),
                             mapFocusCoordinate = null,
@@ -228,10 +228,10 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                         )
 
                         clDescription.setOnClickListener {
-                            setMapStyle2(
+                            setMapStyle(
                                 mapboxMap = mapboxMap,
                                 mapStyle = buildMapStyle(),
-                                mapRouteCoordinates = buildMapCoordinates2(
+                                mapRouteCoordinates = buildMapCoordinatesForSamples(
                                     bikeActivitySamplesWithMeasurements
                                 ),
                                 mapFocusCoordinate = null,
@@ -247,7 +247,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                             viewModel.bikeActivitySampleInFocus.value = null
                         }
                     })
-
             }
 
             tvStartTime.text =
@@ -504,16 +503,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
                     viewModel.bikeActivitySamplesWithMeasurements.observe(
                         this, { bikeActivitySamplesWithMeasurements ->
-                            setMapStyle2(
+                            setMapStyle(
                                 mapboxMap = mapboxMap,
                                 mapStyle = buildMapStyle(),
-                                mapRouteCoordinates = buildMapCoordinates2(
+                                mapRouteCoordinates = buildMapCoordinatesForSamples(
                                     bikeActivitySamplesWithMeasurements
                                 ),
                                 mapFocusCoordinate = bikeActivitySampleInFocus?.bikeActivitySample?.let { bikeActivitySample ->
                                     buildMapCoordinate(bikeActivitySample)
                                 },
-                                mapFocusRouteCoordinates = buildMapCoordinates3(
+                                mapFocusRouteCoordinates = buildMapCoordinatesForSampleInFocus(
                                     bikeActivitySamplesWithMeasurements.map { it.bikeActivitySample },
                                     bikeActivitySampleInFocus?.bikeActivitySample
                                 ).map { buildMapCoordinate(it) }
@@ -870,14 +869,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         }
 
     /**
-     * Builds map coordinates based on bike activity samples
-     */
-    private fun buildMapCoordinates(bikeActivitySamples: List<BikeActivitySample>) =
-        bikeActivitySamples
-            .filterValid()
-            .map(this::buildMapCoordinate)
-
-    /**
      * Builds map coordinate based on bike activity sample
      */
     private fun buildMapCoordinate(bikeActivitySample: BikeActivitySample) = Point.fromLngLat(
@@ -888,13 +879,13 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     /**
      * Builds map coordinates based on bike activity samples
      */
-    private fun buildMapCoordinates2(bikeActivitySamples: List<BikeActivitySampleWithMeasurements>) =
-        bikeActivitySamples.filterValid().map(this::buildMapCoordinate2)
+    private fun buildMapCoordinatesForSamples(bikeActivitySamples: List<BikeActivitySampleWithMeasurements>) =
+        bikeActivitySamples.filterValid().map(this::buildMapCoordinateForSampleWithValue)
 
     /**
-     * Builds map coordinates based on bike activity measurements
+     * Builds map coordinates based on bike activity sample in focus in the consecutive one
      */
-    private fun buildMapCoordinates3(
+    private fun buildMapCoordinatesForSampleInFocus(
         bikeActivitySamples: List<BikeActivitySample>,
         bikeActivitySampleInFocus: BikeActivitySample?
     ): List<BikeActivitySample> = bikeActivitySampleInFocus?.let { bikeActivitySample ->
@@ -929,140 +920,170 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     /**
      * Builds map coordinate based on bike activity sample
      */
-    private fun buildMapCoordinate2(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) =
+    private fun buildMapCoordinateForSampleWithValue(bikeActivitySampleWithMeasurements: BikeActivitySampleWithMeasurements) =
         Pair(
             Point.fromLngLat(
                 bikeActivitySampleWithMeasurements.bikeActivitySample.lon,
                 bikeActivitySampleWithMeasurements.bikeActivitySample.lat
-            ), bikeActivitySampleWithMeasurements.bikeActivityMeasurements.map {
-                ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
-            }.average()
+            ), bikeActivitySampleWithMeasurements.bikeActivityMeasurements.rootMeanSquare()
         )
 
     /**
-     * Builds map coordinate based on bike activity measurement
-     */
-    private fun buildMapCoordinate3(bikeActivityMeasurement: BikeActivityMeasurement) =
-        Pair(
-            Point.fromLngLat(
-                bikeActivityMeasurement.lon,
-                bikeActivityMeasurement.lat
-            ),
-            ((bikeActivityMeasurement.accelerometerX.square() + bikeActivityMeasurement.accelerometerY.square() + bikeActivityMeasurement.accelerometerZ.square()) / 3).squareRoot()
-                .toDouble()
-        )
-
-    /**
-     * Sets map style
+     * Sets map style by assembling all elements that need to been drawn
+     *
+     * <li> dotted lines connecting all bike activity samples
+     * <li> a highlighted line indicating the section of a focussed bike activity sample (optional)
+     * <li> circles indicating all bike activity samples where the color reflects accelerometer value
+     * <li> a circle indicating first bike activity sample
+     * <li> a circle indicating last bike activity sample
+     * <li> a circle indicating focussed activity sample (optional)
      */
     private fun setMapStyle(
-        mapboxMap: MapboxMap,
-        mapStyle: String,
-        mapRouteCoordinates: List<Point>,
-        mapFocusCoordinate: Point?
-    ) {
-        val line: Pair<String, String> = Pair("line-source", "line-layer")
-        val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
-        val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
-
-        mapboxMap.setStyle(mapStyle) { style ->
-
-            style.addLineSource(line.first, mapRouteCoordinates)
-            style.addPointSource(samples.first, mapRouteCoordinates)
-            mapFocusCoordinate?.let { style.addPointSource(highlight.first, listOf(it)) }
-
-            style.addLineLayer(
-                line.second,
-                line.first,
-                floatArrayOf(0.01f, 2f),
-                Property.LINE_CAP_ROUND,
-                Property.LINE_JOIN_ROUND,
-                3f,
-                Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
-            )
-            style.addCircleLayerWithThemeColor(
-                samples.second,
-                samples.first,
-                5f,
-                R.attr.colorPrimary
-            )
-
-            // Bike activity sample in focus
-            style.addCircleLayerWithThemeColor(
-                highlight.second,
-                highlight.first,
-                10f,
-                R.attr.colorSecondary
-            )
-
-            mapboxMap.uiSettings.isRotateGesturesEnabled = false
-        }
-    }
-
-    /**
-     * Sets map style
-     */
-    private fun setMapStyle2(
         mapboxMap: MapboxMap,
         mapStyle: String,
         mapRouteCoordinates: List<Pair<Point, Double>>,
         mapFocusCoordinate: Point?,
         mapFocusRouteCoordinates: List<Point>?,
-    ) {
-        val line: Pair<String, String> = Pair("line-source", "line-layer")
-        val samples: Pair<String, String> = Pair("sample-source", "sample-layer")
-        val start: Pair<String, String> = Pair("start-source", "start-layer")
-        val end1: Pair<String, String> = Pair("end-1-source", "end-1-layer")
-        val end2: Pair<String, String> = Pair("end-2-source", "end-2-layer")
-        val end3: Pair<String, String> = Pair("end-3-source", "end-3-layer")
-        val highlightLine: Pair<String, String> =
-            Pair("highlight-line-source", "highlight-line-layer")
-        val highlight: Pair<String, String> = Pair("highlight-source", "highlight-layer")
+    ) = mapboxMap.setStyle(mapStyle) { style ->
 
-        mapboxMap.setStyle(mapStyle) { style ->
+        style.addConnectionLine("line", mapRouteCoordinates)
+        style.addConnectionLineFocus("line-focus", mapFocusRouteCoordinates ?: listOf())
+        style.addBikeActivitySamples("sample", mapRouteCoordinates)
+        style.addBikeActivitySampleStart("sample-start", mapRouteCoordinates)
+        style.addBikeActivitySampleEnd("sample-end", mapRouteCoordinates)
+        style.addBikeActivitySampleFocus("sample-focus", mapFocusCoordinate)
 
-            style.addLineSource(line.first, mapRouteCoordinates.map { it.first })
-            style.addLineSource(highlightLine.first, mapFocusRouteCoordinates?: listOf())
-            style.addPointSource2(samples.first, mapRouteCoordinates)
-            style.addPointSource(start.first, listOf(mapRouteCoordinates.first().first))
-            style.addPointSource(end1.first, listOf(mapRouteCoordinates.last().first))
-            style.addPointSource(end2.first, listOf(mapRouteCoordinates.last().first))
-            style.addPointSource(end3.first, listOf(mapRouteCoordinates.last().first))
-            mapFocusCoordinate?.let { style.addPointSource(highlight.first, listOf(it)) }
-
-            style.addLineLayer(
-                line.second,
-                line.first,
-                floatArrayOf(0.01f, 2f),
-                Property.LINE_CAP_ROUND,
-                Property.LINE_JOIN_ROUND,
-                3f,
-                Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
-            )
-            style.addLineLayer(
-                highlightLine.second,
-                highlightLine.first,
-                floatArrayOf(1f, 0f),
-                Property.LINE_CAP_ROUND,
-                Property.LINE_JOIN_ROUND,
-                4f,
-                Color.parseColor(getThemeColorInHex(R.attr.colorSecondary))
-            )
-            style.addCircleLayer2(samples.second, samples.first, 5f)
-            style.addCircleLayerWithColor(start.second, start.first, 10f, R.color.black)
-            style.addCircleLayerWithColor(end1.second, end1.first, 10f, R.color.black)
-            style.addCircleLayerWithColor(end2.second, end2.first, 8f, R.color.white)
-            style.addCircleLayerWithColor(end3.second, end3.first, 6f, R.color.black)
-            style.addCircleLayerWithThemeColor(
-                highlight.second,
-                highlight.first,
-                10f,
-                R.attr.colorSecondary
-            )
-
-            mapboxMap.uiSettings.isRotateGesturesEnabled = false
-        }
+        mapboxMap.uiSettings.isRotateGesturesEnabled = false
     }
+
+    /**
+     * Adds a dotted line connecting all the bike activity samples identified by their coordinates
+     */
+    private fun Style.addConnectionLine(
+        name: String,
+        mapRouteCoordinates: List<Pair<Point, Double>>
+    ) {
+        val sourceLayerPair = Pair("$name-source", "$name-layer")
+        this.addLineSource(sourceLayerPair.first, mapRouteCoordinates.map { it.first })
+        this.addLineLayer(
+            sourceLayerPair.second,
+            sourceLayerPair.first,
+            floatArrayOf(0.01f, 2f),
+            Property.LINE_CAP_ROUND,
+            Property.LINE_JOIN_ROUND,
+            3f,
+            Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
+        )
+    }
+
+    /**
+     * Adds a highlighted line connecting the bike activity sample in focus with the next one
+     */
+    private fun Style.addConnectionLineFocus(name: String, mapFocusRouteCoordinates: List<Point>) {
+        val sourceName = "$name-source"
+        val layerName = "$name-layer"
+        this.addLineSource(sourceName, mapFocusRouteCoordinates)
+        this.addLineLayer(
+            layerName,
+            sourceName,
+            floatArrayOf(1f, 0f),
+            Property.LINE_CAP_ROUND,
+            Property.LINE_JOIN_ROUND,
+            4f,
+            Color.parseColor(getThemeColorInHex(R.attr.colorSecondary))
+        )
+    }
+
+    /**
+     * Adds a circle for all bike activity samples identified by their coordinates. Uses property value to color code circles by their associated accelerometer value
+     */
+    private fun Style.addBikeActivitySamples(
+        name: String,
+        mapRouteCoordinates: List<Pair<Point, Double>>
+    ) {
+        val sourceLayerPair = Pair("$name-source", "$name-layer")
+        val propertyName = "accelerometer"
+        this.addPointSourceWithProperty(sourceLayerPair.first, propertyName, mapRouteCoordinates)
+        this.addCircleLayerWithProperty(
+            sourceLayerPair.second,
+            sourceLayerPair.first,
+            propertyName,
+            5f
+        )
+    }
+
+    /**
+     * Adds a dark circle indicating the first bike activity sample aka the start of a bike activity
+     * The symbol is derived from UML
+     */
+    private fun Style.addBikeActivitySampleStart(
+        name: String,
+        mapRouteCoordinates: List<Pair<Point, Double>>
+    ) {
+        val sourceLayerPair = Pair("$name-source", "$name-layer")
+        this.addPointSource(sourceLayerPair.first, listOf(mapRouteCoordinates.first().first))
+        this.addCircleLayerWithColor(
+            sourceLayerPair.second,
+            sourceLayerPair.first,
+            10f,
+            R.color.grey_700
+        )
+    }
+
+    /**
+     * Adds a multiline circle indicating the last bike activity sample aka the end of a bike activity
+     * The symbol is derived from UML
+     * Actually it draw three concentric circles
+     */
+    private fun Style.addBikeActivitySampleEnd(
+        name: String,
+        mapRouteCoordinates: List<Pair<Point, Double>>
+    ) {
+        val sourceLayerPair1 = Pair("$name-1-source", "$name-1-layer")
+        val sourceLayerPair2 = Pair("$name-2-source", "$name-2-layer")
+        val sourceLayerPair3 = Pair("$name-3-source", "$name-3-layer")
+        this.addPointSource(sourceLayerPair1.first, listOf(mapRouteCoordinates.last().first))
+        this.addPointSource(sourceLayerPair2.first, listOf(mapRouteCoordinates.last().first))
+        this.addPointSource(sourceLayerPair3.first, listOf(mapRouteCoordinates.last().first))
+        this.addCircleLayerWithColor(
+            sourceLayerPair1.second,
+            sourceLayerPair1.first,
+            10f,
+            R.color.grey_700
+        )
+        this.addCircleLayerWithColor(
+            sourceLayerPair2.second,
+            sourceLayerPair2.first,
+            8f,
+            R.color.white
+        )
+        this.addCircleLayerWithColor(
+            sourceLayerPair3.second,
+            sourceLayerPair3.first,
+            6f,
+            R.color.grey_700
+        )
+    }
+
+    /**
+     * Adds a highlighted circle for the bike activity sample in focus
+     */
+    private fun Style.addBikeActivitySampleFocus(name: String, mapRouteCoordinate: Point?) {
+        val sourceLayerPair = Pair("$name-source", "$name-layer")
+        this.addPointSource(
+            sourceLayerPair.first,
+            mapRouteCoordinate?.let { listOf(mapRouteCoordinate) } ?: listOf())
+        this.addCircleLayerWithThemeColor(
+            sourceLayerPair.second,
+            sourceLayerPair.first,
+            10f,
+            R.attr.colorSecondary
+        )
+    }
+
+    //
+    // Helpers (Mapbox)
+    //
 
     private fun Style.addLineSource(name: String, points: List<Point>) = this.addSource(
         GeoJsonSource(
@@ -1088,7 +1109,11 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         )
     )
 
-    private fun Style.addPointSource2(name: String, pointsWithValues: List<Pair<Point, Double>>) =
+    private fun Style.addPointSourceWithProperty(
+        name: String,
+        propertyName: String,
+        pointsWithValues: List<Pair<Point, Double>>
+    ) =
         this.addSource(
             GeoJsonSource(
                 name,
@@ -1096,7 +1121,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                     pointsWithValues.map { pointWithValue ->
                         // See https://docs.microsoft.com/de-de/azure/azure-maps/create-data-source-android-sdk?pivots=programming-language-kotlin
                         val feature = Feature.fromGeometry(pointWithValue.first)
-                        feature.addNumberProperty("accelerometer", pointWithValue.second)
+                        feature.addNumberProperty(propertyName, pointWithValue.second)
                         feature
                     }.toTypedArray()
                 )
@@ -1145,16 +1170,17 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         )
     )
 
-    private fun Style.addCircleLayer2(
+    private fun Style.addCircleLayerWithProperty(
         layerName: String,
         sourceName: String,
+        propertyName: String,
         circleRadius: Float
     ) = this.addLayer(
         CircleLayer(layerName, sourceName).withProperties(
             PropertyFactory.circleRadius(circleRadius),
             PropertyFactory.circleColor(
                 Expression.interpolate(
-                    Expression.linear(), Expression.get("accelerometer"),
+                    Expression.linear(), Expression.get(propertyName),
                     stop(1.0f, color(getColor(R.color.green_500))),
                     stop(15.0f, color(getColor(R.color.amber_500)))
                 )
@@ -1205,12 +1231,20 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
     //
 
     private fun Float.square(): Float = this * this
+
     private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
 
+    private fun List<BikeActivityMeasurement>.rootMeanSquare() = this.map {
+        ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
+    }.average()
+
     @JvmName("filterValidBikeActivitySampleWithMeasurements")
-    private fun List<BikeActivitySampleWithMeasurements>.filterValid() = this.filter { it.bikeActivitySample.lon != 0.0 || it.bikeActivitySample.lat != 0.0 }
+    private fun List<BikeActivitySampleWithMeasurements>.filterValid() =
+        this.filter { it.bikeActivitySample.lon != 0.0 || it.bikeActivitySample.lat != 0.0 }
+
     @JvmName("filterValidBikeActivitySample")
-    private fun List<BikeActivitySample>.filterValid() = this.filter { it.lon != 0.0 || it.lat != 0.0 }
+    private fun List<BikeActivitySample>.filterValid() =
+        this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
     private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
         observe(lifecycleOwner, object : Observer<T> {
