@@ -99,9 +99,10 @@ See the [open issues](https://github.com/fom-big-data-bike-path-quality/fom-big-
 
 ### Version 1.*
 
-* 1.10.0 Highlight bike activity sample span
-* 1.9.0 Color code bike activity sample accelerometer values
-* 1.8.0 Mark invalid bike activity samples
+* 1.11.0 Head-up mode
+* 1.10.0 Bike activity sample span higlight
+* 1.9.0 Bike activity sample color code
+* 1.8.0 Invalid bike activity sample indicator
 * 1.7.0 Under-lab-conditions flag
 * 1.6.0 Tracking fixes
 * 1.5.0 Firebase upload
