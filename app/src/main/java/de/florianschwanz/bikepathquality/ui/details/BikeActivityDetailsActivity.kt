@@ -48,7 +48,6 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
-import de.florianschwanz.bikepathquality.data.model.tracking.Accelerometer
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
@@ -215,10 +214,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
                 val bikeActivitySamplesFocus: List<BikeActivitySample> =
                     viewModel.bikeActivitySampleInFocusPosition.value?.let { position ->
-                        listOfNotNull(
-                            if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
-                            bikeActivityWithSamples.bikeActivitySamples[position],
-                            if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
+                        bikeActivityWithSamples.bikeActivitySamples.getBikeActivitySamplesInFocus(
+                            position
                         )
                     } ?: run {
                         bikeActivityWithSamples.bikeActivitySamples
@@ -505,11 +502,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
             viewModel.bikeActivityWithSamples.value?.let { bikeActivityWithSamples ->
                 viewModel.bikeActivitySampleInFocusPosition.value?.let { position ->
-                    val bikeActivitySamples =
-                        listOfNotNull(
-                            if (position > 0) bikeActivityWithSamples.bikeActivitySamples[position - 1] else null,
-                            bikeActivityWithSamples.bikeActivitySamples[position],
-                            if (position < bikeActivityWithSamples.bikeActivitySamples.size - 1) bikeActivityWithSamples.bikeActivitySamples[position + 1] else null,
+                    val bikeActivitySamplesInFocus =
+                        bikeActivityWithSamples.bikeActivitySamples.getBikeActivitySamplesInFocus(
+                            position
                         )
 
                     viewModel.bikeActivitySamplesWithMeasurements.observe(
@@ -530,7 +525,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                             )
                         })
 
-                    centerMap(mapboxMap, bikeActivitySamples, duration = 1_000)
+                    centerMap(mapboxMap, bikeActivitySamplesInFocus, duration = 1_000)
                 }
             }
         })
@@ -1097,6 +1092,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             sourceLayerPair.first,
             10f,
             R.attr.colorSecondary
+        )
+    }
+
+    //
+    // Helpers (bike activity)
+    //
+
+    private fun List<BikeActivitySample>.getBikeActivitySamplesInFocus(position: Int): List<BikeActivitySample> {
+        val filteredBikeActivitySamples = this.filterValid()
+        return listOfNotNull(
+            if (position > 0) this.filterValid()[position - 1] else null,
+            filteredBikeActivitySamples[position],
+            if (position < filteredBikeActivitySamples.size - 1) filteredBikeActivitySamples[position + 1] else null,
         )
     }
 
