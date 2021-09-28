@@ -149,9 +149,7 @@ class BikeActivitySampleListAdapter(
                     )
             tvAccelerometer.text = String.format(
                 resources.getString(R.string.bike_activity_sample_accelerometer),
-                item.bikeActivityMeasurements.map {
-                    ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
-                }.average()
+                item.bikeActivityMeasurements.map { it.rootMeanSquare() }.average()
             )
 
             clBikeActivityMeasurements.maxHeight = 0
@@ -184,8 +182,15 @@ class BikeActivitySampleListAdapter(
             )
         }
 
+        //
+        // Helpers
+        //
+
+        private fun BikeActivityMeasurement.rootMeanSquare() = ((accelerometerX.square() + accelerometerY.square() + accelerometerZ.square()) / 3).squareRoot()
+
         private fun Float.square(): Float = this * this
-        private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
+
+        private fun Float.squareRoot(): Float = sqrt(this)
 
         private fun isValid(
             bikeActivity: BikeActivity?,

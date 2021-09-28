@@ -15,11 +15,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.common.collect.EvictingQueue
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.model.tracking.Accelerometer
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
@@ -120,37 +120,31 @@ class HeadUpActivity : AppCompatActivity() {
             finish()
         }
 
-        val accelerometerEvictingQueueX: EvictingQueue<Float> = EvictingQueue.create(500)
-        val accelerometerEvictingQueueY: EvictingQueue<Float> = EvictingQueue.create(500)
-        val accelerometerEvictingQueueZ: EvictingQueue<Float> = EvictingQueue.create(500)
+        val accelerometerEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
 
-        bikeActivityViewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
-            viewModel.activeBikeActivityWithSamples.value = bikeActivityWithSamples
-        })
+        bikeActivityViewModel.activeBikeActivityWithSamples.observe(
+            this,
+            { bikeActivityWithSamples ->
+                viewModel.activeBikeActivityWithSamples.value = bikeActivityWithSamples
+            })
 
         viewModel = ViewModelProvider(this).get(HeadUpActivityViewModel::class.java)
         viewModel.accelerometerLiveData.observe(this, { accelerometer ->
 
-            accelerometerEvictingQueueX.add(accelerometer.x)
-            accelerometerEvictingQueueY.add(accelerometer.y)
-            accelerometerEvictingQueueZ.add(accelerometer.z)
+            accelerometerEvictingQueue.add(accelerometer.rootMeanSquare())
 
-            val x = accelerometerEvictingQueueX.average()
-            val y = accelerometerEvictingQueueY.average()
-            val z = accelerometerEvictingQueueZ.average()
-            val rootMeanSquare = ((x.square() + y.square() + z.square()) / 3).squareRoot()
-
-            val MAX_VALUE = 15.0f
+            val MAX_VALUE = 10.0f
 
             val backgroundColorGood = ContextCompat.getColor(this, R.color.green_600)
             val backgroundColorBad = ContextCompat.getColor(this, R.color.red_600)
             val textColorGood = ContextCompat.getColor(this, R.color.green_a200)
             val textColorBad = ContextCompat.getColor(this, R.color.red_a200)
 
+            val value = accelerometerEvictingQueue.average().toFloat()
             val percentage = when {
-                rootMeanSquare < 0 -> 0.0f
-                rootMeanSquare > MAX_VALUE -> 1.0f
-                else -> (1 / MAX_VALUE) * rootMeanSquare
+                value < 0 -> 0.0f
+                value > MAX_VALUE -> 1.0f
+                else -> (1 / MAX_VALUE) * value
             }
 
             val backgroundColor =
@@ -162,7 +156,7 @@ class HeadUpActivity : AppCompatActivity() {
 
             clContainer.setBackgroundColor(backgroundColor)
             tvAccelerometer.setTextColor(textColor)
-            tvAccelerometer.text = rootMeanSquare.round(1).toString()
+            tvAccelerometer.text = value.round(1).toString()
             tvSpeed.setTextColor(textColor)
             tvSamples.setTextColor(textColor)
             btnLeave.setTextColor(textColor)
@@ -183,15 +177,17 @@ class HeadUpActivity : AppCompatActivity() {
         })
     }
 
-    fun Double.round(decimals: Int): Double {
+    fun Float.round(decimals: Int): Float {
         var multiplier = 1.0
         repeat(decimals) { multiplier *= 10 }
-        return round(this * multiplier) / multiplier
+        return (round(this * multiplier) / multiplier).toFloat()
     }
 
-    private fun Double.square(): Double = this * this
+    private fun Float.square(): Float = this * this
 
-    private fun Double.squareRoot(): Double = sqrt(this)
+    private fun Float.squareRoot(): Float = sqrt(this)
+
+    fun Accelerometer.rootMeanSquare() = ((x.square() + y.square() + z.square()) / 3).squareRoot()
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -250,7 +246,8 @@ class HeadUpActivity : AppCompatActivity() {
     // Helpers
     //
 
-    private fun List<BikeActivitySample>.filterValid() = this.filter { it.lon != 0.0 || it.lat != 0.0 }
+    private fun List<BikeActivitySample>.filterValid() =
+        this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
     companion object {
         /**

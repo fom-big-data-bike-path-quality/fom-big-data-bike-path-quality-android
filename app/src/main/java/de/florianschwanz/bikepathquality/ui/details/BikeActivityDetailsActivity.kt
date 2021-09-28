@@ -48,6 +48,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
+import de.florianschwanz.bikepathquality.data.model.tracking.Accelerometer
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.*
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySampleViewModel
@@ -935,7 +936,9 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
             Point.fromLngLat(
                 bikeActivitySampleWithMeasurements.bikeActivitySample.lon,
                 bikeActivitySampleWithMeasurements.bikeActivitySample.lat
-            ), bikeActivitySampleWithMeasurements.bikeActivityMeasurements.rootMeanSquare()
+            ),
+            bikeActivitySampleWithMeasurements.bikeActivityMeasurements.map { it.rootMeanSquare() }
+                .average()
         )
 
     /**
@@ -1198,7 +1201,7 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 Expression.interpolate(
                     Expression.linear(), Expression.get(propertyName),
                     stop(1.0f, color(getColor(R.color.green_500))),
-                    stop(15.0f, color(getColor(R.color.red_500)))
+                    stop(10.0f, color(getColor(R.color.red_500)))
                 )
             )
         )
@@ -1250,9 +1253,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
 
     private fun Float.squareRoot(): Float = sqrt(this.toDouble()).toFloat()
 
-    private fun List<BikeActivityMeasurement>.rootMeanSquare() = this.map {
-        ((it.accelerometerX.square() + it.accelerometerY.square() + it.accelerometerZ.square()) / 3).squareRoot()
-    }.average()
+    private fun BikeActivityMeasurement.rootMeanSquare() =
+        ((accelerometerX.square() + accelerometerY.square() + accelerometerZ.square()) / 3).squareRoot()
 
     @JvmName("filterValidBikeActivitySampleWithMeasurements")
     private fun List<BikeActivitySampleWithMeasurements>.filterValid() =
