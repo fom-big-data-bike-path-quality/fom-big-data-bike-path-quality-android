@@ -206,7 +206,7 @@ class BikeActivitySampleListAdapter(
 
         private fun BikeActivitySampleWithMeasurements.isAboveSpeedLimit() =
             this.bikeActivityMeasurements.all {
-                it.speed > 5 * 3.6
+                it.speed.times(3.6) > 5
             }
 
         /**
