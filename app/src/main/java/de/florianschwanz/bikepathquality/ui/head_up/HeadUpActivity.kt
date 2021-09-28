@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -37,7 +38,7 @@ class HeadUpActivity : AppCompatActivity() {
     private lateinit var tvAccelerometer: TextView
     private lateinit var tvSpeed: TextView
     private lateinit var tvSamples: TextView
-    private lateinit var btnLeave: TextView
+    private lateinit var btnLeave: Button
     private lateinit var fullscreenContentControls: LinearLayout
     private val hideHandler = Handler()
 
@@ -115,7 +116,9 @@ class HeadUpActivity : AppCompatActivity() {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        binding.btnLeave.setOnTouchListener(delayHideTouchListener)
+        binding.btnLeave.setOnClickListener {
+            finish()
+        }
 
         val accelerometerEvictingQueueX: EvictingQueue<Float> = EvictingQueue.create(500)
         val accelerometerEvictingQueueY: EvictingQueue<Float> = EvictingQueue.create(500)
@@ -210,7 +213,7 @@ class HeadUpActivity : AppCompatActivity() {
     private fun hide() {
         // Hide UI first
         supportActionBar?.hide()
-        fullscreenContentControls.visibility = View.GONE
+        fullscreenContentControls.visibility = View.VISIBLE
         isFullscreen = false
 
         // Schedule a runnable to remove the status and navigation bar after a delay

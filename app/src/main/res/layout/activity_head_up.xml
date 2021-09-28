@@ -17,7 +17,7 @@
         android:keepScreenOn="true"
         android:text="@string/accelerometer"
         android:textColor="?attr/fullscreenTextColor"
-        android:textSize="75sp"
+        android:textSize="150sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,23 +29,29 @@
         android:id="@+id/tvSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="40dp"
+        android:layout_marginTop="40dp"
         android:text="@string/default_speed"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?attr/fullscreenTextColor"
+        android:textSize="75sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvSamples"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="40dp"
+        android:layout_marginBottom="80dp"
         android:text="@string/default_samples"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?attr/fullscreenTextColor"
+        android:textSize="75sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSpeed" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
@@ -77,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/leave_hud_mode"
+                android:textColor="?attr/fullscreenTextColor"
                 tools:ignore="TextContrastCheck" />
 
         </LinearLayout>
