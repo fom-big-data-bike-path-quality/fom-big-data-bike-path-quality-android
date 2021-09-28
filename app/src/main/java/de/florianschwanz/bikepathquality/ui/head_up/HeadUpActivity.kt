@@ -26,6 +26,9 @@ import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeA
 import de.florianschwanz.bikepathquality.databinding.ActivityHeadUpBinding
 import kotlin.math.round
 import kotlin.math.sqrt
+import android.graphics.drawable.ColorDrawable
+import androidx.appcompat.app.ActionBar
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -135,6 +138,8 @@ class HeadUpActivity : AppCompatActivity() {
 
             val MAX_VALUE = 10.0f
 
+            val statusBarColorGood = ContextCompat.getColor(this, R.color.green_800)
+            val statusBarColorBad = ContextCompat.getColor(this, R.color.red_800)
             val backgroundColorGood = ContextCompat.getColor(this, R.color.green_600)
             val backgroundColorBad = ContextCompat.getColor(this, R.color.red_600)
             val textColorGood = ContextCompat.getColor(this, R.color.green_a200)
@@ -147,18 +152,26 @@ class HeadUpActivity : AppCompatActivity() {
                 else -> (1 / MAX_VALUE) * value
             }
 
+            val statusBarColor =
+                ArgbEvaluator().evaluate(
+                    percentage, statusBarColorGood, statusBarColorBad
+                ) as Int
             val backgroundColor =
                 ArgbEvaluator().evaluate(
-                    percentage.toFloat(), backgroundColorGood, backgroundColorBad
+                    percentage, backgroundColorGood, backgroundColorBad
                 ) as Int
             val textColor =
-                ArgbEvaluator().evaluate(percentage.toFloat(), textColorGood, textColorBad) as Int
+                ArgbEvaluator().evaluate(percentage, textColorGood, textColorBad) as Int
+
+            window.statusBarColor = statusBarColor
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(statusBarColor))
 
             clContainer.setBackgroundColor(backgroundColor)
             tvAccelerometer.setTextColor(textColor)
             tvAccelerometer.text = value.round(1).toString()
             tvSpeed.setTextColor(textColor)
             tvSamples.setTextColor(textColor)
+            fullscreenContentControls.setBackgroundColor(statusBarColor)
             btnLeave.setTextColor(textColor)
         })
 
