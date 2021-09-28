@@ -231,7 +231,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                             mapRouteCoordinates = buildMapCoordinatesForSamples(
                                 bikeActivitySamplesWithMeasurements
                             ),
-                            mapFocusCoordinate = null,
                             mapFocusRouteCoordinates = null
                         )
 
@@ -242,7 +241,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                                 mapRouteCoordinates = buildMapCoordinatesForSamples(
                                     bikeActivitySamplesWithMeasurements
                                 ),
-                                mapFocusCoordinate = null,
                                 mapFocusRouteCoordinates = null
                             )
                             centerMap(
@@ -515,9 +513,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                                 mapRouteCoordinates = buildMapCoordinatesForSamples(
                                     bikeActivitySamplesWithMeasurements
                                 ),
-                                mapFocusCoordinate = bikeActivitySampleInFocus?.bikeActivitySample?.let { bikeActivitySample ->
-                                    buildMapCoordinate(bikeActivitySample)
-                                },
                                 mapFocusRouteCoordinates = buildMapCoordinatesForSampleInFocus(
                                     bikeActivitySamplesWithMeasurements.map { it.bikeActivitySample },
                                     bikeActivitySampleInFocus?.bikeActivitySample
@@ -950,7 +945,6 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         mapboxMap: MapboxMap,
         mapStyle: String,
         mapRouteCoordinates: List<Pair<Point, Double>>,
-        mapFocusCoordinate: Point?,
         mapFocusRouteCoordinates: List<Point>?,
     ) = mapboxMap.setStyle(mapStyle) { style ->
 
@@ -959,7 +953,8 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         style.addBikeActivitySamples("sample", mapRouteCoordinates)
         style.addBikeActivitySampleStart("sample-start", mapRouteCoordinates)
         style.addBikeActivitySampleEnd("sample-end", mapRouteCoordinates)
-        style.addBikeActivitySampleFocus("sample-focus", mapFocusCoordinate)
+        style.addBikeActivitySampleFocus("sample-focus-start", mapFocusRouteCoordinates?.getOrNull(0))
+        style.addBikeActivitySampleFocus("sample-focus-end", mapFocusRouteCoordinates?.getOrNull(1))
 
         mapboxMap.uiSettings.isRotateGesturesEnabled = false
     }
