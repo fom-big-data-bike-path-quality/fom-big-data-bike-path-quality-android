@@ -973,17 +973,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         name: String,
         mapRouteCoordinates: List<Pair<Point, Double>>
     ) {
-        val sourceLayerPair = Pair("$name-source", "$name-layer")
-        this.addLineSource(sourceLayerPair.first, mapRouteCoordinates.map { it.first })
-        this.addLineLayer(
-            sourceLayerPair.second,
-            sourceLayerPair.first,
-            floatArrayOf(0.01f, 2f),
-            Property.LINE_CAP_ROUND,
-            Property.LINE_JOIN_ROUND,
-            3f,
-            Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
-        )
+        if (mapRouteCoordinates.isNotEmpty()) {
+            val sourceLayerPair = Pair("$name-source", "$name-layer")
+            this.addLineSource(sourceLayerPair.first, mapRouteCoordinates.map { it.first })
+            this.addLineLayer(
+                sourceLayerPair.second,
+                sourceLayerPair.first,
+                floatArrayOf(0.01f, 2f),
+                Property.LINE_CAP_ROUND,
+                Property.LINE_JOIN_ROUND,
+                3f,
+                Color.parseColor(getThemeColorInHex(R.attr.colorButtonNormal))
+            )
+        }
     }
 
     /**
@@ -1030,14 +1032,16 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         name: String,
         mapRouteCoordinates: List<Pair<Point, Double>>
     ) {
-        val sourceLayerPair = Pair("$name-source", "$name-layer")
-        this.addPointSource(sourceLayerPair.first, listOf(mapRouteCoordinates.first().first))
-        this.addCircleLayerWithColor(
-            sourceLayerPair.second,
-            sourceLayerPair.first,
-            10f,
-            R.color.grey_700
-        )
+        if (mapRouteCoordinates.isNotEmpty()) {
+            val sourceLayerPair = Pair("$name-source", "$name-layer")
+            this.addPointSource(sourceLayerPair.first, listOf(mapRouteCoordinates.first().first))
+            this.addCircleLayerWithColor(
+                sourceLayerPair.second,
+                sourceLayerPair.first,
+                10f,
+                R.color.grey_700
+            )
+        }
     }
 
     /**
@@ -1049,30 +1053,32 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
         name: String,
         mapRouteCoordinates: List<Pair<Point, Double>>
     ) {
-        val sourceLayerPair1 = Pair("$name-1-source", "$name-1-layer")
-        val sourceLayerPair2 = Pair("$name-2-source", "$name-2-layer")
-        val sourceLayerPair3 = Pair("$name-3-source", "$name-3-layer")
-        this.addPointSource(sourceLayerPair1.first, listOf(mapRouteCoordinates.last().first))
-        this.addPointSource(sourceLayerPair2.first, listOf(mapRouteCoordinates.last().first))
-        this.addPointSource(sourceLayerPair3.first, listOf(mapRouteCoordinates.last().first))
-        this.addCircleLayerWithColor(
-            sourceLayerPair1.second,
-            sourceLayerPair1.first,
-            10f,
-            R.color.grey_700
-        )
-        this.addCircleLayerWithColor(
-            sourceLayerPair2.second,
-            sourceLayerPair2.first,
-            8f,
-            R.color.white
-        )
-        this.addCircleLayerWithColor(
-            sourceLayerPair3.second,
-            sourceLayerPair3.first,
-            6f,
-            R.color.grey_700
-        )
+        if (mapRouteCoordinates.isNotEmpty()) {
+            val sourceLayerPair1 = Pair("$name-1-source", "$name-1-layer")
+            val sourceLayerPair2 = Pair("$name-2-source", "$name-2-layer")
+            val sourceLayerPair3 = Pair("$name-3-source", "$name-3-layer")
+            this.addPointSource(sourceLayerPair1.first, listOf(mapRouteCoordinates.last().first))
+            this.addPointSource(sourceLayerPair2.first, listOf(mapRouteCoordinates.last().first))
+            this.addPointSource(sourceLayerPair3.first, listOf(mapRouteCoordinates.last().first))
+            this.addCircleLayerWithColor(
+                sourceLayerPair1.second,
+                sourceLayerPair1.first,
+                10f,
+                R.color.grey_700
+            )
+            this.addCircleLayerWithColor(
+                sourceLayerPair2.second,
+                sourceLayerPair2.first,
+                8f,
+                R.color.white
+            )
+            this.addCircleLayerWithColor(
+                sourceLayerPair3.second,
+                sourceLayerPair3.first,
+                6f,
+                R.color.grey_700
+            )
+        }
     }
 
     /**
