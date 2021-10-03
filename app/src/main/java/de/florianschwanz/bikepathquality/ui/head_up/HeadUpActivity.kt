@@ -124,6 +124,7 @@ class HeadUpActivity : AppCompatActivity() {
         }
 
         val accelerometerEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
+        val speedEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
 
         bikeActivityViewModel.activeBikeActivityWithSamples.observe(
             this,
@@ -176,7 +177,12 @@ class HeadUpActivity : AppCompatActivity() {
         })
 
         viewModel.locationLiveData.observe(this, { location ->
-            tvSpeed.text = String.format(resources.getString(R.string.speed), location.speed * 3.6)
+
+            speedEvictingQueue.add(location.speed)
+
+            val value = accelerometerEvictingQueue.average().toFloat()
+
+            tvSpeed.text = String.format(resources.getString(R.string.speed), value * 3.6)
         })
 
         viewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
