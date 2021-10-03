@@ -104,8 +104,9 @@ See the [open issues](https://github.com/fom-big-data-bike-path-quality/fom-big-
 
 ### Version 1.*
 
+* 1.12.0 Phone position and bike type preferences
 * 1.11.0 Head-up mode
-* 1.10.0 Bike activity sample span higlight
+* 1.10.0 Bike activity sample span highlight
 * 1.9.0 Bike activity sample color code
 * 1.8.0 Invalid bike activity sample indicator
 * 1.7.0 Under-lab-conditions flag
