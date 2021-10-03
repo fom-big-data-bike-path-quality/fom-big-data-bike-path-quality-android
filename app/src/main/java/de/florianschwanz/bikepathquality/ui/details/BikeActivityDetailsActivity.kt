@@ -2,6 +2,7 @@ package de.florianschwanz.bikepathquality.ui.details
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -19,6 +20,7 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -313,29 +315,57 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 }
             }
 
-            bikeActivityWithSamples.bikeActivity.surfaceType?.let {
-                btnSurfaceType.text = it
-                    .replace("_", " ")
-                    .replace(":", " ")
+            bikeActivityWithSamples.bikeActivity.surfaceType?.let { surfaceType ->
+                btnSurfaceType.also {
+                    it.text = surfaceType.replace("_", " ").replace(":", " ")
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                }
             } ?: run {
-                btnSurfaceType.text = resources.getString(R.string.default_surface_type)
+                btnSurfaceType.also {
+                    it.text = resources.getString(R.string.default_surface_type)
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                }
             }
-            bikeActivityWithSamples.bikeActivity.smoothnessType?.let {
-                btnSmoothnessType.text = it
-                    .replace("_", " ")
-                    .replace(":", " ")
+            bikeActivityWithSamples.bikeActivity.smoothnessType?.let { smoothessType ->
+                btnSmoothnessType.also {
+                    it.text = smoothessType.replace("_", " ").replace(":", " ")
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                }
             } ?: run {
-                btnSmoothnessType.text = resources.getString(R.string.default_smoothness_type)
+                btnSmoothnessType.also {
+                    it.text = resources.getString(R.string.default_smoothness_type)
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                }
             }
-            bikeActivityWithSamples.bikeActivity.phonePosition?.let {
-                btnPhonePosition.text = it
+            bikeActivityWithSamples.bikeActivity.phonePosition?.let { phonePosition ->
+                btnPhonePosition.also {
+                    it.text = phonePosition.replace("_", " ").replace(":", " ")
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                }
             } ?: run {
-                btnPhonePosition.text = resources.getString(R.string.default_phone_position)
+                btnPhonePosition.also {
+                    it.text = resources.getString(R.string.default_phone_position)
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                }
             }
-            bikeActivityWithSamples.bikeActivity.bikeType?.let {
-                btnBikeType.text = it
+            bikeActivityWithSamples.bikeActivity.bikeType?.let { bikeType ->
+                btnBikeType.also {
+                    it.text = bikeType.replace("_", " ").replace(":", " ")
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorOnSurface)))
+                }
             } ?: run {
-                btnBikeType.text = resources.getString(R.string.default_bike_type)
+                btnBikeType.also {
+                    it.text = resources.getString(R.string.default_bike_type)
+                    it.setTextColor(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                    it.iconTint = ColorStateList.valueOf(Color.parseColor(getThemeColorInHex(this, R.attr.colorButtonNormal)))
+                }
             }
 
             btnSurfaceType.setOnClickListener {
@@ -1246,6 +1276,19 @@ class BikeActivityDetailsActivity : AppCompatActivity(),
                 true
             )
         }
+    }
+
+    //
+    // Helpers (color)
+    //
+
+    /**
+     * Retrieves theme color
+     */
+    private fun getThemeColorInHex(context: Context, @AttrRes attribute: Int): String {
+        val outValue = TypedValue()
+        context.theme.resolveAttribute(attribute, outValue, true)
+        return String.format("#%06X", 0xFFFFFF and outValue.data)
     }
 
     //
