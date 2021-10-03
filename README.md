@@ -47,6 +47,11 @@ There are two ways to install the app - from the bundled releases and from your 
  git clone git@github.com:fom-big-data-bike-path-quality/fom-big-data-bike-path-quality-android.git
  ```
 * Open the project in Android Studio
+
+* Setup Firebase for Android as described [here](https://firebase.google.com/docs/android/setup)
+* Setup Mapbox Maps SDK as described [here](https://docs.mapbox.com/android/maps/guides/install/)
+* Setup app signing as described [here](https://developer.android.com/studio/publish/app-signing)
+
 * Connect an Android device via USB cable
 * Run the app
 
