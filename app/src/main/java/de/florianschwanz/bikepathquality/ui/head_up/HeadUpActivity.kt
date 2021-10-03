@@ -2,14 +2,15 @@ package de.florianschwanz.bikepathquality.ui.head_up
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
-import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,15 +21,18 @@ import com.google.common.collect.EvictingQueue
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
 import de.florianschwanz.bikepathquality.data.model.tracking.Accelerometer
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivity
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityTrackingType
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModel
 import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityViewModelFactory
 import de.florianschwanz.bikepathquality.data.storage.bike_activity_sample.BikeActivitySample
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModel
+import de.florianschwanz.bikepathquality.data.storage.user_data.UserDataViewModelFactory
 import de.florianschwanz.bikepathquality.databinding.ActivityHeadUpBinding
+import de.florianschwanz.bikepathquality.services.TrackingForegroundService
+import java.time.Instant
 import kotlin.math.round
 import kotlin.math.sqrt
-import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.ActionBar
-
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -40,9 +44,17 @@ class HeadUpActivity : AppCompatActivity() {
     private lateinit var clContainer: ConstraintLayout
     private lateinit var tvAccelerometer: TextView
     private lateinit var tvSpeed: TextView
+    private lateinit var clFooter: ConstraintLayout
     private lateinit var tvSamples: TextView
-    private lateinit var btnLeave: Button
-    private lateinit var fullscreenContentControls: LinearLayout
+
+
+    private lateinit var clBack: ConstraintLayout
+    private lateinit var ivBack: ImageView
+    private lateinit var tvBack: TextView
+    private lateinit var clStartStop: ConstraintLayout
+    private lateinit var ivStartStop: ImageView
+    private lateinit var tvStartStop: TextView
+
     private val hideHandler = Handler()
 
     @SuppressLint("InlinedApi")
@@ -64,35 +76,20 @@ class HeadUpActivity : AppCompatActivity() {
         }
     }
     private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
         supportActionBar?.show()
-        fullscreenContentControls.visibility = View.VISIBLE
     }
     private var isFullscreen: Boolean = false
 
     private val hideRunnable = Runnable { hide() }
 
+    private lateinit var viewModel: HeadUpActivityViewModel
+
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
         BikeActivityViewModelFactory((application as BikePathQualityApplication).bikeActivityRepository)
     }
 
-    private lateinit var viewModel: HeadUpActivityViewModel
-
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private val delayHideTouchListener = View.OnTouchListener { view, motionEvent ->
-        when (motionEvent.action) {
-            MotionEvent.ACTION_DOWN -> if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS)
-            }
-            MotionEvent.ACTION_UP -> view.performClick()
-            else -> {
-            }
-        }
-        false
+    private val userDataViewModel: UserDataViewModel by viewModels {
+        UserDataViewModelFactory((application as BikePathQualityApplication).userDataRepository)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -110,17 +107,38 @@ class HeadUpActivity : AppCompatActivity() {
         tvAccelerometer = binding.tvAccelerometer
         tvSpeed = binding.tvSpeed
         tvSamples = binding.tvSamples
-        btnLeave = binding.btnLeave
+        clFooter = binding.clFooter
+        clBack = binding.clBack
+        ivBack = binding.ivBack
+        tvBack = binding.tvBack
+        clStartStop = binding.clStartStop
+        ivStartStop = binding.ivStartStop
+        tvStartStop = binding.tvStartStop
 
         tvAccelerometer.setOnClickListener { toggle() }
 
-        fullscreenContentControls = binding.fullscreenContentControls
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        binding.btnLeave.setOnClickListener {
+        binding.clBack.setOnClickListener {
             finish()
+        }
+        binding.clStartStop.setOnClickListener {
+            val activeBikeActivityWithSamples = viewModel.activeBikeActivityWithSamples.value
+            val userData = viewModel.userData.value
+
+            if (userData != null) {
+                if (activeBikeActivityWithSamples?.bikeActivity != null) {
+                    disableAutomaticTracking()
+                    bikeActivityViewModel.update(
+                        activeBikeActivityWithSamples.bikeActivity.copy(
+                            endTime = Instant.now()
+                        )
+                    )
+                } else {
+                    enableManualTracking()
+                    bikeActivityViewModel.insert(
+                        BikeActivity(trackingType = BikeActivityTrackingType.MANUAL)
+                    )
+                }
+            }
         }
 
         val accelerometerEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
@@ -172,8 +190,11 @@ class HeadUpActivity : AppCompatActivity() {
             tvAccelerometer.text = value.round(1).toString()
             tvSpeed.setTextColor(textColor)
             tvSamples.setTextColor(textColor)
-            fullscreenContentControls.setBackgroundColor(statusBarColor)
-            btnLeave.setTextColor(textColor)
+            clFooter.setBackgroundColor(statusBarColor)
+            ivBack.imageTintList = ColorStateList.valueOf(textColor)
+            tvBack.setTextColor(textColor)
+            ivStartStop.imageTintList = ColorStateList.valueOf(textColor)
+            tvStartStop.setTextColor(textColor)
         })
 
         viewModel.locationLiveData.observe(this, { location ->
@@ -192,21 +213,19 @@ class HeadUpActivity : AppCompatActivity() {
                     it.bikeActivitySamples.filterValid().size,
                     it.bikeActivitySamples.filterValid().size
                 )
+                ivStartStop.setImageResource(R.drawable.ic_baseline_stop_48)
+                tvStartStop.text = resources.getString(R.string.action_stop_activity)
+            } ?: run {
+                tvSamples.text = resources.getString(R.string.not_tracking)
+                ivStartStop.setImageResource(R.drawable.ic_baseline_play_arrow_48)
+                tvStartStop.text = resources.getString(R.string.action_start_activity)
             }
         })
+
+        userDataViewModel.singleUserData().observe(this, { userData ->
+            viewModel.userData.value = userData
+        })
     }
-
-    fun Float.round(decimals: Int): Float {
-        var multiplier = 1.0
-        repeat(decimals) { multiplier *= 10 }
-        return (round(this * multiplier) / multiplier).toFloat()
-    }
-
-    private fun Float.square(): Float = this * this
-
-    private fun Float.squareRoot(): Float = sqrt(this)
-
-    fun Accelerometer.rootMeanSquare() = ((x.square() + y.square() + z.square()) / 3).squareRoot()
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -228,7 +247,6 @@ class HeadUpActivity : AppCompatActivity() {
     private fun hide() {
         // Hide UI first
         supportActionBar?.hide()
-        fullscreenContentControls.visibility = View.VISIBLE
         isFullscreen = false
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -262,13 +280,53 @@ class HeadUpActivity : AppCompatActivity() {
     }
 
     //
+    // Helpers (tracking)
+    //
+
+    /**
+     * Enables manual tracking
+     */
+    private fun enableManualTracking() {
+        val trackingForegroundServiceIntent =
+            Intent(this, TrackingForegroundService::class.java)
+        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_START_MANUALLY
+        ContextCompat.startForegroundService(this, trackingForegroundServiceIntent)
+    }
+
+    /**
+     * Disables automatic tracking
+     */
+    private fun disableAutomaticTracking() {
+        val trackingForegroundServiceIntent =
+            Intent(this, TrackingForegroundService::class.java)
+        trackingForegroundServiceIntent.action = TrackingForegroundService.ACTION_STOP
+        ContextCompat.startForegroundService(
+            this,
+            trackingForegroundServiceIntent
+        )
+    }
+
+    //
     // Helpers
     //
+
+    fun Float.round(decimals: Int): Float {
+        var multiplier = 1.0
+        repeat(decimals) { multiplier *= 10 }
+        return (round(this * multiplier) / multiplier).toFloat()
+    }
+
+    private fun Float.square(): Float = this * this
+
+    private fun Float.squareRoot(): Float = sqrt(this)
+
+    fun Accelerometer.rootMeanSquare() = ((x.square() + y.square() + z.square()) / 3).squareRoot()
 
     private fun List<BikeActivitySample>.filterValid() =
         this.filter { it.lon != 0.0 || it.lat != 0.0 }
 
     companion object {
+
         /**
          * Whether or not the system UI should be auto-hidden after
          * [AUTO_HIDE_DELAY_MILLIS] milliseconds.

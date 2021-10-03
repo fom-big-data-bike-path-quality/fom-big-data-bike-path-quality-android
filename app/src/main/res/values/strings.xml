@@ -105,6 +105,7 @@
         <item quantity="one">%d sample</item>
         <item quantity="other">%d samples</item>
     </plurals>
+    <string name="not_tracking">not tracking</string>
     <string name="tracking_mode">tracking mode</string>
     <string name="tracking_mode_manual">manual</string>
     <string name="tracking_mode_automatic">automatic</string>
