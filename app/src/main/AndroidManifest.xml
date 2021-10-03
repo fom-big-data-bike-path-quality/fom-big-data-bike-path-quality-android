@@ -21,6 +21,7 @@
         android:theme="@style/Theme.BikePathQuality.NoActionBar">
         <activity
             android:name=".ui.main.MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.BikePathQuality.NoActionBar">
@@ -32,34 +33,41 @@
         </activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.details.BikeActivityDetailsActivity"
+            android:exported="false"
             android:label="@string/title_bike_activity_details"
             android:parentActivityName=".ui.main.MainActivity"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.head_up.HeadUpActivity"
+            android:exported="false"
             android:label="@string/title_head_up"
             android:theme="@style/Theme.BikePathQuality.NoActionBar.Fullscreen" />
         <activity
             android:name=".ui.surface_type.SurfaceTypeActivity"
+            android:exported="false"
             android:label="@string/title_surface_type"
             android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.smoothness_type.SmoothnessTypeActivity"
+            android:exported="false"
             android:label="@string/title_smoothness_type"
             android:parentActivityName=".ui.details.BikeActivityDetailsActivity"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.rationale.ActivityTransitionPermissionRationaleActivity"
+            android:exported="false"
             android:label="@string/title_activity_permission_rationale"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".ui.rationale.LocationPermissionRationaleActivity"
+            android:exported="false"
             android:label="@string/title_location_permission_rationale"
             android:screenOrientation="fullSensor" />
 
