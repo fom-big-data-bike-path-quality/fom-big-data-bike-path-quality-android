@@ -86,6 +86,7 @@
     <string name="lon">%1$.3f</string>
     <string name="lat">%1$.3f</string>
     <string name="speed">%1$.1f km/h</string>
+    <string name="speed_max">max %1$.1f km/h</string>
 
     <string name="default_lon">-</string>
     <string name="default_lat">-</string>
@@ -159,6 +160,7 @@
     <string name="default_start_time_with_seconds">10:42:00</string>
     <string name="default_measurements">no measurements</string>
     <string name="default_speed">22 km/h</string>
+    <string name="default_speed_max">max 44 km/h</string>
     <string name="default_accelerometer">4.2</string>
 
     <string-array name="phone_position_array">

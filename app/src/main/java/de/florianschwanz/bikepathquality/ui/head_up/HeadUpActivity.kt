@@ -44,6 +44,7 @@ class HeadUpActivity : AppCompatActivity() {
     private lateinit var clContainer: ConstraintLayout
     private lateinit var tvAccelerometer: TextView
     private lateinit var tvSpeed: TextView
+    private lateinit var tvSpeedMax: TextView
     private lateinit var clFooter: ConstraintLayout
     private lateinit var tvSamples: TextView
 
@@ -82,6 +83,8 @@ class HeadUpActivity : AppCompatActivity() {
 
     private val hideRunnable = Runnable { hide() }
 
+    private var speedMax = 0.0f
+
     private lateinit var viewModel: HeadUpActivityViewModel
 
     private val bikeActivityViewModel: BikeActivityViewModel by viewModels {
@@ -106,6 +109,7 @@ class HeadUpActivity : AppCompatActivity() {
         clContainer = binding.flContainer
         tvAccelerometer = binding.tvAccelerometer
         tvSpeed = binding.tvSpeed
+        tvSpeedMax = binding.tvSpeedMax
         tvSamples = binding.tvSamples
         clFooter = binding.clFooter
         clBack = binding.clBack
@@ -189,6 +193,7 @@ class HeadUpActivity : AppCompatActivity() {
             tvAccelerometer.setTextColor(textColor)
             tvAccelerometer.text = value.round(1).toString()
             tvSpeed.setTextColor(textColor)
+            tvSpeedMax.setTextColor(textColor)
             tvSamples.setTextColor(textColor)
             clFooter.setBackgroundColor(statusBarColor)
             ivBack.imageTintList = ColorStateList.valueOf(textColor)
@@ -196,16 +201,19 @@ class HeadUpActivity : AppCompatActivity() {
             ivStartStop.imageTintList = ColorStateList.valueOf(textColor)
             tvStartStop.setTextColor(textColor)
         })
-
         viewModel.locationLiveData.observe(this, { location ->
 
             speedEvictingQueue.add(location.speed)
 
             val value = accelerometerEvictingQueue.average().toFloat()
 
-            tvSpeed.text = String.format(resources.getString(R.string.speed), value * 3.6)
-        })
+            if (location.speed > speedMax) {
+                speedMax = location.speed
+            }
 
+            tvSpeed.text = String.format(resources.getString(R.string.speed), value * 3.6)
+            tvSpeedMax.text = String.format(resources.getString(R.string.speed_max), speedMax * 3.6)
+        })
         viewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
             bikeActivityWithSamples?.let {
                 tvSamples.text = resources.getQuantityString(
@@ -221,10 +229,11 @@ class HeadUpActivity : AppCompatActivity() {
                 tvStartStop.text = resources.getString(R.string.action_start_activity)
             }
         })
-
         userDataViewModel.singleUserData().observe(this, { userData ->
             viewModel.userData.value = userData
         })
+
+        speedMax = 0.0f
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
