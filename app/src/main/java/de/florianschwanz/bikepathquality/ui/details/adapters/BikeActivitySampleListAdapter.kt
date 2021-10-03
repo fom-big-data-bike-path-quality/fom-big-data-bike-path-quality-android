@@ -258,7 +258,6 @@ class BikeActivitySampleListAdapter(
             }
         }
 
-
         /**
          * Builds text color based on whether the item is focussed or not
          */

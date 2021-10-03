@@ -121,6 +121,14 @@
 
     <!-- Settings -->
 
+    <string name="settings_personal_settings">Personal Settings</string>
+    <string name="setting_phone_position">phone_position</string>
+    <string name="setting_phone_position_title">Phone Position</string>
+    <string name="setting_phone_position_summary">"%s</string>
+    <string name="setting_bike_type">bike_type</string>
+    <string name="setting_bike_type_title">Bike Type</string>
+    <string name="setting_bike_type_summary">"%s</string>
+
     <string name="settings_tracking">Tracking</string>
     <string name="setting_tracking_automatic">tracking_automatic</string>
     <string name="setting_tracking_automatic_title">Automatic Tracking</string>
@@ -173,8 +181,28 @@
         <item>other</item>
     </string-array>
 
+    <string-array name="phone_position_preference_array">
+        <item>in pants pocket</item>
+        <item>in jacket pocket</item>
+        <item>in backpack</item>
+        <item>in bike bag</item>
+        <item>on bike mount</item>
+        <item>other</item>
+    </string-array>
+
     <string-array name="bike_type_array">
         <item>BIKE TYPE</item>
+        <item>road bicycle</item>
+        <item>touring bicycle</item>
+        <item>cyclo cross</item>
+        <item>cargo bike</item>
+        <item>mountain bike</item>
+        <item>racing bicycle</item>
+        <item>electric bicycle</item>
+        <item>other</item>
+    </string-array>
+
+    <string-array name="bike_type_preference_array">
         <item>road bicycle</item>
         <item>touring bicycle</item>
         <item>cyclo cross</item>

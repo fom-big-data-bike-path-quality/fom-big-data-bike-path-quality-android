@@ -371,9 +371,23 @@ class TrackingForegroundService : LifecycleService() {
         })
     }
 
-    private fun startBikeActivity() = bikeActivityViewModel.insert(
-        BikeActivity(trackingType = BikeActivityTrackingType.AUTOMATIC)
-    )
+    private fun startBikeActivity() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
+        bikeActivityViewModel.insert(
+            BikeActivity(
+                trackingType = BikeActivityTrackingType.AUTOMATIC,
+                phonePosition = sharedPreferences.getString(
+                    resources.getString(R.string.setting_phone_position),
+                    null
+                ),
+                bikeType = sharedPreferences.getString(
+                    resources.getString(R.string.setting_bike_type),
+                    null
+                )
+            )
+        )
+    }
 
     private fun stopBikeActivity() = activeBikeActivity?.let { bikeActivity ->
         bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))

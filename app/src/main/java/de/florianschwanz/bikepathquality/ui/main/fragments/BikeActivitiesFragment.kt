@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
@@ -108,8 +109,20 @@ class BikeActivitiesFragment : Fragment(), BikeActivityListAdapter.OnItemClickLi
                     bikeActivityViewModel.update(bikeActivity.copy(endTime = Instant.now()))
                 } else {
                     enableManualTracking()
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity().applicationContext)
+
                     bikeActivityViewModel.insert(
-                        BikeActivity(trackingType = BikeActivityTrackingType.MANUAL)
+                        BikeActivity(
+                            trackingType = BikeActivityTrackingType.AUTOMATIC,
+                            phonePosition = sharedPreferences.getString(
+                                resources.getString(R.string.setting_phone_position),
+                                null
+                            ),
+                            bikeType = sharedPreferences.getString(
+                                resources.getString(R.string.setting_bike_type),
+                                null
+                            )
+                        )
                     )
                 }
             }
