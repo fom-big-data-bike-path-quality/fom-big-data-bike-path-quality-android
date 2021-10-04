@@ -34,10 +34,6 @@ import java.time.Instant
 import kotlin.math.round
 import kotlin.math.sqrt
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class HeadUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHeadUpBinding
@@ -146,7 +142,7 @@ class HeadUpActivity : AppCompatActivity() {
         }
 
         val accelerometerEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
-        val speedEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
+        val speedEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(250)
 
         bikeActivityViewModel.activeBikeActivityWithSamples.observe(
             this,
@@ -205,7 +201,7 @@ class HeadUpActivity : AppCompatActivity() {
 
             speedEvictingQueue.add(location.speed)
 
-            val value = accelerometerEvictingQueue.average().toFloat()
+            val value = speedEvictingQueue.average().toFloat()
 
             if (location.speed > speedMax) {
                 speedMax = location.speed
