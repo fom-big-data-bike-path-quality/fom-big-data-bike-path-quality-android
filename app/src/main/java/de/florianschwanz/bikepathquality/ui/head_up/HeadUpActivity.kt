@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.google.common.collect.EvictingQueue
 import de.florianschwanz.bikepathquality.BikePathQualityApplication
 import de.florianschwanz.bikepathquality.R
@@ -134,8 +135,21 @@ class HeadUpActivity : AppCompatActivity() {
                     )
                 } else {
                     enableManualTracking()
+
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
                     bikeActivityViewModel.insert(
-                        BikeActivity(trackingType = BikeActivityTrackingType.MANUAL)
+                        BikeActivity(
+                            trackingType = BikeActivityTrackingType.MANUAL,
+                            phonePosition = sharedPreferences.getString(
+                                resources.getString(R.string.setting_phone_position),
+                                null
+                            ),
+                            bikeType = sharedPreferences.getString(
+                                resources.getString(R.string.setting_bike_type),
+                                null
+                            )
+                        )
                     )
                 }
             }
