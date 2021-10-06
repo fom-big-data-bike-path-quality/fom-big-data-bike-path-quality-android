@@ -156,7 +156,6 @@ class HeadUpActivity : AppCompatActivity() {
         }
 
         val accelerometerEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(750)
-        val speedEvictingQueue: EvictingQueue<Float> = EvictingQueue.create(250)
 
         bikeActivityViewModel.activeBikeActivityWithSamples.observe(
             this,
@@ -212,16 +211,11 @@ class HeadUpActivity : AppCompatActivity() {
             tvStartStop.setTextColor(textColor)
         })
         viewModel.locationLiveData.observe(this, { location ->
-
-            speedEvictingQueue.add(location.speed)
-
-            val value = speedEvictingQueue.average().toFloat()
-
             if (location.speed > speedMax) {
                 speedMax = location.speed
             }
 
-            tvSpeed.text = String.format(resources.getString(R.string.speed), value * 3.6)
+            tvSpeed.text = String.format(resources.getString(R.string.speed), location.speed * 3.6)
             tvSpeedMax.text = String.format(resources.getString(R.string.speed_max), speedMax * 3.6)
         })
         viewModel.activeBikeActivityWithSamples.observe(this, { bikeActivityWithSamples ->
