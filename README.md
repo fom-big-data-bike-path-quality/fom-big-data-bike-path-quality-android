@@ -57,46 +57,48 @@ There are two ways to install the app - from the bundled releases and from your 
 
 ## Usage
 
-On first start-up of the app you will be prompted to give permission to track location and activity transition (this is used for _automatic tracking mode_). Click _CONTINUE_ in both cases and allow both _while using the app_. After that you will see the main screen.
+On first start-up of the app you will be prompted to give permission to track location and activity transition (this is used for _automatic tracking mode_). Click _CONTINUE_ in both cases and allow both _while using the app_. After that you will see the main screen. 
+From the main screen other screens like the _sensors screen_ and the _log screen_ can be reached by swiping left or right. The _settings screen_ is displayed after clicking the settings icon in the menu.
 
 <img src=".screenshots/screenshot-01-permission-location.png" width="300">  |  <img src=".screenshots/screenshot-02-permission-activity-transitions.png" width="300">  |  <img src=".screenshots/screenshot-03-main-screen.png" width="300">
 :-------------------------:|:-------------------------:|:-------------------------:
 Permission rationale location | Permission rationale activity transition | Main screen
 
+Both sensors screen and log screen can help you understand measured values and actions performed by the app.
+On the sensors screen currently measured values are displayed. The log screen displays logging information about the app status. In the settings screen you can define preferred phone position and bike type. Furthermore you can decide whether tracking shall be started and stopped automatically. Also measurement intervals and sample sizes can be specified.
 The app can track biking data in two modes
-* **automatic tracking** <sup>experimental</sup> will automatically start and stop bike activity tracking when you start or stop riding a bike 
-* **manual tracking** allows you to start and stop a bike activity whenever you want (this will disable automatic tracking)
+* **automatic tracking** <sup>experimental</sup> will automatically start and stop bike activity tracking when you start or stop riding a bike
+* **manual tracking** allows you to start and stop a bike activity whenever you want
 
-You can switch between the two modes in the settings menu which you can reach by clicking on the gear symbol in the top right corner.
-
-* Start a bike activity (either automatically by starting to ride a bike if you used automatic tracking or manually by clicking the play button) which will add an entry for the ongoing tracking to the activity list
-
-> **Important:** in order to train the model pure data is needed. Try to ride on one surface type only when tracking a bike activity. Stop and restart the activity tracking when you switch the surface type. (Later you can set the surface type for each sample individually which might become cumbersome if you need to do it for too many samples) 
-
-* Stop the bike activity (either by stopping to ride your bike if you used automatic tracking and/or by clicking the stop button)
-
-<img src=".screenshots/screenshot-04-settings.png" width="300">  |  <img src=".screenshots/screenshot-05-ongoing-activity.png" width="300">  |  <img src=".screenshots/screenshot-06-completed-activity.png" width="300">
+<img src=".screenshots/screenshot-04-sensors.png" width="300">  |  <img src=".screenshots/screenshot-05-log.png" width="300">  |  <img src=".screenshots/screenshot-06-settings.png" width="300">
 :-------------------------:|:-------------------------:|:-------------------------:
-Settings screen | Ongoing activity tracking | Completed activity tracking
+Sensors screen | Log screen | Settings screen
 
-* Click on an activity in the list to get to the activity details screen in which you can see your bike activity on a map and a list of tracked samples
-* Click on any sample in the list to highlight it on the map
-* Next to a highlighted sample the _surface type_ icon appears which lets you set the surface type for an individual sample
+On the main screen you can can start manual tracking by clicking the green arrow button. 
 
-<img src=".screenshots/screenshot-07-activity-details.png" width="300">  |  <img src=".screenshots/screenshot-08-activity-sample-highlight.png" width="300">
+> **Important:** in order to train the model pure data is needed. Try to ride on one surface type only when tracking a bike activity. Stop and restart the activity tracking when you switch the surface type. (Later you can set the surface type for each sample individually which might become cumbersome if you need to do it for too many samples)
+
+In order to ensure a safe right without distractions you can switch to head-up mode by clicking on the square icon in the menu.
+In head-up mode your current speed, the current bumpiness of the surface and the collected samples are displayed. 
+The color of the screen indicates how bumpy the surface currently is.
+You can return from head-up mode and start or stop tracking by using the buttons on the bottom.
+
+<img src=".screenshots/screenshot-07-hud-smooth.png" width="300">  |  <img src=".screenshots/screenshot-08-hud-intermediate.png" width="300">  |  <img src=".screenshots/screenshot-09-hud-rough.png" width="300">
+:-------------------------:|:-------------------------:|:-------------------------:
+HUD screen with smooth surface | HUD screen with intermediate surface | HUD screen with rough surface
+
+Once you completed the tracking of a bike activity you can see the details by clicking on its list entry on the main screen. From here you can specify the surface type and the smoothness type of the bike activity. Phone position and bike type are prefilled with the values you specified in the settings screen. 
+
+<img src=".screenshots/screenshot-10-activity-details.png" width="300">  |  <img src=".screenshots/screenshot-11-surface-type.png" width="300">  |  <img src=".screenshots/screenshot-12-smoothness-type.png" width="300">
+:-------------------------:|:-------------------------:|:-------------------------:
+Activity details | Surface type selection | Smoothness type selection
+
+The surface type for the bike activity you can overridden for single parts. You can do so by selecting a sample from the list and click the dashed button next to it.
+After setting all fields you can upload your tracking results by hitting the green floating action button.
+
+<img src=".screenshots/screenshot-13-activity-details-focus.png" width="300"> | <img src=".screenshots/screenshot-14-activity-upload.png" width="300">
 :-------------------------:|:-------------------------:
-Activity details screen | Highlighted activity sample
-
-* Click on _Surface type_ to select the surface you did the ride on
-* Click on _Smoothness type_ to evaluate the quality of the bike path surface
-* Click on _Phone position_ to select where your phone has been during the ride (not in screenshot)
-* Click on _Bike type_ to select your bike type (not in screenshot)
-
-After all four things are selected click on the floating action button in the bottom right corner in order to upload you activity data. An _Uploaded_ badge will appear next to the title indicating that the upload was successful. The data includes a user ID that identifies you anonymously.
-
-<img src=".screenshots/screenshot-09-surface-type.png" width="300">  |  <img src=".screenshots/screenshot-10-smoothness-type.png" width="300">  |  <img src=".screenshots/screenshot-11-uploaded.png" width="300">
-:-------------------------:|:-------------------------:|:-------------------------:
-Surface type selection | Smoothness type selection | Uploaded activity
+Activity details with focus | Activity upload
 
 ## Roadmap
 
