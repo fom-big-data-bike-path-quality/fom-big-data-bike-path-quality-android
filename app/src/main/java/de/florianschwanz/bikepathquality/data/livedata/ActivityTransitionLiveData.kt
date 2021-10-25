@@ -1,10 +1,13 @@
 package de.florianschwanz.bikepathquality.data.livedata
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -130,11 +133,15 @@ class ActivityTransitionLiveData(val context: Context) :
         // Initialize PendingIntent that will be triggered when a activity transition occurs
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         activityTransitionsPendingIntent =
-            PendingIntent.getBroadcast(context, 0, intent, 0)
+            PendingIntent.getBroadcast(
+                context, 0, intent, if (isAndroid12()) { FLAG_MUTABLE } else { FLAG_IMMUTABLE }
+            )
 
         // The receiver listens for the PendingIntent above that is triggered by the system when an activity transition occurs
         transitionsReceiver = TransitionsReceiver()
     }
+
+    private fun isAndroid12() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     private fun MutableList<com.google.android.gms.location.ActivityTransition>.addTransition(
         activityType: Int,
