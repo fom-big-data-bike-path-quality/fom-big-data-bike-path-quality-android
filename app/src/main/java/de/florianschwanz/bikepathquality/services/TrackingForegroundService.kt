@@ -276,8 +276,14 @@ class TrackingForegroundService : LifecycleService() {
         this,
         8,
         Intent(this, MainActivity::class.java),
-        0
+        if (isAndroid12()) {
+            PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_IMMUTABLE
+        }
     )
+
+    private fun isAndroid12() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     /**
      * Sets shared preference to a given value
@@ -292,9 +298,9 @@ class TrackingForegroundService : LifecycleService() {
      * Retrieves user data from the database
      */
     private fun handleUserData() {
-        userDataViewModel.singleUserData().observe(this, {
-            userData = it
-        })
+        userDataViewModel.singleUserData().observe(this) { singleUserData ->
+            userData = singleUserData
+        }
     }
 
     /**
