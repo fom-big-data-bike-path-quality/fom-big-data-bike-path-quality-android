@@ -106,6 +106,7 @@ See the [open issues](https://github.com/fom-big-data-bike-path-quality/fom-big-
 
 ### Version 1.*
 
+* 1.13.0 Material You support
 * 1.12.0 Phone position and bike type preferences
 * 1.11.0 Head-up mode
 * 1.10.0 Bike activity sample span highlight
