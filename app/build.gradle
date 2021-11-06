@@ -15,12 +15,26 @@ android {
 
     defaultConfig {
         applicationId "de.florianschwanz.bikepathquality"
-        minSdkVersion 26
+
         targetSdkVersion 31
         versionCode 23
         versionName "1.12.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions "api"
+    productFlavors {
+        minApi26 {
+            dimension "api"
+            minSdkVersion 26
+            versionNameSuffix "-minApi26"
+        }
+        minApi31 {
+            dimension "api"
+            minSdkVersion 31
+            versionNameSuffix "-minApi31"
+        }
     }
 
     signingConfigs {

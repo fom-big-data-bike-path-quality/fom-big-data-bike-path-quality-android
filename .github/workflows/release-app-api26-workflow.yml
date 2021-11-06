@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.0
         with:
           name: Upload artifact
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/minApi26/release/app-minApi26-release.apk
       - name: Create Release
         id: create-release
         uses: actions/create-release@v1
@@ -52,13 +52,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.ref }} Android 8
           draft: false
           prerelease: false
       - name: Save artifact name
         id: save-artifact-name
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/minApi26/release/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
