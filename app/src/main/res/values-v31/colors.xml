@@ -100,22 +100,22 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
 
-    <color name="colorPrimary">@color/green_500</color>
-    <color name="colorPrimaryVariant">@color/green_700</color>
+    <color name="colorPrimary">@android:color/system_accent1_500</color>
+    <color name="colorPrimaryVariant">@android:color/system_accent1_700</color>
     <color name="colorOnPrimary">@color/white</color>
     <!-- Secondary brand color. -->
-    <color name="colorSecondary">@color/lime_500</color>
-    <color name="colorSecondaryVariant">@color/lime_300</color>
+    <color name="colorSecondary">@android:color/system_accent2_100</color>
+    <color name="colorSecondaryVariant">@android:color/system_accent2_300</color>
     <color name="colorOnSecondary">@color/black</color>
     <!-- Status bar color. -->
     <color name="colorStatusBar">@color/white</color>
 
-    <color name="colorNightPrimary">@color/green_500</color>
-    <color name="colorNightPrimaryVariant">@color/green_700</color>
+    <color name="colorNightPrimary">@android:color/system_accent1_500</color>
+    <color name="colorNightPrimaryVariant">@android:color/system_accent1_700</color>
     <color name="colorNightOnPrimary">@color/black</color>
     <!-- Secondary brand color. -->
-    <color name="colorNightSecondary">@color/lime_500</color>
-    <color name="colorNightSecondaryVariant">@color/lime_300</color>
+    <color name="colorNightSecondary">@android:color/system_accent2_500</color>
+    <color name="colorNightSecondaryVariant">@android:color/system_accent2_300</color>
     <color name="colorNightOnSecondary">@color/black</color>
     <!-- Status bar color. -->
     <color name="colorNightStatusBar">@color/black</color>
