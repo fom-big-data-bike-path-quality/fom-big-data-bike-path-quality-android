@@ -7,8 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import de.florianschwanz.bikepathquality.R
@@ -18,6 +20,9 @@ import de.florianschwanz.bikepathquality.R
  * the permission
  */
 class LocationPermissionRationaleActivity : AppCompatActivity(), OnRequestPermissionsResultCallback {
+
+    private lateinit var btnApprove: AppCompatButton
+    private lateinit var btnDeny: AppCompatButton
 
     //
     // Lifecycle phases
@@ -34,6 +39,24 @@ class LocationPermissionRationaleActivity : AppCompatActivity(), OnRequestPermis
             finish()
         }
         setContentView(R.layout.activity_location_permission_rationale)
+
+        btnApprove = findViewById(R.id.approve_permission_request)
+        btnDeny = findViewById(R.id.deny_permission_request)
+
+        btnApprove.setOnClickListener {
+            setResult(Activity.RESULT_OK)
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                PERMISSION_REQUEST_LOCATION
+            )
+        }
+        btnDeny.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import de.florianschwanz.bikepathquality.R
@@ -19,6 +20,9 @@ import de.florianschwanz.bikepathquality.R
  */
 class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
     OnRequestPermissionsResultCallback {
+
+    private lateinit var btnApprove: AppCompatButton
+    private lateinit var btnDeny: AppCompatButton
 
     //
     // Lifecycle phases
@@ -35,6 +39,21 @@ class ActivityTransitionPermissionRationaleActivity : AppCompatActivity(),
             finish()
         }
         setContentView(R.layout.activity_transition_permission_rationale)
+
+        btnApprove = findViewById(R.id.approve_permission_request)
+        btnDeny = findViewById(R.id.deny_permission_request)
+
+        btnApprove.setOnClickListener {
+            setResult(Activity.RESULT_OK)
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                PERMISSION_REQUEST_ACTIVITY_RECOGNITION
+            )
+        }
+        btnDeny.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
     }
 
     /**
