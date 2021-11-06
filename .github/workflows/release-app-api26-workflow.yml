@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Release API 26
 on:
   push:
     tags:
