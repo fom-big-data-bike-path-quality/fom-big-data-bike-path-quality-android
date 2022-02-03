@@ -17,7 +17,7 @@ class BikeActivityViewModel(private val repository: BikeActivityRepository) : Vi
 
     val activeBikeActivityWithSamples: LiveData<BikeActivityWithSamples> = repository.activeActivityWithSamples.asLiveData()
 
-    fun singleBikeActivityWithSamples(uid: String) = repository.singleBikeActivityWithSamples(uid).asLiveData()
+    fun singleBikeActivityWithSamples(uid: String): LiveData<BikeActivityWithSamples> = repository.singleBikeActivityWithSamples(uid).asLiveData()
 
     fun insert(bikeActivity: BikeActivity) = viewModelScope.launch {
         repository.insert(bikeActivity)

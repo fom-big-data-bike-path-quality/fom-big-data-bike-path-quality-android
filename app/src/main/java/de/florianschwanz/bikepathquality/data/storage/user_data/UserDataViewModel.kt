@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import de.florianschwanz.bikepathquality.data.storage.bike_activity.BikeActivityWithSamples
 import kotlinx.coroutines.launch
 
 class UserDataViewModel(private val repository: UserDataRepository) : ViewModel() {
 
     fun exists() = repository.exists().asLiveData()
 
-    fun singleUserData() = repository.singleUserData().asLiveData()
+    fun singleUserData(): LiveData<UserData> = repository.singleUserData().asLiveData()
 
     fun insert(userData: UserData) = viewModelScope.launch {
         repository.insert(userData)
