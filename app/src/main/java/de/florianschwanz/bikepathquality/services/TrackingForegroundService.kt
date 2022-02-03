@@ -499,7 +499,7 @@ class TrackingForegroundService : LifecycleService() {
         const val DEFAULT_ACTIVITY_MEASUREMENT_INTERVAL = 50
 
         /** Number of measurements per sample */
-        const val DEFAULT_ACTIVITY_SAMPLE_SIZE = 250
+        const val DEFAULT_ACTIVITY_SAMPLE_SIZE = 500
 
         /**
          * Converts activity to a string
